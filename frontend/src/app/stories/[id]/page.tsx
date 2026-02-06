@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { fetchStoryById, Story, deleteStoryById } from "@/lib/stories";
+import { getBadgeClass } from "@/constants/categories";
 
 export default function StoryDetailPage() {
     const router = useRouter();
@@ -133,7 +134,7 @@ export default function StoryDetailPage() {
 
                 <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
                     {story.categories.map((c) => (
-                        <span key={c} className="badge">
+                        <span key={c} className={`badge ${getBadgeClass(c)}`}>
                             {c}
                         </span>
                     ))}
@@ -144,26 +145,26 @@ export default function StoryDetailPage() {
                 </p>
             </header>
 
-            <section style={{ marginTop: 18, display: "grid", gap: 12 }}>
-                <div className="card">
-                    <div style={{ fontWeight: 800 }}>Situation</div>
-                    <p className="muted" style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>
-                        {story.situation || "No situation provided."}
-                    </p>
-                </div>
-
-                <div className="card">
-                    <div style={{ fontWeight: 800 }}>Action</div>
-                    <p className="muted" style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>
-                        {story.action || "No action provided."}
-                    </p>
-                </div>
-
-                <div className="card">
-                    <div style={{ fontWeight: 800 }}>Result</div>
-                    <p className="muted" style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>
-                        {story.result || "No result provided."}
-                    </p>
+            <section style={{ marginTop: 18 }}>
+                <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+                    <div style={{ padding: "16px 20px", borderLeft: "3px solid var(--muted-foreground)" }}>
+                        <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--muted-foreground)" }}>Situation</div>
+                        <p className="muted" style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>
+                            {story.situation || "No situation provided."}
+                        </p>
+                    </div>
+                    <div style={{ borderTop: "1px solid var(--border, rgba(0,0,0,0.08))", padding: "16px 20px", borderLeft: "3px solid var(--muted-foreground)" }}>
+                        <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--muted-foreground)" }}>Action</div>
+                        <p className="muted" style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>
+                            {story.action || "No action provided."}
+                        </p>
+                    </div>
+                    <div style={{ borderTop: "1px solid var(--border, rgba(0,0,0,0.08))", padding: "16px 20px", borderLeft: "3px solid var(--muted-foreground)" }}>
+                        <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--muted-foreground)" }}>Result</div>
+                        <p className="muted" style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>
+                            {story.result || "No result provided."}
+                        </p>
+                    </div>
                 </div>
             </section>
         </main>

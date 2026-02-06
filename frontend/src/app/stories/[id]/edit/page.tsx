@@ -193,7 +193,7 @@ export default function EditStoryPage() {
 
                 {/* Situation */}
                 <label style={{ display: "grid", gap: 6 }}>
-                    <span style={{ fontWeight: 700 }}>Situation</span>
+                    <span style={{ fontWeight: 700 }}>Situation / Task</span>
                     <textarea
                         value={situation}
                         onChange={(e) => setSituation(e.target.value)}
