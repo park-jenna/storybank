@@ -195,7 +195,7 @@ export default function DashboardPage() {
               <Link
                 key={s.id}
                 href={`/stories/${s.id}`}
-                style={{ textDecoration: "none", color: "inherit" }}
+                style={{ textDecoration: "none", color: "inherit", display: "block", minWidth: 0 }}
               >
                 <div className="story-card">
                   {/* Header: 날짜 + 메뉴 */}
@@ -218,13 +218,15 @@ export default function DashboardPage() {
                   <h3 className="story-card-title">{s.title}</h3>
 
                   {/* 미리보기 */}
-                  <p className="story-card-preview">
-                    {s.result
-                      ? `Result: ${s.result}`
-                      : s.situation
-                      ? `Situation: ${s.situation}`
-                      : "Click to view full story"}
-                  </p>
+                  <div className="story-card-preview-wrap">
+                    <p className="story-card-preview">
+                      {s.result
+                        ? `Summary: ${s.result}`
+                        : s.situation
+                        ? `Situation: ${s.situation}`
+                        : "Click to view full story"}
+                    </p>
+                  </div>
 
                   {/* Footer: 배지들 */}
                   <div className="story-card-footer">

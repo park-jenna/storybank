@@ -175,7 +175,8 @@ h3 {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  min-height: 240px;
+  height: 300px;
+  overflow: hidden;
 }
 
 .story-card:hover {
@@ -207,9 +208,12 @@ h3 {
   font-size: 18px;
   line-height: 1.6;
   flex: 1;
+  min-width: 0; /* flex item must be allowed to shrink for line-clamp */
   overflow: hidden;
+  text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 

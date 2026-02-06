@@ -10,6 +10,16 @@ Save and organize behavioral interview stories. Create, edit, and refine your ST
 - **Categories** — Tag stories with behavioral categories (Leadership, Teamwork, Problem Solving, etc.)
 - **Dashboard** — View and manage all your stories in one place
 
+## Screenshots
+
+**Dashboard** — View and manage all your stories in one place.
+
+<img src="img/dashboard.png" width="600" alt="Dashboard" />
+
+**Add Story** — Create a new story with STAR format (Situation/Task, Action, Result).
+
+<img src="img/addStory.png" width="600" alt="Add Story" />
+
 ## Tech Stack
 
 | Layer      | Tech                         |
