@@ -11,3 +11,22 @@ export const CATEGORIES = [
     "Creativity / Innovation",
     "Growth / Learning",
 ] as const;
+
+export const CATEGORY_BADGE_MAP: Record<string, string> = {
+    "Leadership": "badge-purple",
+    "Teamwork / Collaboration": "badge-cyan",
+    "Communication": "badge-green",
+    "Conflic Resolution": "badge-pink",
+    "Problem Solving": "badge-orange",
+    "Adaptability": "badge-yellow",
+    "Time Management": "badge-primary",
+    "Ownership": "badge-purple",
+    "Failure / Mistake": "badge-pink",
+    "Creativity / Innovation": "badge-cyan",
+    "Growth / Learning": "badge-green",
+};
+
+// 헬퍼 함수도 함께
+export function getBadgeClass(category: string): string {
+    return CATEGORY_BADGE_MAP[category] || "badge-primary";
+};

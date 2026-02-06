@@ -13,71 +13,86 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main style={{ marginTop: 56 }}>
-      <header style={{ maxWidth: 720 }}>
-        <h1 style={{ fontSize: 42, fontWeight: 900, margin: 0 }}>
-          Prepository
+    <main style={{ marginTop: 80, maxWidth: 640, margin: "80px auto 0" }}>
+      {/* Hero Section */}
+      <header style={{ textAlign: "center", marginBottom: 48 }}>
+        <h1 style={{ fontSize: 48, fontWeight: 900, margin: 0 }}>
+          StoryBank
         </h1>
-
-        <p className="muted" style={{ marginTop: 14, fontSize: 18 }}>
-          A personal workspace for organizing behavioral interview stories
-          using the STAR framework.
+        <p className="muted" style={{ marginTop: 16, fontSize: 20 }}>
+          Save and organize stories for interviews
         </p>
       </header>
 
-      {/* What this app does */}
-      <section className="card" style={{ marginTop: 36, maxWidth: 720 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 800, margin: 0 }}>
-          What you can do
-        </h2>
-
-        <ul className="muted" style={{ marginTop: 12, paddingLeft: 18 }}>
-          <li>Create and save behavioral interview stories</li>
-          <li>Structure answers using the STAR framework</li>
-          <li>Edit and refine responses over time</li>
-          <li>Securely manage your own data with login</li>
-        </ul>
-      </section>
-
-      {/* Demo & Access */}
-      <section className="card" style={{ marginTop: 16, maxWidth: 720 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 800, margin: 0 }}>
-          Demo & Access
-        </h2>
-
-        <p className="muted" style={{ marginTop: 10 }}>
-          This is a demo project built for learning and portfolio purposes.
-        </p>
-
-        <p className="muted" style={{ marginTop: 6 }}>
-          User accounts are created via the backend API
-          (<code>/auth/signup</code>).
-        </p>
-      </section>
-
-      {/* Action */}
-      <div style={{ marginTop: 36, display: "flex", gap: 12, flexWrap: "wrap" }}>
+      {/* CTA Buttons */}
+      <div style={{ 
+        display: "flex", 
+        flexDirection: "column",
+        gap: 12, 
+        maxWidth: 360,
+        margin: "0 auto 64px"
+      }}>
         {hasToken ? (
-          <button className="btn btn-primary"
+          <button 
+            className="btn btn-primary btn-lg"
+            style={{ width: "100%", justifyContent: "center" }}
             onClick={() => router.push("/dashboard")}
           >
             Go to Dashboard
           </button>
         ) : (
           <>
-            <button className="btn btn-primary"
+            <button 
+              className="btn btn-primary btn-lg"
+              style={{ width: "100%", justifyContent: "center" }}
               onClick={() => router.push("/login")}
             >
-              Log In to Continue
+              Log In
             </button>
-
-            <button className="btn btn-primary"
+            <button 
+              className="btn btn-lg"
+              style={{ width: "100%", justifyContent: "center" }}
               onClick={() => router.push("/signup")}
             >
               Sign Up
-            </button> 
+            </button>
           </>
         )}
+      </div>
+
+      {/* Features */}
+      <div style={{ 
+        borderTop: "1px solid var(--border)",
+        paddingTop: 32
+      }}>
+        <ul style={{ 
+          listStyle: "none", 
+          padding: 0,
+          display: "flex",
+          flexDirection: "column",
+          gap: 12
+        }}>
+          <li className="muted" style={{ fontSize: 16 }}>
+            • Create and save behavioral interview stories
+          </li>
+          <li className="muted" style={{ fontSize: 16 }}>
+            • Edit and refine responses over time
+          </li>
+          <li className="muted" style={{ fontSize: 16 }}>
+            • Securely manage your own data with login
+          </li>
+        </ul>
+      </div>
+
+      {/* Footer Note */}
+      <div style={{ 
+        marginTop: 48,
+        paddingTop: 32,
+        borderTop: "1px solid var(--border)"
+      }}>
+        <p className="muted" style={{ textAlign: "center", fontSize: 14 }}>
+          Demo project built for learning and portfolio purposes
+        </p>
       </div>
     </main>
   );

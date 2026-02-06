@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchStories, Story } from "@/lib/stories";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CATEGORIES } from "@/constants/categories";
+import { CATEGORIES, getBadgeClass } from "@/constants/categories";
 
 
 export default function DashboardPage() {
@@ -64,8 +64,24 @@ export default function DashboardPage() {
     const hasAnyStories = stories.length > 0; // 원본 데이터
     const hasFilteredStories = filteredStories.length > 0;
 
+    // 헬퍼 함수: 날짜 포맷팅
+    const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffTime = Math.abs(now.getTime() - date.getTime());
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 0) return "Today";
+      if (diffDays === 1) return "Yesterday";
+      if (diffDays < 7) return `${diffDays} days ago`;
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+      if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+      return `${Math.floor(diffDays / 365)} years ago`;
+    };
+
     return (
       <main style={{ marginTop: 32 }}>
+        {/* Header */}
         <header
           style={{
             display: "flex",
@@ -141,56 +157,92 @@ export default function DashboardPage() {
 
         {/* 아직 스토리가 없는 경우 */}
         {!loading && !error && !hasAnyStories && (
-          <div className="card" style={{ marginTop: 18 }}>
-            <p style={{ margin: 0 }}>No stories yet.</p>
-            <p className="muted" style={{ marginTop: 6, marginBottom: 0 }}>
-              Click <strong>+ Add Story</strong> to create your first one.
-            </p>
+          <div className="empty-state">
+            <div style={{ fontSize: 48, marginBottom: 16 }}>📝</div>
+            <h3>No stories yet</h3>
+            <p className="muted">Create your first STAR story to get started</p>
+            <button
+              className="btn btn-primary"
+              style={{ marginTop: 16 }}
+              onClick={() => router.push("/stories/new")}
+            >
+              + Add Story
+            </button>
           </div>
         )}
 
         {/* story 는 있는데, 필터링 결과가 없는 경우 */}
         {!loading && !error && hasAnyStories && !hasFilteredStories && (
-          <div className="card" style={{ marginTop: 18 }}>
-            <p style={{ margin: 0 }}>No stories found for the selected category.</p>
-            <p className="muted" style={{ marginTop: 6, marginBottom: 0 }}>
-              Try selecting <strong>All</strong> or a different category.
+          <div className="empty-state">
+            <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
+            <h3>No stories found</h3>
+            <p className="muted">
+              No stories in the "{selectedCategory}" category
             </p>
-
-            <div style={{ marginTop: 18 }}>
-              <button
-                type="button"
-                className="btn"
-                onClick={() => setSelectedCategory(ALL)}
-              >
-                Show All Stories
-              </button>
-            </div>
+            <button
+              className="btn"
+              style={{ marginTop: 16 }}
+              onClick={() => setSelectedCategory(ALL)}
+            >
+              Show All Stories
+            </button>
           </div>
         )}
 
         {!loading && !error && hasFilteredStories && (
-          <ul
-            style={{
-              marginTop: 18,
-              display: "grid",
-              gap: 12,
-              padding: 0,
-              listStyle: "none",
-            }}
-          >
+          <div className="card-grid">
             {filteredStories.map((s) => (
-              <li key={s.id} className="card" style={{ display: "grid", gap: 10 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                  <div>
-                    <Link href={`/stories/${s.id}`} style={{ textDecoration: "none" }}>
-                      <span style={{ fontWeight: 800, fontSize: 18 }}>{s.title}</span>
-                    </Link>
+              <Link
+                key={s.id}
+                href={`/stories/${s.id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <div className="story-card">
+                  {/* Header: 날짜 + 메뉴 */}
+                  <div className="story-card-header">
+                    <span className="text-sm muted">
+                      {s.createdAt ? formatDate(s.createdAt) : "Recently"}
+                    </span>
+                    <button
+                      className="btn-menu"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // TODO: 메뉴 동작 추가
+                      }}
+                    >
+                      ⋯
+                    </button>
+                  </div>
+
+                  {/* 제목 */}
+                  <h3 className="story-card-title">{s.title}</h3>
+
+                  {/* 미리보기 */}
+                  <p className="story-card-preview">
+                    {s.result
+                      ? `Result: ${s.result}`
+                      : s.situation
+                      ? `Situation: ${s.situation}`
+                      : "Click to view full story"}
+                  </p>
+
+                  {/* Footer: 배지들 */}
+                  <div className="story-card-footer">
+                    {s.categories.slice(0, 3).map((cat) => (
+                      <span key={cat} className={`badge ${getBadgeClass(cat)}`}>
+                        {cat}
+                      </span>
+                    ))}
+                    {s.categories.length > 3 && (
+                      <span className="badge badge-primary">
+                        +{s.categories.length - 3}
+                      </span>
+                    )}
                   </div>
                 </div>
-              </li>
+              </Link>
             ))}
-          </ul>
+          </div>
         )}
       </main>
     );
