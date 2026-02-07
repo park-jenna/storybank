@@ -51,42 +51,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
-    --background-solid: #0f172a;
-    --foreground: #f1f5f9;
-    
-    --card: #1e293b;
-    --card-hover: #334155;
-    
-    --sidebar-bg: #1a2332;
-    
-    --muted: #94a3b8;
-    --muted-foreground: #64748b;
-    
-    --border: #334155;
-    --border-light: #475569;
-    
-    --primary: #a78bfa;
-    --primary-hover: #c4b5fd;
-    --primary-light: #2e1065;
-    
-    --accent-cyan: #22d3ee;
-    --accent-purple: #a78bfa;
-    --accent-orange: #fb923c;
-    --accent-pink: #f472b6;
-    --accent-green: #34d399;
-    --accent-yellow: #fbbf24;
-    
-    --ring: rgba(59, 130, 246, 0.4);
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 10px 32px rgba(0, 0, 0, 0.6);
-  }
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -163,7 +127,7 @@ h3 {
   transform: translateY(-2px);
 }
 
-/* Story card for grid layout */
+/* Story card for grid layout - fixed height, footer (badges) never clipped */
 .story-card {
   background: var(--card);
   border: 2px solid var(--border-light);
@@ -185,30 +149,45 @@ h3 {
   border-color: #d1d5db;
 }
 
-/* Story card header (date + menu) */
+/* Story card header (date + menu) - do not shrink */
 .story-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 4px;
+  flex-shrink: 0;
 }
 
-/* Story card title */
+/* Story card title - do not shrink, clamp to 2 lines */
 .story-card-title {
   font-size: 24px;
   font-weight: 700;
   line-height: 1.3;
   color: var(--foreground);
   margin: 0;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-/* Story card preview text */
+/* Wrapper that shrinks so footer (badges) always stays visible */
+.story-card-preview-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+}
+
+/* Story card preview text - truncates inside the shrinkable area */
 .story-card-preview {
   color: var(--muted);
   font-size: 18px;
   line-height: 1.6;
   flex: 1;
-  min-width: 0; /* flex item must be allowed to shrink for line-clamp */
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -217,12 +196,12 @@ h3 {
   -webkit-box-orient: vertical;
 }
 
-/* Story card footer (badges) */
+/* Story card footer (badges) - never shrink, always visible */
 .story-card-footer {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: auto;
+  flex-shrink: 0;
 }
 
 /* Card grid layout - 2 columns */

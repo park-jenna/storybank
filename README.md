@@ -18,7 +18,7 @@ Save and organize behavioral interview stories. Create, edit, and refine your ST
 
 **Add Story** — Create a new story with STAR format (Situation/Task, Action, Result).
 
-<img src="img/addStory.png" width="600" alt="Add Story" />
+<img src="img/addStory.png" width="500" alt="Add Story" />
 
 ## Tech Stack
 
