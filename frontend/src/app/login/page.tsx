@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { login } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -80,9 +81,9 @@ export default function LoginPage() {
         {error && <p style={{ color: "crimson", margin: 0 }}>{error}</p>}
         {successMsg && <p style={{ color: "green", margin: 0 }}>{successMsg}</p>}
 
-        <button className="btn btn-primary" type="submit" disabled={loading}>
+        <Button type="submit" variant="primary" disabled={loading}>
           {loading ? "Logging in..." : "Log in"}
-        </button>
+        </Button>
       </form>
 
       <div style={{ marginTop: 14, maxWidth: 420 }}>

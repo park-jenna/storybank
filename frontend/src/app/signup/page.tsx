@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signup } from "@/lib/auth";
+import { Button } from "@/components/ui";
 
 export default function SignupPage() {
     const router = useRouter();
@@ -72,9 +73,9 @@ export default function SignupPage() {
                 <p style={{ color: "crimson", margin: 0 }}>{error}</p>
             )}
 
-            <button className="btn btn-primary" type="submit" disabled={loading}>
+            <Button type="submit" variant="primary" disabled={loading}>
                 {loading ? "Creating..." : "Create Account"}
-            </button>
+            </Button>
 
             <p className="muted" style={{ margin: 0, fontSize: 14 }}>
                 Already have an account?{" "}

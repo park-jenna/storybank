@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { fetchStoryById, Story, deleteStoryById } from "@/lib/stories";
 import { getBadgeClass } from "@/constants/categories";
+import { Button } from "@/components/ui";
 
 export default function StoryDetailPage() {
     const router = useRouter();
@@ -68,9 +69,9 @@ export default function StoryDetailPage() {
                 </div>
 
                 <div style={{ marginTop: 14 }}>
-                    <button className="btn" onClick={() => router.push("/dashboard")}>
+                    <Button onClick={() => router.push("/dashboard")}>
                         ← Back to Dashboard
-                    </button>
+                    </Button>
                 </div>
             </main>
         );
@@ -84,9 +85,9 @@ export default function StoryDetailPage() {
                 </div>
 
                 <div style={{ marginTop: 14 }}>
-                    <button className="btn" onClick={() => router.push("/dashboard")}>
+                    <Button onClick={() => router.push("/dashboard")}>
                         ← Back to Dashboard
-                    </button>
+                    </Button>
                 </div>
             </main>
         );
@@ -95,20 +96,17 @@ export default function StoryDetailPage() {
     return (
         <main style={{ marginTop: 32 }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-                <button className="btn" onClick={() => router.push("/dashboard")}>
+                <Button onClick={() => router.push("/dashboard")}>
                     ← Back to Dashboard
-                </button>
+                </Button>
 
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                    <button
-                        className="btn"
-                        onClick={() => router.push(`/stories/${story.id}/edit`)}
-                    >
+                    <Button onClick={() => router.push(`/stories/${story.id}/edit`)}>
                         Edit
-                    </button>
+                    </Button>
 
-                    <button
-                        className="btn btn-danger"
+                    <Button
+                        variant="danger"
                         onClick={async () => {
                             const ok = confirm("Are you sure you want to delete this story?");
                             if (!ok) return;
@@ -125,7 +123,7 @@ export default function StoryDetailPage() {
                         }}
                     >
                         Delete
-                    </button>
+                    </Button>
                 </div>
             </div>
 

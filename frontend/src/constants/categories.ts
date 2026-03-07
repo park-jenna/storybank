@@ -26,7 +26,17 @@ export const CATEGORY_BADGE_MAP: Record<string, string> = {
     "Growth / Learning": "badge-green",
 };
 
-// 헬퍼 함수도 함께
+// Pie chart colors (hex)
+export const CHART_COLORS = [
+    "#7c3aed", "#0891b2", "#059669", "#db2777", "#ea580c", "#d97706",
+    "#2563eb", "#7c3aed", "#db2777", "#0891b2", "#059669",
+] as const;
+
+export function getChartColor(category: string): string {
+    const idx = (CATEGORIES as readonly string[]).indexOf(category);
+    return idx >= 0 ? CHART_COLORS[idx % CHART_COLORS.length] : "#94a3b8";
+}
+
 export function getBadgeClass(category: string): string {
     return CATEGORY_BADGE_MAP[category] || "badge-primary";
-};
+}

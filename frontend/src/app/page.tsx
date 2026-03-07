@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui";
 
 export default function HomePage() {
   const router = useRouter();
@@ -33,29 +34,31 @@ export default function HomePage() {
         margin: "0 auto 64px"
       }}>
         {hasToken ? (
-          <button 
-            className="btn btn-primary btn-lg"
-            style={{ width: "100%", justifyContent: "center" }}
+          <Button
+            variant="primary"
+            size="lg"
+            className="w-full"
             onClick={() => router.push("/dashboard")}
           >
             Go to Dashboard
-          </button>
+          </Button>
         ) : (
           <>
-            <button 
-              className="btn btn-primary btn-lg"
-              style={{ width: "100%", justifyContent: "center" }}
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full"
               onClick={() => router.push("/login")}
             >
               Log In
-            </button>
-            <button 
-              className="btn btn-lg"
-              style={{ width: "100%", justifyContent: "center" }}
+            </Button>
+            <Button
+              size="lg"
+              className="w-full"
               onClick={() => router.push("/signup")}
             >
               Sign Up
-            </button>
+            </Button>
           </>
         )}
       </div>

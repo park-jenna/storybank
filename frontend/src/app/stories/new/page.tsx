@@ -8,9 +8,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from 'next/navigation';        
+import { useRouter } from 'next/navigation';
 import { createStory } from '@/lib/stories';
 import { CATEGORIES } from "@/constants/categories";
+import { Button } from "@/components/ui";
 
 export default function NewStoryPage() {
     const router = useRouter();
@@ -172,18 +173,12 @@ export default function NewStoryPage() {
                 {error && <p style={{ color: "crimson", margin: 0 }}>{error}</p>}
 
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 4 }}>
-                    <button className="btn btn-primary" type="submit" disabled={loading}>
+                    <Button type="submit" variant="primary" disabled={loading}>
                         {loading ? "Saving..." : "Create Story"}
-                    </button>
-
-                    <button
-                        className="btn"
-                        type="button"
-                        onClick={() => router.push("/dashboard")}
-                        disabled={loading}
-                    >
+                    </Button>
+                    <Button type="button" onClick={() => router.push("/dashboard")} disabled={loading}>
                         Cancel
-                    </button>
+                    </Button>
                 </div>
 
                 <p className="muted" style={{ margin: 0, fontSize: 13 }}>

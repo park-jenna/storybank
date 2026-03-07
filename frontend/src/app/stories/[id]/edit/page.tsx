@@ -11,6 +11,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { fetchStoryById, Story, updateStoryById } from "@/lib/stories";
+import { Button } from "@/components/ui";
 
 export default function EditStoryPage() {
     const router = useRouter();
@@ -140,9 +141,9 @@ export default function EditStoryPage() {
                 </div>
 
                 <div style={{ marginTop: 14 }}>
-                    <button className="btn" onClick={() => router.push("/dashboard")}>
+                    <Button onClick={() => router.push("/dashboard")}>
                         ← Back to Dashboard
-                    </button>
+                    </Button>
                 </div>
             </main>
         );
@@ -160,9 +161,9 @@ export default function EditStoryPage() {
                     )}
                 </div>
 
-                <button className="btn" type="button" onClick={() => router.push(`/stories/${storyId}`)}>
+                <Button type="button" onClick={() => router.push(`/stories/${storyId}`)}>
                     ← Back
-                </button>
+                </Button>
             </header>
 
             <form
@@ -227,18 +228,16 @@ export default function EditStoryPage() {
                 {error && <p style={{ color: "crimson", margin: 0 }}>Error: {error}</p>}
 
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 4 }}>
-                    <button className="btn btn-primary" type="submit" disabled={saving}>
+                    <Button type="submit" variant="primary" disabled={saving}>
                         {saving ? "Saving..." : "Save Changes"}
-                    </button>
-
-                    <button
-                        className="btn"
+                    </Button>
+                    <Button
                         type="button"
                         onClick={() => router.push(`/stories/${storyId}`)}
                         disabled={saving}
                     >
                         Cancel
-                    </button>
+                    </Button>
                 </div>
 
                 <p className="muted" style={{ margin: 0, fontSize: 13 }}>
