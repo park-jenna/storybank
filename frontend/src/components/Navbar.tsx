@@ -22,28 +22,29 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-[var(--card)] border-b border-[var(--border-light)] px-6 py-4 flex items-center justify-between w-full max-w-full">
-      <Link
-        href="/"
-        className="text-xl font-extrabold text-[var(--foreground)] no-underline tracking-tight"
-      >
-        StoryBank
-      </Link>
+    <nav className="sticky top-0 z-50 bg-[var(--card)] border-b border-[var(--border-light)] w-full">
+      <div className="max-w-[1400px] mx-auto px-8 py-5 flex items-center justify-between">
+        <Link
+          href="/"
+          className="text-2xl font-extrabold text-[var(--foreground)] no-underline tracking-tight"
+        >
+          StoryBank
+        </Link>
 
-      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
         {mounted && hasToken && (
           <>
             <Link
               href="/dashboard"
-              className={getButtonClassName("default", "sm")}
-              style={getButtonStyle("default", "sm")}
+              className={getButtonClassName("default", "md")}
+              style={getButtonStyle("default", "md")}
             >
               Dashboard
             </Link>
             <button
               type="button"
-              className={getButtonClassName("default", "sm")}
-              style={getButtonStyle("default", "sm")}
+              className={getButtonClassName("default", "md")}
+              style={getButtonStyle("default", "md")}
               onClick={handleLogout}
             >
               Log out
@@ -54,20 +55,21 @@ export default function Navbar() {
           <>
             <Link
               href="/login"
-              className={getButtonClassName("default", "sm")}
-              style={getButtonStyle("default", "sm")}
+              className={getButtonClassName("default", "md")}
+              style={getButtonStyle("default", "md")}
             >
               Log in
             </Link>
             <Link
               href="/signup"
-              className={getButtonClassName("primary", "sm")}
-              style={getButtonStyle("primary", "sm")}
+              className={getButtonClassName("primary", "md")}
+              style={getButtonStyle("primary", "md")}
             >
               Sign up
             </Link>
           </>
         )}
+        </div>
       </div>
     </nav>
   );

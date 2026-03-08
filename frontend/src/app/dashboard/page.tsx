@@ -117,14 +117,14 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="mt-8">
+    <main className="mt-10">
       {/* Header */}
-      <header className="flex flex-wrap justify-between items-end gap-4">
+      <header className="flex flex-wrap justify-between items-end gap-6">
         <div>
-          <h1 className="text-3xl font-black m-0 tracking-tight text-[var(--foreground)]">
+          <h1 className="text-4xl font-black m-0 tracking-tight text-[var(--foreground)]">
             My Stories
           </h1>
-          <p className="muted mt-2 mb-0">
+          <p className="muted mt-3 mb-0 text-lg">
             Create, refine, and reuse STAR stories for behavioral interviews.
           </p>
         </div>
@@ -151,14 +151,14 @@ export default function DashboardPage() {
       {!loading && !error && (
         <section>
           <Card variant="overview">
-            <h2 className="text-lg font-bold m-0 mb-5 text-[var(--foreground)]">
+            <h2 className="text-xl font-bold m-0 mb-6 text-[var(--foreground)]">
               Overview
             </h2>
-            <div className="flex flex-wrap items-center gap-8">
-              <div className="relative w-[140px] h-[140px] shrink-0">
+            <div className="flex flex-wrap items-center gap-10">
+              <div className="relative w-[160px] h-[160px] shrink-0">
                 {categorySegments.length > 0 ? (
                   <div
-                    className="absolute inset-0 w-[140px] h-[140px] rounded-full z-0"
+                    className="absolute inset-0 w-[160px] h-[160px] rounded-full z-0"
                     style={{
                       background: `conic-gradient(${categorySegments
                         .map((s) => `${s.color} ${s.start}% ${s.end}%`)
@@ -168,35 +168,35 @@ export default function DashboardPage() {
                   />
                 ) : (
                   <div
-                    className="absolute inset-0 w-[140px] h-[140px] rounded-full bg-[var(--border-light)] z-0"
+                    className="absolute inset-0 w-[160px] h-[160px] rounded-full bg-[var(--border-light)] z-0"
                     aria-hidden
                   />
                 )}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[88px] h-[88px] rounded-full bg-[var(--card)] flex flex-col items-center justify-center shadow-[0_0_0_2px_var(--border-light)] z-[1]">
-                  <span className="text-[28px] font-extrabold leading-none text-[var(--foreground)]">
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[100px] h-[100px] rounded-full bg-[var(--card)] flex flex-col items-center justify-center shadow-[0_0_0_2px_var(--border-light)] z-[1]">
+                  <span className="text-[32px] font-extrabold leading-none text-[var(--foreground)]">
                     {stories.length}
                   </span>
-                  <span className="muted text-xs mt-1">Stories</span>
+                  <span className="muted text-sm mt-1">Stories</span>
                 </div>
               </div>
-              <div className="flex gap-6 flex-wrap">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[22px] font-bold text-[var(--foreground)]">
+              <div className="flex gap-8 flex-wrap">
+                <div className="flex flex-col gap-2">
+                  <span className="text-2xl font-bold text-[var(--foreground)]">
                     {stories.length}
                   </span>
-                  <span className="muted text-[13px]">Stories Saved</span>
+                  <span className="muted text-base">Stories Saved</span>
                 </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-[22px] font-bold text-[var(--foreground)]">
+                <div className="flex flex-col gap-2">
+                  <span className="text-2xl font-bold text-[var(--foreground)]">
                     {Object.keys(categoryCounts).length}
                   </span>
-                  <span className="muted text-[13px]">Categories Used</span>
+                  <span className="muted text-base">Categories Used</span>
                 </div>
               </div>
             </div>
             {topCategories.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-[var(--border-light)] flex flex-wrap items-center gap-2.5">
-                <span className="muted text-[13px] mr-1">Top categories:</span>
+              <div className="mt-6 pt-6 border-t border-[var(--border-light)] flex flex-wrap items-center gap-3">
+                <span className="muted text-base mr-1">Top categories:</span>
                 {topCategories.map((cat) => (
                   <Chip
                     key={cat}
@@ -213,8 +213,8 @@ export default function DashboardPage() {
       )}
 
       {!loading && !error && (
-        <div className="mt-[18px]">
-          <div className="flex flex-wrap gap-2.5">
+        <div className="mt-6">
+          <div className="flex flex-wrap gap-3">
             {[ALL, ...CATEGORIES].map((cat) => (
               <Chip
                 key={cat}
@@ -226,7 +226,7 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <p className="muted mt-2.5 mb-0 text-[13px]">
+          <p className="muted mt-3 mb-0 text-base">
             Showing{" "}
             <b>
               {selectedCategory === ALL
@@ -277,7 +277,7 @@ export default function DashboardPage() {
       )}
 
       {!loading && !error && hasFilteredStories && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10">
           {filteredStories.map((s) => (
             <Link
               key={s.id}
@@ -286,8 +286,8 @@ export default function DashboardPage() {
             >
               <Card variant="story">
                 {/* Header: 날짜 + 메뉴 */}
-                <div className="flex justify-between items-start mb-0.5 shrink-0">
-                  <span className="text-sm muted">
+                <div className="flex justify-between items-start mb-1 shrink-0">
+                  <span className="text-base muted">
                     {s.createdAt ? formatDate(s.createdAt) : "Recently"}
                   </span>
                   <Button
@@ -309,7 +309,7 @@ export default function DashboardPage() {
 
                 {/* 미리보기 */}
                 <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
-                  <p className="text-[var(--muted)] text-lg leading-relaxed flex-1 min-w-0 overflow-hidden text-ellipsis line-clamp-3 m-0">
+                  <p className="text-[var(--muted)] text-base leading-relaxed flex-1 min-w-0 overflow-hidden text-ellipsis line-clamp-3 m-0">
                     {s.result
                       ? `Summary: ${s.result}`
                       : s.situation
