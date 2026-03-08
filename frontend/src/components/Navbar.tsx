@@ -22,16 +22,9 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-[var(--card)] border-b border-[var(--border-light)] w-full">
-      <div className="max-w-[1400px] mx-auto px-8 py-5 flex items-center justify-between">
-        <Link
-          href="/"
-          className="text-2xl font-extrabold text-[var(--foreground)] no-underline tracking-tight"
-        >
-          StoryBank
-        </Link>
-
-        <div className="flex items-center gap-4">
+    <nav className="navbar-top">
+      <div className="navbar-inner">
+        <div className="flex items-center justify-end gap-4">
         {mounted && hasToken && (
           <>
             <Link

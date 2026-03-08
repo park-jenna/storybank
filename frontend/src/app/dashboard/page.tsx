@@ -117,19 +117,19 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="mt-10">
+    <main>
       {/* Header */}
-      <header className="flex flex-wrap justify-between items-end gap-6">
+      <header className="flex flex-wrap justify-between items-center gap-6 pb-2">
         <div>
           <h1 className="text-4xl font-black m-0 tracking-tight text-[var(--foreground)]">
             My Stories
           </h1>
-          <p className="muted mt-3 mb-0 text-lg">
+          <p className="muted mt-2 mb-0 text-lg">
             Create, refine, and reuse STAR stories for behavioral interviews.
           </p>
         </div>
 
-        <div className="flex gap-2.5">
+        <div className="flex gap-3 flex-shrink-0">
           <Button
             onClick={() => {
               localStorage.removeItem("token");
@@ -145,12 +145,13 @@ export default function DashboardPage() {
       </header>
 
       {loading && (
-        <p className="muted mt-[18px]">Loading stories...</p>
+        <p className="muted mt-6">Loading stories...</p>
       )}
 
       {!loading && !error && (
-        <section>
+        <section className="page-section" style={{ marginTop: 32 }}>
           <Card variant="overview">
+            <div className="overview-card-inner">
             <h2 className="text-xl font-bold m-0 mb-8 text-[var(--foreground)]">
               Overview
             </h2>
@@ -208,12 +209,14 @@ export default function DashboardPage() {
                 ))}
               </div>
             )}
+            </div>
           </Card>
         </section>
       )}
 
       {!loading && !error && (
-        <div className="mt-6">
+        <section className="page-section" style={{ marginTop: 40 }}>
+          <h2 className="page-section-title">All Stories</h2>
           <div className="flex flex-wrap gap-3">
             {[ALL, ...CATEGORIES].map((cat) => (
               <Chip
@@ -226,7 +229,7 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <p className="muted mt-3 mb-0 text-base">
+          <p className="muted mt-4 mb-0 text-base">
             Showing{" "}
             <b>
               {selectedCategory === ALL
@@ -235,7 +238,7 @@ export default function DashboardPage() {
             </b>{" "}
             ({filteredStories.length})
           </p>
-        </div>
+        </section>
       )}
 
       {error && (
@@ -277,7 +280,7 @@ export default function DashboardPage() {
       )}
 
       {!loading && !error && hasFilteredStories && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" style={{ marginTop: 28 }}>
           {filteredStories.map((s) => (
             <Link
               key={s.id}

@@ -29,9 +29,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="layout-wrapper">
-          <Navbar />
-          <div className="layout-body">
-            <Sidebar />
+          <Sidebar />
+          <div className="layout-right">
+            <Navbar />
             <main className="layout-main">
               <div className="app-shell">{children}</div>
             </main>

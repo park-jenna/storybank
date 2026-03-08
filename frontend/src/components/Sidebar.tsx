@@ -14,33 +14,37 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="w-[280px] min-w-[280px] flex-shrink-0 self-stretch border-r border-[var(--border-light)] bg-[var(--sidebar-bg)]"
+      className="sidebar"
       aria-label="Main navigation"
     >
-      <nav className="py-6 flex flex-col gap-2">
-        {navItems.map(({ href, label, icon }) => {
-          const isActive =
-            pathname === href ||
-            (href === "/dashboard" && pathname?.startsWith("/stories") && pathname !== "/stories/new");
-          return (
-            <Link
-              key={href + label}
-              href={href}
-              className={`flex items-center gap-4 px-6 py-4 mx-3 rounded-xl text-[19px] font-medium no-underline transition-colors ${
-                isActive
-                  ? "bg-[var(--primary)]"
-                  : "text-[var(--foreground)] hover:bg-[var(--border-light)]"
-              }`}
-              style={isActive ? { color: "white" } : undefined}
-            >
-              <span className="text-xl w-8 text-center" aria-hidden>
-                {icon}
-              </span>
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
+      <div className="sidebar-inner">
+        <Link
+          href="/"
+          className="sidebar-logo"
+        >
+          StoryBank
+        </Link>
+        <nav className="sidebar-nav">
+          {navItems.map(({ href, label, icon }) => {
+            const isActive =
+              pathname === href ||
+              (href === "/dashboard" && pathname?.startsWith("/stories") && pathname !== "/stories/new");
+            return (
+              <Link
+                key={href + label}
+                href={href}
+                className={`sidebar-link ${isActive ? "sidebar-link-active" : ""}`}
+                style={isActive ? { color: "var(--primary)" } : undefined}
+              >
+                <span className="sidebar-link-icon" aria-hidden>
+                  {icon}
+                </span>
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
     </aside>
   );
 }
