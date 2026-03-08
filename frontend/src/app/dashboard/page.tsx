@@ -151,10 +151,10 @@ export default function DashboardPage() {
       {!loading && !error && (
         <section>
           <Card variant="overview">
-            <h2 className="text-xl font-bold m-0 mb-6 text-[var(--foreground)]">
+            <h2 className="text-xl font-bold m-0 mb-8 text-[var(--foreground)]">
               Overview
             </h2>
-            <div className="flex flex-wrap items-center gap-10">
+            <div className="flex flex-wrap items-center gap-10 mb-2">
               <div className="relative w-[160px] h-[160px] shrink-0">
                 {categorySegments.length > 0 ? (
                   <div
@@ -195,7 +195,7 @@ export default function DashboardPage() {
               </div>
             </div>
             {topCategories.length > 0 && (
-              <div className="mt-6 pt-6 border-t border-[var(--border-light)] flex flex-wrap items-center gap-3">
+              <div className="mt-8 pt-8 border-t border-[var(--border-light)] flex flex-wrap items-center gap-3">
                 <span className="muted text-base mr-1">Top categories:</span>
                 {topCategories.map((cat) => (
                   <Chip
