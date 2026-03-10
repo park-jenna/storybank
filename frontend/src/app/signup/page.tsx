@@ -1,87 +1,124 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signup } from "@/lib/auth";
-import { Button } from "@/components/ui";
+import { Button, FormField, Input } from "@/components/ui";
+
+const MIN_PASSWORD_LENGTH = 8;
 
 export default function SignupPage() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordConfirm, setPasswordConfirm] = useState("");
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Form 제출 핸들러
-    async function handleSubmit (e: React.FormEvent) {
-        // 브라우저의 기본동작(새로고침) 방지
+    const passwordMatch = !passwordConfirm || password === passwordConfirm;
+
+    async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-
         setError(null);
-        setLoading(true);
 
+        if (password !== passwordConfirm) {
+            setError("Passwords do not match.");
+            return;
+        }
+        if (password.length < MIN_PASSWORD_LENGTH) {
+            setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`);
+            return;
+        }
+
+        setLoading(true);
         try {
-            // signup API 호출
-            const data = await signup(email, password);  // return {user, token}
-            // 1) 토큰을 로컬 스토리지에 저장
+            const data = await signup(email, password);
             localStorage.setItem("token", data.token);
-            // 2) redirect
             router.replace("/dashboard");
-        } catch (error) {
-            const msg = error instanceof Error ? error.message : "Signup failed";
-            setError(msg);
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : "Signup failed";
+            const friendly =
+                /already exists|duplicate|taken|registered/i.test(msg)
+                    ? "This email is already registered."
+                    : msg;
+            setError(friendly);
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <main style={{ marginTop: 64 }}>
-        <h1 style={{ fontSize: 32, fontWeight: 900, margin: 0 }}>Sign up</h1>
-        <p className="muted" style={{ marginTop: 10 }}>
-            Create an account to access your dashboard and manage STAR stories.
-        </p>
+        <main className="auth-page">
+            <div className="auth-form-wrap">
+                <h1 className="auth-title">Sign up</h1>
+                <p className="auth-subtitle">
+                    Create an account to access your dashboard and manage STAR stories.
+                </p>
 
-        <form
-            onSubmit={handleSubmit}
-            className="card"
-            style={{ marginTop: 20, display: "grid", gap: 12, maxWidth: 420 }}
-        >
-            <label style={{ display: "grid", gap: 6 }}>
-            <span>Email</span>
-            <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-            </label>
+                <form onSubmit={handleSubmit} className="auth-form-card auth-form">
+                <FormField label="Email" required>
+                    <Input
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        autoComplete="email"
+                        required
+                        autoFocus
+                    />
+                </FormField>
 
-            <label style={{ display: "grid", gap: 6 }}>
-                <span>Password</span>
-                <input
-                    type="password"
-                    placeholder=""
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                <FormField
+                    label="Password"
                     required
-                />
-            </label>
+                    hint="At least 8 characters recommended"
+                >
+                    <Input
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="new-password"
+                        required
+                        minLength={MIN_PASSWORD_LENGTH}
+                    />
+                </FormField>
 
-            {error && (
-                <p style={{ color: "crimson", margin: 0 }}>{error}</p>
-            )}
+                <FormField label="Confirm password" required>
+                    <Input
+                        type="password"
+                        placeholder="••••••••"
+                        value={passwordConfirm}
+                        onChange={(e) => setPasswordConfirm(e.target.value)}
+                        autoComplete="new-password"
+                        required
+                        aria-invalid={passwordConfirm.length > 0 && !passwordMatch}
+                    />
+                    {passwordConfirm.length > 0 && !passwordMatch && (
+                        <span className="auth-field-error">Passwords do not match.</span>
+                    )}
+                </FormField>
 
-            <Button type="submit" variant="primary" disabled={loading}>
-                {loading ? "Creating..." : "Create Account"}
-            </Button>
+                {error && (
+                    <p className="auth-error" role="alert">
+                        {error}
+                    </p>
+                )}
 
-            <p className="muted" style={{ margin: 0, fontSize: 14 }}>
-                Already have an account?{" "}
-                <a href="/login">Log in</a>
-            </p>
-        </form>
+                <Button type="submit" variant="primary" disabled={loading} className="auth-submit-btn">
+                    {loading ? "Creating account..." : "Create account"}
+                </Button>
+                </form>
+
+                <p className="muted auth-footer">
+                    Already have an account?{" "}
+                    <Link href="/login" className="auth-link">
+                        Log in
+                    </Link>
+                </p>
+            </div>
         </main>
     );
 }

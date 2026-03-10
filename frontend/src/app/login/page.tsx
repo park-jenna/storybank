@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { login } from "@/lib/auth";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui";
+import { Button, FormField, Input } from "@/components/ui";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -12,85 +13,79 @@ export default function LoginPage() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-    // Form 제출 핸들러
-    async function handleSubmit (e: React.FormEvent) {
-        // 브라우저의 기본동작(새로고침) 방지
+    async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-
-        // you handle the login logic here
         setError(null);
-        setSuccessMsg(null);
         setLoading(true);
 
         try {
-            // 로그인 API 호출
-            // 성공하면 {user, token} 형태의 응답을 받음
-            const data = await login(email, password);  // {user, token}
-
-            // 1) 토큰을 로컬 스토리지에 저장
+            const data = await login(email, password);
             localStorage.setItem("token", data.token);
-            // 2) redirect
             router.replace("/dashboard");
-
-            //setSuccessMsg(`Logged in as ${data.user.email}`);
-            //console.log("Login successful:", data);
         } catch (err) {
             const msg = err instanceof Error ? err.message : "Login failed";
-            setError(msg);
+            // Map backend auth errors to a clear user-facing message
+            const friendly =
+                /invalid|incorrect|wrong|unauthorized|401/i.test(msg)
+                    ? "Invalid email or password."
+                    : msg;
+            setError(friendly);
         } finally {
             setLoading(false);
         }
     }
 
+    return (
+        <main className="auth-page">
+            <div className="auth-form-wrap">
+                <h1 className="auth-title">Log in</h1>
+                <p className="auth-subtitle">
+                    Access your dashboard to create and manage STAR stories.
+                </p>
 
+                <form onSubmit={handleSubmit} className="auth-form-card auth-form">
+                <FormField label="Email">
+                    <Input
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        autoComplete="email"
+                        required
+                        autoFocus
+                    />
+                </FormField>
 
-  return (
-    <main style={{ marginTop: 64 }}>
-      <h1 style={{ fontSize: 32, fontWeight: 900, margin: 0 }}>Log in</h1>
-      <p className="muted" style={{ marginTop: 10 }}>
-        Access your dashboard to create and manage STAR stories.
-      </p>
+                <FormField label="Password">
+                    <Input
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="current-password"
+                        required
+                    />
+                </FormField>
 
-      <form
-        onSubmit={handleSubmit}
-        className="card"
-        style={{ marginTop: 20, display: "grid", gap: 12, maxWidth: 420 }}
-      >
-        <label style={{ display: "grid", gap: 6 }}>
-          <span style={{ fontWeight: 700 }}>Email</span>
-          <input
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
+                {error && (
+                    <p className="auth-error" role="alert">
+                        {error}
+                    </p>
+                )}
 
-        <label style={{ display: "grid", gap: 6 }}>
-          <span style={{ fontWeight: 700 }}>Password</span>
-          <input
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
+                <Button type="submit" variant="primary" disabled={loading} className="auth-submit-btn">
+                    {loading ? "Logging in..." : "Log in"}
+                </Button>
+                </form>
 
-        {error && <p style={{ color: "crimson", margin: 0 }}>{error}</p>}
-        {successMsg && <p style={{ color: "green", margin: 0 }}>{successMsg}</p>}
-
-        <Button type="submit" variant="primary" disabled={loading}>
-          {loading ? "Logging in..." : "Log in"}
-        </Button>
-      </form>
-
-      <div style={{ marginTop: 14, maxWidth: 420 }}>
-        <p className="muted" style={{ margin: 0, fontSize: 14 }}>
-          Demo note: accounts are created via the backend <code>/auth/signup</code> API.
-        </p>
-      </div>
-    </main>
-  );
+                <p className="muted auth-footer">
+                    Don&apos;t have an account?{" "}
+                    <Link href="/signup" className="auth-link">
+                        Sign up
+                    </Link>
+                </p>
+            </div>
+        </main>
+    );
 }

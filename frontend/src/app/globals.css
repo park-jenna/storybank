@@ -97,9 +97,16 @@ body {
   box-shadow: -2px 0 20px rgba(0, 0, 0, 0.04);
 }
 
+/* Auth pages (login, signup, landing): match dashboard/sidebar tone (purple-gray) */
+.layout-right--auth {
+  background: var(--sidebar-bg);
+}
+
 .layout-main {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
   background: #FDFDFD;
 }
 
@@ -261,6 +268,21 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+}
+
+/* Auth pages: no search, logo left / actions right */
+.navbar-auth-spacer {
+  flex: 1;
+}
+.navbar-auth-home {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--primary);
+  text-decoration: none;
+}
+.navbar-auth-home:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
 }
 
 /* Search wrap: flex so input is vertically centered in the row */
@@ -464,6 +486,23 @@ body {
   margin: 0 auto;
   padding: 28px 44px 64px;
   width: 100%;
+}
+
+/* Auth pages: full-width main, content centered with max-width */
+.app-shell--auth {
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 24px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+@media (min-width: 768px) {
+  .app-shell--auth {
+    padding: 32px 32px 56px;
+  }
 }
 
 /* Dashboard card grid - MeetCraft style; first 2 cols narrower so overview card is slimmer */
@@ -872,6 +911,143 @@ h3 {
 .card:hover {
   box-shadow: 0 4px 16px rgba(124, 99, 245, 0.1);
   transform: translateY(-2px);
+}
+
+/* Auth pages (login / signup) – minimal, centered */
+.auth-page {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 400px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 0;
+}
+@media (min-width: 768px) {
+  .auth-page {
+    max-width: 480px;
+    padding: 32px 0;
+  }
+}
+@media (min-width: 992px) {
+  .auth-page {
+    max-width: 560px;
+    padding: 40px 0;
+  }
+}
+
+.auth-form-wrap {
+  width: 100%;
+}
+.auth-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--foreground);
+  letter-spacing: -0.02em;
+}
+@media (min-width: 768px) {
+  .auth-title {
+    font-size: 2.25rem;
+  }
+}
+.auth-subtitle {
+  margin-top: 10px;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+@media (min-width: 768px) {
+  .auth-subtitle {
+    font-size: 18px;
+  }
+}
+
+/* Form: plain card, no accent stripe */
+.auth-form-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  margin-top: 20px;
+  box-shadow: none;
+}
+@media (min-width: 768px) {
+  .auth-form-card {
+    padding: 28px 28px;
+  }
+}
+.auth-form-card:hover {
+  transform: none;
+}
+.auth-form {
+  display: grid;
+  gap: 16px;
+}
+.auth-submit-btn {
+  width: 100%;
+  padding: 11px 20px !important;
+  font-size: 15px;
+  margin-top: 2px;
+}
+.auth-error {
+  color: var(--accent-red);
+  margin: 0;
+  font-size: 14px;
+  padding: 8px 0;
+}
+.auth-footer {
+  margin-top: 20px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.auth-link {
+  color: var(--foreground);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.auth-link:hover {
+  color: var(--primary);
+}
+.auth-field-error {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--accent-red);
+}
+
+/* Empty state (no stories / no results) */
+.empty-state {
+  text-align: center;
+  width: 100%;
+  margin: 32px 0 40px;
+  padding: 40px 24px;
+  background: var(--card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+.empty-state-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: var(--foreground);
+}
+.empty-state-desc {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+.empty-state-action {
+  margin-top: 4px;
 }
 
 /* Story card for grid layout - fixed height, footer (badges) never clipped */
@@ -1372,32 +1548,6 @@ a:not(.text-white):hover {
 .overview-tags-label {
   font-size: 13px;
   margin-right: 4px;
-}
-
-/* ========================================
-   Empty States
-   ======================================== */
-
-.empty-state {
-  text-align: center;
-  padding: 60px 24px;
-  background: var(--card);
-  border: 2px dashed var(--border);
-  border-radius: var(--radius-xl);
-  margin: 40px 0;
-}
-
-.empty-state h3 {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 16px 0 8px;
-  color: var(--foreground);
-}
-
-.empty-state p {
-  color: var(--muted);
-  margin-bottom: 24px;
-  font-size: 15px;
 }
 
 /* ========================================
