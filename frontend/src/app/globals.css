@@ -651,6 +651,130 @@ body {
 }
 
 /* ========================================
+   Story detail page
+   ======================================== */
+
+.story-detail-header {
+  max-width: 100%;
+  margin: 0;
+}
+
+.story-detail-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.story-detail-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.story-detail-title {
+  font-size: 28px;
+  font-weight: 900;
+  margin: 22px 0 0;
+  line-height: 1.3;
+}
+
+.story-detail-meta {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.story-detail-meta-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.story-detail-date {
+  margin: 0;
+  font-size: 14px;
+}
+
+.story-detail-progress-text {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.story-detail-progress-bar {
+  width: 100%;
+  max-width: 280px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--border-light);
+  overflow: hidden;
+}
+
+.story-detail-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7C63F5, #63D0EB);
+}
+
+.story-detail-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.story-detail-star {
+  margin-top: 28px;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.story-detail-star-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 1200px) {
+  .story-detail-star-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .story-detail-star-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.story-detail-star-card {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.story-detail-star-card .story-detail-star-label {
+  font-weight: 800;
+  font-size: 16px !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  margin-bottom: 10px;
+}
+
+.story-detail-star-text {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: 18px !important;
+  line-height: 1.7;
+  color: var(--foreground);
+}
+
+/* ========================================
    Typography
    ======================================== */
 

@@ -11,161 +11,176 @@ import { fetchStoryById, Story, deleteStoryById } from "@/lib/stories";
 import { getBadgeClass } from "@/constants/categories";
 import { Button } from "@/components/ui";
 
+function storyCompletion(story: Story) {
+  let filled = 0;
+  if (story.situation?.trim()) filled++;
+  if (story.action?.trim()) filled++;
+  if (story.result?.trim()) filled++;
+  const percent = Math.round((filled / 3) * 100);
+  return { filled, percent };
+}
+
 export default function StoryDetailPage() {
-    const router = useRouter();
-    const params = useParams<{ id: string }>();
-    const storyId = params?.id;
+  const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const storyId = params?.id;
 
-    const [story, setStory] = useState<Story | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  const [story, setStory] = useState<Story | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        async function load() {
-            try {
-                setError(null);
+  useEffect(() => {
+    async function load() {
+      try {
+        setError(null);
 
-                // 2) token 을 local storage 에서 읽기
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    setError("No token found. Please log in again.");
-                    router.replace("/login");
-                    return;
-                }
-
-                // id 확인
-                if (!storyId) {
-                    setError("No story ID provided.");
-                    return;
-                }
-
-                // 3) fetchStoryById 함수 호출로 스토리 데이터 가져오기
-                const data = await fetchStoryById(token, storyId);
-                setStory(data.story);
-            } catch (err) {
-                const msg = err instanceof Error ? err.message : "Failed to load story.";
-                setError(msg);
-            } finally {
-                setLoading(false);
-            }
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("No token found. Please log in again.");
+          router.replace("/login");
+          return;
         }
-        
-        load();
-    }, [storyId, router]);
 
-    if (loading) {
-        return (
-            <main style={{ marginTop: 32 }}>
-                <p className="muted">Loading story...</p>
-            </main>
-        );
+        if (!storyId) {
+          setError("No story ID provided.");
+          return;
+        }
+
+        const data = await fetchStoryById(token, storyId);
+        setStory(data.story);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Failed to load story.";
+        setError(msg);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    if (error) {
-        return (
-            <main style={{ marginTop: 32 }}>
-                <div className="card" style={{ borderColor: "rgba(220, 38, 38, 0.35)" }}>
-                    <p style={{ color: "crimson", margin: 0 }}>Error: {error}</p>
-                </div>
+    load();
+  }, [storyId, router]);
 
-                <div style={{ marginTop: 14 }}>
-                    <Button onClick={() => router.push("/dashboard")}>
-                        ← Back to Dashboard
-                    </Button>
-                </div>
-            </main>
-        );
-    }
-
-    if (!story) {
-        return (
-            <main style={{ marginTop: 32 }}>
-                <div className="card">
-                    <p style={{ margin: 0 }}>Story not found.</p>
-                </div>
-
-                <div style={{ marginTop: 14 }}>
-                    <Button onClick={() => router.push("/dashboard")}>
-                        ← Back to Dashboard
-                    </Button>
-                </div>
-            </main>
-        );
-    }
-
+  if (loading) {
     return (
-        <main style={{ marginTop: 32 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-                <Button onClick={() => router.push("/dashboard")}>
-                    ← Back to Dashboard
-                </Button>
-
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                    <Button onClick={() => router.push(`/stories/${story.id}/edit`)}>
-                        Edit
-                    </Button>
-
-                    <Button
-                        variant="danger"
-                        onClick={async () => {
-                            const ok = confirm("Are you sure you want to delete this story?");
-                            if (!ok) return;
-
-                            try {
-                                const token = localStorage.getItem("token");
-                                if (!token) throw new Error("No token found. Please log in again.");
-
-                                await deleteStoryById(token, story.id);
-                                router.push("/dashboard");
-                            } catch (err) {
-                                alert(err instanceof Error ? err.message : "Failed to delete story.");
-                            }
-                        }}
-                    >
-                        Delete
-                    </Button>
-                </div>
-            </div>
-
-            <header style={{ marginTop: 22 }}>
-                <h1 style={{ fontSize: 32, fontWeight: 900, margin: 0 }}>{story.title}</h1>
-
-                <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
-                    {story.categories.map((c) => (
-                        <span key={c} className={`badge ${getBadgeClass(c)}`}>
-                            {c}
-                        </span>
-                    ))}
-                </div>
-
-                <p className="muted" style={{ marginTop: 10, marginBottom: 0, fontSize: 14 }}>
-                    Created: {new Date(story.createdAt).toLocaleDateString()}
-                </p>
-            </header>
-
-            <section style={{ marginTop: 18 }}>
-                <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-                    <div style={{ padding: "16px 20px", borderLeft: "3px solid var(--muted-foreground)" }}>
-                        <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--muted-foreground)" }}>Situation</div>
-                        <p className="muted" style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>
-                            {story.situation || "No situation provided."}
-                        </p>
-                    </div>
-                    <div style={{ borderTop: "1px solid var(--border, rgba(0,0,0,0.08))", padding: "16px 20px", borderLeft: "3px solid var(--muted-foreground)" }}>
-                        <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--muted-foreground)" }}>Action</div>
-                        <p className="muted" style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>
-                            {story.action || "No action provided."}
-                        </p>
-                    </div>
-                    <div style={{ borderTop: "1px solid var(--border, rgba(0,0,0,0.08))", padding: "16px 20px", borderLeft: "3px solid var(--muted-foreground)" }}>
-                        <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--muted-foreground)" }}>Result</div>
-                        <p className="muted" style={{ marginTop: 8, marginBottom: 0, whiteSpace: "pre-wrap" }}>
-                            {story.result || "No result provided."}
-                        </p>
-                    </div>
-                </div>
-            </section>
-        </main>
+      <main className="page-section" style={{ marginTop: 24 }}>
+        <p className="muted">Loading story...</p>
+      </main>
     );
-} 
-    
+  }
+
+  if (error) {
+    return (
+      <main className="page-section" style={{ marginTop: 24 }}>
+        <div className="card" style={{ borderColor: "rgba(220, 38, 38, 0.35)" }}>
+          <p style={{ color: "crimson", margin: 0 }}>Error: {error}</p>
+        </div>
+
+        <div style={{ marginTop: 14 }}>
+          <Button onClick={() => router.push("/stories")}>← Back to Stories</Button>
+        </div>
+      </main>
+    );
+  }
+
+  if (!story) {
+    return (
+      <main className="page-section" style={{ marginTop: 24 }}>
+        <div className="card">
+          <p style={{ margin: 0 }}>Story not found.</p>
+        </div>
+
+        <div style={{ marginTop: 14 }}>
+          <Button onClick={() => router.push("/stories")}>← Back to Stories</Button>
+        </div>
+      </main>
+    );
+  }
+
+  const { filled, percent } = storyCompletion(story);
+
+  return (
+    <main className="page-section" style={{ marginTop: 24 }}>
+      <header className="story-detail-header">
+        <div className="story-detail-header-top">
+          <Button onClick={() => router.push("/stories")}>← Back to Stories</Button>
+
+          <div className="story-detail-actions">
+            <Button onClick={() => router.push(`/stories/${story.id}/edit`)}>Edit</Button>
+
+            <Button
+              variant="danger"
+              onClick={async () => {
+                const ok = confirm("Are you sure you want to delete this story?");
+                if (!ok) return;
+
+                try {
+                  const token = localStorage.getItem("token");
+                  if (!token) throw new Error("No token found. Please log in again.");
+
+                  await deleteStoryById(token, story.id);
+                  router.push("/stories");
+                } catch (err) {
+                  alert(err instanceof Error ? err.message : "Failed to delete story.");
+                }
+              }}
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+
+        <h1 className="story-detail-title">{story.title}</h1>
+
+        <div className="story-detail-meta">
+          <div className="story-detail-meta-top">
+            <p className="muted story-detail-date">
+              Created: {new Date(story.createdAt).toLocaleDateString()}
+            </p>
+            <span className="story-detail-progress-text">
+              Completion: {filled}/3 sections ({percent}%)
+            </span>
+          </div>
+
+          <div className="story-detail-progress-bar">
+            <div
+              className="story-detail-progress-fill"
+              style={{ width: `${percent}%` }}
+            />
+          </div>
+
+          <div className="story-detail-categories">
+            {story.categories.map((c) => (
+              <span key={c} className={`badge ${getBadgeClass(c)}`}>
+                {c}
+              </span>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      <section className="story-detail-star">
+        <div className="story-detail-star-grid">
+          <div className="story-detail-star-card">
+            <div className="story-detail-star-label" style={{ fontSize: 16 }}>Situation</div>
+            <p className="muted story-detail-star-text" style={{ fontSize: 18 }}>
+              {story.situation || "No situation provided."}
+            </p>
+          </div>
+
+          <div className="story-detail-star-card">
+            <div className="story-detail-star-label" style={{ fontSize: 16 }}>Action</div>
+            <p className="muted story-detail-star-text" style={{ fontSize: 18 }}>
+              {story.action || "No action provided."}
+            </p>
+          </div>
+
+          <div className="story-detail-star-card">
+            <div className="story-detail-star-label" style={{ fontSize: 16 }}>Result</div>
+            <p className="muted story-detail-star-text" style={{ fontSize: 18 }}>
+              {story.result || "No result provided."}
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
