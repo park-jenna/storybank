@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: "⌂" },
-  { href: "/dashboard", label: "Stories", icon: "📚" },
+  { href: "/stories", label: "Stories", icon: "📚" },
   { href: "/stories/new", label: "Add Story", icon: "+" },
 ] as const;
 
@@ -42,9 +42,12 @@ export default function Sidebar() {
 
         <nav className="sidebar-nav">
           {navItems.map(({ href, label, icon }) => {
+            const isDashboard = href === "/dashboard";
+            const isStories = href === "/stories";
             const isActive =
               pathname === href ||
-              (href === "/dashboard" &&
+              (isDashboard && pathname === "/") ||
+              (isStories &&
                 pathname?.startsWith("/stories") &&
                 pathname !== "/stories/new");
             return (
