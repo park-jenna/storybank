@@ -725,10 +725,12 @@ body {
 }
 
 .story-detail-star {
-  margin-top: 28px;
+  margin-top: 18px;
   max-width: 100%;
   margin-left: 0;
   margin-right: 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
 }
 
 .story-detail-star-grid {
@@ -757,20 +759,70 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
+.story-detail-star-heading {
+  margin-top: 32px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--foreground);
+}
+
+.story-detail-star-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
 .story-detail-star-card .story-detail-star-label {
   font-weight: 800;
   font-size: 16px !important;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--foreground);
-  margin-bottom: 10px;
+}
+
+.story-detail-step {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+  white-space: nowrap;
 }
 
 .story-detail-star-text {
   margin: 0;
   white-space: pre-wrap;
-  font-size: 18px !important;
-  line-height: 1.7;
+  font-size: 20px !important;
+  line-height: 1.5;
+  color: var(--foreground);
+}
+
+.story-detail-tip {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(124, 99, 245, 0.06);
+  border: 1px solid rgba(124, 99, 245, 0.22);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.story-detail-tip-icon {
+  font-size: 16px;
+  line-height: 1;
+  color: #7C63F5;
+  margin-top: 2px;
+}
+
+.story-detail-tip-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
   color: var(--foreground);
 }
 

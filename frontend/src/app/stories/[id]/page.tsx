@@ -157,25 +157,62 @@ export default function StoryDetailPage() {
         </div>
       </header>
 
+      <h2
+        className="page-section-title"
+        style={{ marginTop: 32, marginBottom: 4 }}
+      >
+        STAR breakdown
+      </h2>
+
       <section className="story-detail-star">
         <div className="story-detail-star-grid">
+          {/* Situation & Task */}
           <div className="story-detail-star-card">
-            <div className="story-detail-star-label" style={{ fontSize: 16 }}>Situation</div>
-            <p className="muted story-detail-star-text" style={{ fontSize: 18 }}>
-              {story.situation || "No situation provided."}
+            <div className="story-detail-star-label-row">
+              <div className="story-detail-star-label">1. Situation &amp; Task</div>
+              <span className="story-detail-step">Context &amp; goal</span>
+            </div>
+            <div className="story-detail-tip">
+              <div className="story-detail-tip-icon">💡</div>
+              <p className="story-detail-tip-text">
+                Keep it to 2–3 sentences about the context and your specific role or goal.
+              </p>
+            </div>
+            <p className="muted story-detail-star-text">
+              {story.situation || "No situation or task provided."}
             </p>
           </div>
 
+          {/* Action */}
           <div className="story-detail-star-card">
-            <div className="story-detail-star-label" style={{ fontSize: 16 }}>Action</div>
-            <p className="muted story-detail-star-text" style={{ fontSize: 18 }}>
+            <div className="story-detail-star-label-row">
+              <div className="story-detail-star-label">2. Action</div>
+              <span className="story-detail-step">What you did</span>
+            </div>
+            <div className="story-detail-tip">
+              <div className="story-detail-tip-icon">💡</div>
+              <p className="story-detail-tip-text">
+                Describe 3–5 concrete steps you personally took to move things forward.
+              </p>
+            </div>
+            <p className="muted story-detail-star-text">
               {story.action || "No action provided."}
             </p>
           </div>
 
+          {/* Result */}
           <div className="story-detail-star-card">
-            <div className="story-detail-star-label" style={{ fontSize: 16 }}>Result</div>
-            <p className="muted story-detail-star-text" style={{ fontSize: 18 }}>
+            <div className="story-detail-star-label-row">
+              <div className="story-detail-star-label">3. Result</div>
+              <span className="story-detail-step">Impact &amp; learning</span>
+            </div>
+            <div className="story-detail-tip">
+              <div className="story-detail-tip-icon">💡</div>
+              <p className="story-detail-tip-text">
+                Highlight measurable outcomes, impact on others, and what you learned.
+              </p>
+            </div>
+            <p className="muted story-detail-star-text">
               {story.result || "No result provided."}
             </p>
           </div>
