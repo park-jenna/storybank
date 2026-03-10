@@ -115,8 +115,8 @@ body {
    ======================================== */
 
 .sidebar {
-  width: 280px;
-  min-width: 280px;
+  width: 240px;
+  min-width: 240px;
   flex-shrink: 0;
   height: 100vh;
   background: #F8F7FA;
@@ -130,62 +130,62 @@ body {
 .sidebar-inner {
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
+  padding: 14px 0;
   height: 100%;
 }
 
 .sidebar-logo {
-  font-size: 28px;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #3E3B5E;
   text-decoration: none;
   letter-spacing: -0.02em;
-  padding: 0 20px 16px;
-  margin-bottom: 12px;
+  padding: 0 14px 12px;
+  margin-bottom: 8px;
   border-bottom: none;
   transition: color 0.2s;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .sidebar-logo:hover {
   color: var(--accent-nav);
 }
 .sidebar-logo-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   background: linear-gradient(135deg, #E8E4F4 0%, #DDD6FE 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1;
 }
 
 /* Search inside sidebar - below logo */
 .sidebar-search-wrap {
   position: relative;
-  padding: 0 16px 16px;
+  padding: 0 12px 12px;
 }
 .sidebar-search-wrap::before {
   content: "⌕";
   position: absolute;
-  left: 28px;
+  left: 24px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 14px;
+  font-size: 13px;
   color: #A9A7B6;
   pointer-events: none;
 }
 .sidebar-search {
   width: 100%;
-  padding: 10px 14px 10px 36px;
-  border-radius: 10px;
+  padding: 8px 12px 8px 32px;
+  border-radius: 8px;
   border: 1px solid #DCDCDC;
   background: #FFFFFF;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--foreground);
   outline: none;
   transition: border-color 0.2s;
@@ -201,16 +201,16 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 0 12px;
+  padding: 0 10px;
 }
 
 .sidebar-link {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 18px;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 15px;
   font-weight: 400;
   color: #3E3B5E;
   text-decoration: none;
@@ -226,7 +226,7 @@ body {
 .sidebar-link-active {
   background: #EBE8F3;
   color: var(--accent-nav);
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
 }
 
@@ -236,8 +236,8 @@ body {
 }
 
 .sidebar-link-icon {
-  font-size: 18px;
-  width: 24px;
+  font-size: 16px;
+  width: 20px;
   text-align: center;
   color: #7E7A99;
 }
@@ -253,12 +253,12 @@ body {
   z-index: 10;
   background: #FFFFFF;
   border-bottom: 1px solid #EBE8F3;
-  padding: 14px 44px;
+  padding: 8px 32px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 24px;
-  min-height: 64px;
+  gap: 16px;
+  min-height: 48px;
   box-sizing: border-box;
 }
 
@@ -267,7 +267,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
 }
 
 /* Auth pages: no search, logo left / actions right */
@@ -276,7 +276,7 @@ body {
 }
 .navbar-auth-home {
   font-weight: 700;
-  font-size: 1.125rem;
+  font-size: 1rem;
   color: var(--primary);
   text-decoration: none;
 }
@@ -293,14 +293,14 @@ body {
 
 .navbar-search {
   flex: 1;
-  max-width: 340px;
-  height: 44px;
+  max-width: 320px;
+  height: 36px;
   box-sizing: border-box;
-  padding: 12px 18px 12px 44px;
-  border-radius: 10px;
+  padding: 8px 14px 8px 38px;
+  border-radius: 8px;
   border: 1px solid #DCDCDC;
   background: #F8F7FA;
-  font-size: 15px;
+  font-size: 14px;
   color: #3E3B5E;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -319,10 +319,10 @@ body {
   gap: 10px;
 }
 
-/* All navbar actions same visual height (44px) */
+/* All navbar actions same visual height (36px) */
 .navbar-actions > a,
 .navbar-actions > button {
-  min-height: 44px;
+  min-height: 36px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -330,16 +330,16 @@ body {
 }
 
 .navbar-icon-btn {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid #DCDCDC;
   background: #F8F7FA;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
 }
@@ -351,17 +351,17 @@ body {
 .navbar-user {
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 44px;
-  padding: 0 14px 0 8px;
-  border-radius: 10px;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px 0 6px;
+  border-radius: 8px;
   background: #F8F7FA;
   border: 1px solid #EBE8F3;
   box-sizing: border-box;
 }
 .navbar-user-avatar {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
   border-radius: 50%;
   background: linear-gradient(135deg, #B892EB 0%, #7C63F5 100%);
@@ -370,54 +370,54 @@ body {
   justify-content: center;
   color: #fff;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 12px;
 }
 .navbar-user-info {
   text-align: left;
   min-width: 0;
 }
 .navbar-user-name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #3E3B5E;
   line-height: 1.25;
 }
 .navbar-user-role {
-  font-size: 12px;
+  font-size: 11px;
   color: #7E7A99;
   line-height: 1.25;
 }
 
 /* Sidebar bottom card - Upgrade to Pro (MeetCraft style) */
 .sidebar-upgrade-card {
-  margin: 16px 16px 0;
-  padding: 18px;
-  border-radius: 14px;
+  margin: 12px 12px 0;
+  padding: 14px;
+  border-radius: 10px;
   background: linear-gradient(135deg, #F3EDF9 0%, #EDE8F3 100%);
   color: #3E3B5E;
   border: 1px solid #E5E2EF;
 }
 .sidebar-upgrade-card-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: #3E3B5E;
 }
 .sidebar-upgrade-card-desc {
-  font-size: 12px;
+  font-size: 11px;
   color: #7E7A99;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   line-height: 1.4;
 }
 .sidebar-upgrade-card .btn {
   width: 100%;
-  padding: 10px 14px;
-  font-size: 14px;
+  padding: 8px 12px;
+  font-size: 13px;
   font-weight: 600;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #7C63F5;
   color: #fff;
   border: none;
@@ -433,7 +433,7 @@ body {
 }
 
 .sidebar-bottom-links {
-  padding: 12px 12px 24px;
+  padding: 10px 10px 18px;
   margin-top: auto;
   border-top: 1px solid #EBE8F3;
   display: flex;
@@ -443,10 +443,10 @@ body {
 .sidebar-bottom-link {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 14px;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 500;
   color: #7E7A99;
   text-decoration: none;
@@ -460,18 +460,18 @@ body {
 /* Sidebar collapse button - right edge */
 .sidebar-collapse {
   position: absolute;
-  right: -12px;
+  right: -10px;
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #F8F7FA;
   border: 1px solid #DCDCDC;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   color: #7E7A99;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;

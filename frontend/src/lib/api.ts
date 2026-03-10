@@ -2,7 +2,7 @@
 // 통신 계층 (네트워크 공통 규칙)
 // 실제 fetch 수행 담당
 // 에러처리, JSON 처리, 공통 헤더 설정 등
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 
 type ApiOptions = {
     token?: string;

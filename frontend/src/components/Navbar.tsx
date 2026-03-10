@@ -37,10 +37,10 @@ export default function Navbar() {
               aria-hidden
               style={{
                 position: "absolute",
-                left: 16,
+                left: 12,
                 top: "50%",
                 transform: "translateY(-50%)",
-                fontSize: 16,
+                fontSize: 14,
                 color: "#94a3b8",
               }}
             >

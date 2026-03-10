@@ -8,7 +8,11 @@ const authRouter = require("./routes/auth");
 
 const app = express();
 
-app.use(cors({ origin: "*" })); // 모든 도메인 허용
+app.use(cors({
+    origin: true,
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
 app.use(express.json());
 
 app.get("/health", (req, res) => {
