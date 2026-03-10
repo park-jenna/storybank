@@ -8,7 +8,11 @@ import { getButtonClassName, getButtonStyle } from "@/components/ui";
 /** Same as AppShell: minimal header (no search) on landing, login, signup */
 const PUBLIC_PATHS = ["/", "/login", "/signup"];
 
-export default function Navbar() {
+type NavbarProps = {
+  onMenuClick?: () => void;
+};
+
+export default function Navbar({ onMenuClick }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [hasToken, setHasToken] = useState(false);
@@ -31,6 +35,16 @@ export default function Navbar() {
   return (
     <nav className={`navbar-top${isPublicPage ? " navbar-top--auth" : ""}`}>
       <div className="navbar-inner">
+        {!isPublicPage && (
+          <button
+            type="button"
+            className="navbar-menu-btn"
+            aria-label="Open menu"
+            onClick={onMenuClick}
+          >
+            ☰
+          </button>
+        )}
         {!isPublicPage && (
           <div className="navbar-search-wrap" style={{ position: "relative", flex: "1", maxWidth: 340 }}>
             <span

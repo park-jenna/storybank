@@ -9,7 +9,11 @@ const navItems = [
   { href: "/stories/new", label: "Add Story", icon: "+" },
 ] as const;
 
-export default function Sidebar() {
+type SidebarProps = {
+  onClose?: () => void;
+};
+
+export default function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -22,6 +26,16 @@ export default function Sidebar() {
       >
         ‹
       </button>
+      {onClose && (
+        <button
+          type="button"
+          className="sidebar-close-mobile"
+          aria-label="Close menu"
+          onClick={onClose}
+        >
+          ×
+        </button>
+      )}
 
       <div className="sidebar-inner">
         <Link href="/" className="sidebar-logo">
@@ -55,6 +69,7 @@ export default function Sidebar() {
                 key={href + label}
                 href={href}
                 className={`sidebar-link ${isActive ? "sidebar-link-active" : ""}`}
+                onClick={onClose}
               >
                 <span className="sidebar-link-icon" aria-hidden>
                   {icon}
@@ -79,14 +94,17 @@ export default function Sidebar() {
         </div>
 
         <div className="sidebar-bottom-links">
-          <Link href="/dashboard" className="sidebar-bottom-link">
+          <Link href="/dashboard" className="sidebar-bottom-link" onClick={onClose}>
             <span aria-hidden>⚙️</span>
             Settings
           </Link>
           <a
             href="#"
             className="sidebar-bottom-link"
-            onClick={(e) => e.preventDefault()}
+            onClick={(e) => {
+              e.preventDefault();
+              onClose?.();
+            }}
           >
             <span aria-hidden>💬</span>
             Support

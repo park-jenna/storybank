@@ -62,9 +62,9 @@
   padding: 0;
 }
 
-/* Consistent base scale (avoids "big" render on Vercel / different DPI) */
+/* Base scale ~90% so 100% zoom on Vercel matches “zoomed out” comfortable view */
 html {
-  font-size: 14px;
+  font-size: 12.6px;
 }
 
 body {
@@ -97,6 +97,7 @@ body {
   flex-direction: column;
   min-width: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   scrollbar-gutter: stable;
   background: #FFFFFF;
   box-shadow: -2px 0 20px rgba(0, 0, 0, 0.04);
@@ -130,6 +131,69 @@ body {
   flex-direction: column;
   position: relative;
   z-index: 1;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Mobile: sidebar becomes overlay; backdrop and open state */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 98;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+    transform: translateX(-100%);
+    box-shadow: none;
+    max-width: 85vw;
+  }
+
+  .layout-wrapper.sidebar-is-open .sidebar {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar-backdrop {
+    display: block;
+  }
+
+  .layout-wrapper.sidebar-is-open .sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sidebar-close-mobile {
+    position: absolute;
+    right: 12px;
+    top: 14px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--border-light);
+    border-radius: 8px;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--foreground);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .sidebar-collapse {
+    display: none;
+  }
 }
 
 .sidebar-inner {
@@ -267,12 +331,61 @@ body {
   box-sizing: border-box;
 }
 
+.navbar-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #F8F7FA;
+  font-size: 1.25rem;
+  color: var(--foreground);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 .navbar-inner {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .navbar-top {
+    padding: 8px 16px;
+    gap: 8px;
+    min-height: 48px;
+  }
+
+  .navbar-menu-btn {
+    display: flex;
+  }
+
+  .navbar-inner {
+    gap: 8px;
+  }
+
+  .navbar-search-wrap {
+    min-width: 0;
+  }
+
+  .navbar-search {
+    max-width: 100%;
+  }
+
+  .navbar-user-info {
+    display: none;
+  }
+
+  .navbar-actions .navbar-user {
+    padding: 0 8px;
+  }
 }
 
 /* Auth pages: no search, logo left / actions right */
@@ -493,6 +606,12 @@ body {
   width: 100%;
 }
 
+@media (max-width: 768px) {
+  .app-shell {
+    padding: 16px 16px 32px;
+  }
+}
+
 /* Auth/landing: same horizontal padding as .app-shell (28px) for alignment */
 .app-shell--auth {
   max-width: none;
@@ -504,6 +623,12 @@ body {
   flex: 1;
   min-height: 0;
 }
+@media (max-width: 768px) {
+  .app-shell--auth {
+    padding: 16px 16px 32px;
+  }
+}
+
 @media (min-width: 768px) {
   .app-shell--auth {
     padding: 24px 28px 40px;
@@ -579,6 +704,13 @@ body {
   gap: 56px;
   margin-bottom: 16px;
 }
+
+@media (max-width: 768px) {
+  .overview-chart-row {
+    gap: 24px;
+    margin-bottom: 12px;
+  }
+}
 .overview-top-section {
   padding-top: 16px;
   border-top: 1px solid #EBE8F3;
@@ -646,6 +778,14 @@ body {
   overflow-x: auto;
   padding-bottom: 8px;
   margin-bottom: 32px;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .dashboard-upcoming-row {
+    gap: 16px;
+    margin-bottom: 24px;
+  }
 }
 .dashboard-upcoming-card {
   min-width: 260px;
@@ -1031,11 +1171,37 @@ h3 {
   margin: 48px auto 0;
   padding: 0;
 }
+
+@media (max-width: 768px) {
+  .landing-page {
+    margin: 24px auto 0;
+    padding: 0 8px;
+  }
+
+  .landing-hero-title {
+    font-size: 2rem;
+  }
+
+  .landing-hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .landing-cta {
+    margin-bottom: 48px;
+  }
+
+  .landing-features,
+  .landing-footer {
+    margin-top: 32px;
+    padding-top: 24px;
+  }
+}
 .landing-hero {
   text-align: center;
   margin-bottom: 48px;
 }
 .landing-hero-title {
+  font-family: var(--font-sans), "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   font-size: 2.5rem;
   font-weight: 900;
   margin: 0;
@@ -1104,6 +1270,13 @@ h3 {
   background: var(--card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
+}
+
+@media (max-width: 768px) {
+  .empty-state {
+    margin: 24px 0 32px;
+    padding: 24px 16px;
+  }
 }
 .empty-state-icon {
   font-size: 3rem;
