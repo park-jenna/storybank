@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* Tailwind v4: explicitly scan src so classes in components/pages are included */
-@source "../";
+/* Tailwind v4: explicit glob so content is scanned reliably on Vercel/production */
+@source "../**/*.{js,ts,jsx,tsx}";
 
 :root {
   /* MeetCraft-style: light gray + purple accent */
