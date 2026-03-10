@@ -61,7 +61,7 @@ export default function StoryDetailPage() {
 
   if (loading) {
     return (
-      <main className="page-section" style={{ marginTop: 24 }}>
+      <main className="page-section">
         <p className="muted">Loading story...</p>
       </main>
     );
@@ -69,7 +69,7 @@ export default function StoryDetailPage() {
 
   if (error) {
     return (
-      <main className="page-section" style={{ marginTop: 24 }}>
+      <main className="page-section">
         <div className="card" style={{ borderColor: "rgba(220, 38, 38, 0.35)" }}>
           <p style={{ color: "crimson", margin: 0 }}>Error: {error}</p>
         </div>
@@ -83,7 +83,7 @@ export default function StoryDetailPage() {
 
   if (!story) {
     return (
-      <main className="page-section" style={{ marginTop: 24 }}>
+      <main className="page-section">
         <div className="card">
           <p style={{ margin: 0 }}>Story not found.</p>
         </div>
@@ -98,7 +98,7 @@ export default function StoryDetailPage() {
   const { filled, percent } = storyCompletion(story);
 
   return (
-    <main className="page-section" style={{ marginTop: 24 }}>
+    <main className="page-section">
       <header className="story-detail-header">
         <div className="story-detail-header-top">
           <Button onClick={() => router.push("/stories")}>← Back to Stories</Button>
@@ -157,10 +157,7 @@ export default function StoryDetailPage() {
         </div>
       </header>
 
-      <h2
-        className="page-section-title"
-        style={{ marginTop: 32, marginBottom: 4 }}
-      >
+      <h2 className="page-section-title" style={{ marginTop: 28, marginBottom: 12 }}>
         STAR breakdown
       </h2>
 
