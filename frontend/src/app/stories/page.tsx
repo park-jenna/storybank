@@ -62,12 +62,12 @@ export default function StoriesPage() {
   };
 
   return (
-    <main>
+    <main className="stories-page">
       {loading && <p className="muted mt-6">Loading stories...</p>}
 
       {!loading && !error && (
         <>
-          <section className="page-section" style={{ marginTop: 24 }}>
+          <section className="page-section">
             <h2 className="page-section-title">All Stories</h2>
             <div className="flex flex-wrap gap-3">
               {[ALL, ...CATEGORIES].map((cat) => (
@@ -95,7 +95,7 @@ export default function StoriesPage() {
 
       {error && (
         <Card variant="error" className="mt-[18px]">
-          <p className="text-red-600 m-0">Error: {error}</p>
+          <p className="form-error m-0">Error: {error}</p>
         </Card>
       )}
 
@@ -110,7 +110,7 @@ export default function StoriesPage() {
               className="mt-4"
               onClick={() => router.push("/stories/new")}
             >
-              + Add Story
+              + New Story
             </Button>
           }
         />
@@ -130,10 +130,7 @@ export default function StoriesPage() {
       )}
 
       {!loading && !error && hasFilteredStories && (
-        <div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-          style={{ marginTop: 28 }}
-        >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-7">
           {filteredStories.map((s) => (
             <Link
               key={s.id}

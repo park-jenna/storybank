@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: "⌂" },
   { href: "/stories", label: "Stories", icon: "📚" },
-  { href: "/stories/new", label: "Add Story", icon: "+" },
+  { href: "/stories/new", label: "New Story", icon: "+" },
 ] as const;
 
 type SidebarProps = {
@@ -45,15 +45,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
           StoryBank
         </Link>
 
-        <div className="sidebar-search-wrap">
-          <input
-            type="search"
-            placeholder="Q Search"
-            className="sidebar-search"
-            aria-label="Search"
-          />
-        </div>
-
         <nav className="sidebar-nav">
           {navItems.map(({ href, label, icon }) => {
             const isDashboard = href === "/dashboard";
@@ -86,11 +77,16 @@ export default function Sidebar({ onClose }: SidebarProps) {
             Upgrade to Pro
           </div>
           <div className="sidebar-upgrade-card-desc">
-            Unlock all feature now
+            Unlock all features now
           </div>
-          <Link href="/stories/new" className="btn">
+          <button
+            type="button"
+            className="btn"
+            aria-label="Upgrade (coming soon)"
+            onClick={(e) => e.preventDefault()}
+          >
             Upgrade Now
-          </Link>
+          </button>
         </div>
 
         <div className="sidebar-bottom-links">

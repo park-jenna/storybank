@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { fetchStoryById, Story, deleteStoryById } from "@/lib/stories";
 import { getBadgeClass } from "@/constants/categories";
-import { Button } from "@/components/ui";
+import { Button, Card } from "@/components/ui";
 
 function storyCompletion(story: Story) {
   let filled = 0;
@@ -70,11 +70,10 @@ export default function StoryDetailPage() {
   if (error) {
     return (
       <main className="page-section">
-        <div className="card" style={{ borderColor: "rgba(220, 38, 38, 0.35)" }}>
-          <p style={{ color: "crimson", margin: 0 }}>Error: {error}</p>
-        </div>
-
-        <div style={{ marginTop: 14 }}>
+        <Card variant="error">
+          <p className="form-error">Error: {error}</p>
+        </Card>
+        <div className="mt-4">
           <Button onClick={() => router.push("/stories")}>← Back to Stories</Button>
         </div>
       </main>
@@ -84,11 +83,10 @@ export default function StoryDetailPage() {
   if (!story) {
     return (
       <main className="page-section">
-        <div className="card">
-          <p style={{ margin: 0 }}>Story not found.</p>
-        </div>
-
-        <div style={{ marginTop: 14 }}>
+        <Card className="p-6">
+          <p className="m-0">Story not found.</p>
+        </Card>
+        <div className="mt-4">
           <Button onClick={() => router.push("/stories")}>← Back to Stories</Button>
         </div>
       </main>
@@ -157,7 +155,7 @@ export default function StoryDetailPage() {
         </div>
       </header>
 
-      <h2 className="page-section-title" style={{ marginTop: 28, marginBottom: 12 }}>
+      <h2 className="page-section-title mt-7 mb-3">
         STAR breakdown
       </h2>
 

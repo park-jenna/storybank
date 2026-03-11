@@ -47,19 +47,6 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         )}
         {!isPublicPage && (
           <div className="navbar-search-wrap">
-            <span
-              aria-hidden
-              style={{
-                position: "absolute",
-                left: 12,
-                top: "50%",
-                transform: "translateY(-50%)",
-                fontSize: 14,
-                color: "#94a3b8",
-              }}
-            >
-              ⌕
-            </span>
             <input
               type="search"
               placeholder="Search stories..."
