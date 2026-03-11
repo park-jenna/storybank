@@ -64,7 +64,8 @@
 
 /* Base scale ~90% so 100% zoom on Vercel matches “zoomed out” comfortable view */
 html {
-  font-size: 12px;
+  zoom: 0.9;
+  font-size: 16px;
 }
 
 body {
