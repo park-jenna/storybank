@@ -14,8 +14,8 @@ Save and organize behavioral interview stories. Create, edit, and refine your ST
 
 - **Live demo**: [https://storybank-star.vercel.app](https://storybank-star.vercel.app)
 - **Test account**:
-  - **Email**: `demo@storybank.app`
-  - **Password**: `Demo1234!`
+  - **Email**: `test@test.com`
+  - **Password**: `test1234`
 
 ## Screenshots
 
