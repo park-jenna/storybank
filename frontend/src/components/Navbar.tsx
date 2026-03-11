@@ -46,7 +46,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           </button>
         )}
         {!isPublicPage && (
-          <div className="navbar-search-wrap" style={{ position: "relative", flex: "1", maxWidth: 340 }}>
+          <div className="navbar-search-wrap">
             <span
               aria-hidden
               style={{

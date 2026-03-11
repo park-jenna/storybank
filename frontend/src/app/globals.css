@@ -64,7 +64,7 @@
 
 /* Base scale ~90% so 100% zoom on Vercel matches “zoomed out” comfortable view */
 html {
-  font-size: 12.6px;
+  font-size: 12px;
 }
 
 body {
@@ -146,7 +146,8 @@ body {
   transition: opacity 0.25s ease;
 }
 
-@media (max-width: 768px) {
+/* Sidebar as overlay from 1024px down (tablet + mobile) so content has more space */
+@media (max-width: 1024px) {
   .sidebar {
     position: fixed;
     left: 0;
@@ -347,6 +348,13 @@ body {
   flex-shrink: 0;
 }
 
+/* Show hamburger when sidebar is overlay (≤1024px) */
+@media (max-width: 1024px) {
+  .navbar-menu-btn {
+    display: flex;
+  }
+}
+
 .navbar-inner {
   width: 100%;
   display: flex;
@@ -356,27 +364,29 @@ body {
   min-width: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .navbar-top {
     padding: 8px 16px;
     gap: 8px;
     min-height: 48px;
   }
 
-  .navbar-menu-btn {
-    display: flex;
-  }
-
   .navbar-inner {
     gap: 8px;
   }
 
+  /* Prevent search from overlapping buttons: cap width so actions always fit */
   .navbar-search-wrap {
     min-width: 0;
+    max-width: 200px;
   }
 
   .navbar-search {
     max-width: 100%;
+  }
+
+  .navbar-actions {
+    flex-shrink: 0;
   }
 
   .navbar-user-info {
@@ -407,6 +417,10 @@ body {
 .navbar-search-wrap {
   display: flex;
   align-items: center;
+  flex: 1;
+  min-width: 0;
+  max-width: 340px;
+  position: relative;
 }
 
 .navbar-search {
