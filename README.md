@@ -12,9 +12,8 @@ Save and organize behavioral interview stories. Create, edit, and refine your ST
 
 ## Live Demo & Test Account
 
-- **Live demo**: `https://your-vercel-deployment-url.vercel.app`  
-  (Replace this with your actual Vercel URL when deployed.)
-- **Test account** (for recruiters/interviewers):
+- **Live demo**: `https://storybank-star.vercel.app` 
+- **Test account**:
   - **Email**: `demo@storybank.app`
   - **Password**: `Demo1234!`
 
