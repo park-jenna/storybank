@@ -67,15 +67,6 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         )}
 
         <div className="navbar-actions">
-          <button
-            type="button"
-            className="navbar-icon-btn navbar-theme-toggle"
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            onClick={toggleTheme}
-            title={theme === "dark" ? "Light mode" : "Dark mode"}
-          >
-            <span aria-hidden>{theme === "dark" ? "☀️" : "🌙"}</span>
-          </button>
           {mounted && hasToken && (
             <>
               <Link
@@ -85,13 +76,6 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
               >
                 + New Story
               </Link>
-              <button
-                type="button"
-                className="navbar-icon-btn"
-                aria-label="Notifications"
-              >
-                🔔
-              </button>
               <div className="navbar-user">
                 <div className="navbar-user-avatar">U</div>
                 <div className="navbar-user-info">
@@ -99,6 +83,15 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                   <div className="navbar-user-role">StoryBank</div>
                 </div>
               </div>
+              <button
+                type="button"
+                className="navbar-icon-btn navbar-theme-toggle"
+                aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                onClick={toggleTheme}
+                title={theme === "dark" ? "Light mode" : "Dark mode"}
+              >
+                <span aria-hidden>{theme === "dark" ? "☀️" : "🌙"}</span>
+              </button>
               <button
                 type="button"
                 className={getButtonClassName("default", "sm")}
@@ -111,6 +104,15 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           )}
           {mounted && !hasToken && (
             <>
+              <button
+                type="button"
+                className="navbar-icon-btn navbar-theme-toggle"
+                aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                onClick={toggleTheme}
+                title={theme === "dark" ? "Light mode" : "Dark mode"}
+              >
+                <span aria-hidden>{theme === "dark" ? "☀️" : "🌙"}</span>
+              </button>
               <Link
                 href="/login"
                 className={getButtonClassName("default", "md")}
