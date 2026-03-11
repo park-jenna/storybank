@@ -9,6 +9,8 @@ const navItems = [
   { href: "/stories/new", label: "New Story", icon: "+" },
 ] as const;
 
+const SUPPORT_EMAIL = "jennapark@gatech.edu";
+
 type SidebarProps = {
   onClose?: () => void;
 };
@@ -73,19 +75,19 @@ export default function Sidebar({ onClose }: SidebarProps) {
 
         <div className="sidebar-upgrade-card">
           <div className="sidebar-upgrade-card-title">
-            <span aria-hidden>👑</span>
-            Upgrade to Pro
+            <span aria-hidden>🎯</span>
+            Practice
           </div>
           <div className="sidebar-upgrade-card-desc">
-            Unlock all features now
+            Tips to strengthen your STAR stories for interviews.
           </div>
           <button
             type="button"
             className="btn"
-            aria-label="Upgrade (coming soon)"
+            aria-label="Practice (coming soon)"
             onClick={(e) => e.preventDefault()}
           >
-            Upgrade Now
+            Coming soon
           </button>
         </div>
 
@@ -95,12 +97,9 @@ export default function Sidebar({ onClose }: SidebarProps) {
             Settings
           </Link>
           <a
-            href="#"
+            href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("StoryBank Support")}`}
             className="sidebar-bottom-link"
-            onClick={(e) => {
-              e.preventDefault();
-              onClose?.();
-            }}
+            onClick={() => onClose?.()}
           >
             <span aria-hidden>💬</span>
             Support

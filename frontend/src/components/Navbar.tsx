@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { getButtonClassName, getButtonStyle } from "@/components/ui";
+import { useTheme } from "@/contexts/ThemeContext";
 
 /** Same as AppShell: minimal header (no search) on landing, login, signup */
 const PUBLIC_PATHS = ["/", "/login", "/signup"];
@@ -15,6 +16,7 @@ type NavbarProps = {
 export default function Navbar({ onMenuClick }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const { theme, toggleTheme } = useTheme();
   const [hasToken, setHasToken] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -65,6 +67,15 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         )}
 
         <div className="navbar-actions">
+          <button
+            type="button"
+            className="navbar-icon-btn navbar-theme-toggle"
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            onClick={toggleTheme}
+            title={theme === "dark" ? "Light mode" : "Dark mode"}
+          >
+            <span aria-hidden>{theme === "dark" ? "☀️" : "🌙"}</span>
+          </button>
           {mounted && hasToken && (
             <>
               <Link

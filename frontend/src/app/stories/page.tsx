@@ -152,7 +152,7 @@ export default function StoriesPage() {
                     ⋯
                   </Button>
                 </div>
-                <h3 className="text-2xl font-bold leading-snug text-[var(--foreground)] m-0 shrink-0 overflow-hidden line-clamp-2">
+                <h3 className="story-title-on-card text-2xl font-bold leading-snug text-[var(--foreground)] m-0 shrink-0 overflow-hidden line-clamp-2">
                   {s.title}
                 </h3>
                 <div className="flex-1 min-h-0 overflow-hidden flex flex-col">

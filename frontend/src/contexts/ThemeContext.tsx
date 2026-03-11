@@ -1,0 +1,85 @@
+"use client";
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
+const THEME_KEY = "storybank-theme";
+
+export type Theme = "light" | "dark";
+
+type ThemeContextValue = {
+  theme: Theme;
+  setTheme: (next: Theme) => void;
+  toggleTheme: () => void;
+};
+
+const ThemeContext = createContext<ThemeContextValue | null>(null);
+
+function getSystemTheme(): Theme {
+  if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function getStoredTheme(): Theme | null {
+  if (typeof window === "undefined") return null;
+  const stored = localStorage.getItem(THEME_KEY);
+  if (stored === "light" || stored === "dark") return stored;
+  return null;
+}
+
+function applyTheme(next: Theme) {
+  document.documentElement.classList.toggle("dark", next === "dark");
+  localStorage.setItem(THEME_KEY, next);
+}
+
+function getInitialTheme(): Theme {
+  if (typeof document === "undefined") return "light";
+  return document.documentElement.classList.contains("dark") ? "dark" : "light";
+}
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const setTheme = useCallback((next: Theme) => {
+    setThemeState(next);
+    applyTheme(next);
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setThemeState((prev) => {
+      const next = prev === "light" ? "dark" : "light";
+      applyTheme(next);
+      return next;
+    });
+  }, []);
+
+  const value: ThemeContextValue = {
+    theme: mounted ? theme : "light",
+    setTheme,
+    toggleTheme,
+  };
+
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const ctx = useContext(ThemeContext);
+  if (!ctx) {
+    throw new Error("useTheme must be used within ThemeProvider");
+  }
+  return ctx;
+}
