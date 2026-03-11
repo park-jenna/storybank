@@ -10,6 +10,14 @@ Save and organize behavioral interview stories. Create, edit, and refine your ST
 - **Categories** — Tag stories with behavioral categories (Leadership, Teamwork, Problem Solving, etc.)
 - **Dashboard** — View and manage all your stories in one place
 
+## Live Demo & Test Account
+
+- **Live demo**: `https://your-vercel-deployment-url.vercel.app`  
+  (Replace this with your actual Vercel URL when deployed.)
+- **Test account** (for recruiters/interviewers):
+  - **Email**: `demo@storybank.app`
+  - **Password**: `Demo1234!`
+
 ## Screenshots
 
 **Dashboard** — View and manage all your stories in one place.
