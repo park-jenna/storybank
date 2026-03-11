@@ -130,7 +130,7 @@ export default function StoriesPage() {
       )}
 
       {!loading && !error && hasFilteredStories && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-7">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 stories-card-grid">
           {filteredStories.map((s) => (
             <Link
               key={s.id}

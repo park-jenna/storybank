@@ -262,7 +262,7 @@ export default function DashboardPage() {
             <div className="dashboard-card">
               <h2 className="dashboard-card-title">
                 By Category
-                <Link href="/dashboard" className="see-all text-[14px]">
+                <Link href="/stories" className="see-all text-[14px]">
                   See All
                 </Link>
               </h2>
@@ -355,7 +355,7 @@ export default function DashboardPage() {
                 </Chip>
               ))}
             </div>
-            <p className="muted mt-4 mb-0 text-base">
+            <p className="muted mt-4 mb-8 text-base">
               Showing{" "}
               <b>
                 {selectedCategory === ALL
@@ -405,7 +405,7 @@ export default function DashboardPage() {
       )}
 
       {!loading && !error && hasFilteredStories && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-7">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 stories-card-grid">
           {filteredStories.map((s) => (
             <Link
               key={s.id}

@@ -155,7 +155,7 @@ export default function StoryDetailPage() {
         </div>
       </header>
 
-      <h2 className="page-section-title mt-7 mb-3">
+      <h2 className="page-section-title story-detail-star-heading">
         STAR breakdown
       </h2>
 
