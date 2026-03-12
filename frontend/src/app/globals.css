@@ -918,6 +918,265 @@ html.dark .dashboard-upcoming-card.gradient-3 { background: linear-gradient(135d
 }
 
 /* ========================================
+   Questions page (question ↔ story mapping)
+   ======================================== */
+
+.questions-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0 0 4px 0;
+}
+
+.questions-page-subtitle {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin: 0 0 24px 0;
+}
+
+.questions-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .questions-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* Left: question list — card-style items, consistent with rest of app */
+.questions-sidebar {
+  position: sticky;
+  top: calc(var(--navbar-height) + 16px);
+  background: var(--card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 12px;
+  max-height: calc(100vh - var(--navbar-height) - 80px);
+  overflow-y: auto;
+}
+
+.questions-sidebar .questions-list-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 10px 4px;
+}
+
+.questions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.questions-list-item {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  text-align: left;
+  background: var(--card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--foreground);
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.questions-list-item:hover {
+  background: var(--card-hover);
+  border-color: var(--border);
+}
+
+.questions-list-item-active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  font-weight: 500;
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+/* Main */
+.questions-main {
+  min-width: 0;
+}
+
+.questions-selected-block {
+  background: var(--card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.questions-selected-badges {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.questions-selected-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--foreground);
+  margin: 0 0 8px 0;
+}
+
+.questions-selected-hint {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.questions-stories-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 12px 0;
+}
+
+.questions-stories-title .questions-stories-count {
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.questions-stories-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 700px) {
+  .questions-stories-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.questions-story-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
+.questions-story-card {
+  height: 100%;
+  background: var(--card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.questions-story-link:hover .questions-story-card {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--primary);
+  transform: translateY(-2px);
+}
+
+.questions-story-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.questions-story-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--foreground);
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.questions-story-card-date {
+  font-size: 0.8rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.questions-story-card-summary {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--muted);
+  margin: 0;
+  flex: 1;
+  min-height: 2.9em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.questions-story-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+/* Right: when no question selected — single clear prompt */
+.questions-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 32px 24px;
+  text-align: center;
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.questions-empty-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.questions-empty-text {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin: 0;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+/* ========================================
    Story detail page
    ======================================== */
 
@@ -1000,6 +1259,53 @@ html.dark .story-detail-title {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.story-detail-questions-section {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+
+.story-detail-questions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.story-detail-question-link {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.story-detail-question-link:hover {
+  background: var(--card-hover, var(--border-light));
+  border-color: var(--primary);
+  box-shadow: var(--shadow), 0 0 0 1px var(--primary);
+}
+
+.story-detail-question-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--foreground);
+}
+
+.story-detail-question-badges {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .story-detail-star {
@@ -1854,18 +2160,26 @@ html.dark .story-title-on-card {
 }
 
 /* ========================================
-   Badges
+   Badges — single shared style (questions, stories, dashboard, story detail)
    ======================================== */
 
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 8px 16px;
-  border-radius: var(--radius-md);
-  font-size: 17px;
-  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   border: none;
+}
+
+/* Wrappers that show multiple badges use the same gap everywhere */
+.questions-selected-badges,
+.questions-story-card-badges,
+.story-detail-question-badges {
+  gap: 6px;
 }
 
 .badge-primary {

@@ -9,7 +9,9 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { fetchStoryById, Story, deleteStoryById } from "@/lib/stories";
 import { getBadgeClass } from "@/constants/categories";
+import { getQuestionsForCategories } from "@/constants/interviewQuestions";
 import { Button, Card } from "@/components/ui";
+import Link from "next/link";
 
 function storyCompletion(story: Story) {
   let filled = 0;
@@ -212,6 +214,43 @@ export default function StoryDetailPage() {
             </p>
           </div>
         </div>
+      </section>
+
+      <section className="story-detail-questions-section" aria-label="Questions this story can answer">
+        <h2 className="page-section-title story-detail-star-heading">
+          Questions this story can answer
+        </h2>
+        {(() => {
+          const questions = getQuestionsForCategories(story.categories);
+          if (questions.length === 0) {
+            return (
+              <p className="muted">
+                No interview questions are mapped to this story&apos;s categories yet. Add categories like Leadership or Conflict Resolution to see matching questions.
+              </p>
+            );
+          }
+          return (
+            <ul className="story-detail-questions-list">
+              {questions.map((q) => (
+                <li key={q.id}>
+                  <Link
+                    href={`/questions?q=${encodeURIComponent(q.id)}`}
+                    className="story-detail-question-link"
+                  >
+                    <span className="story-detail-question-text">{q.text}</span>
+                    <span className="story-detail-question-badges">
+                      {q.categories.map((cat) => (
+                        <span key={cat} className={`badge ${getBadgeClass(cat)}`}>
+                          {cat}
+                        </span>
+                      ))}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          );
+        })()}
       </section>
     </main>
   );
