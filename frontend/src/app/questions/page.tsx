@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchStories, Story } from "@/lib/stories";
@@ -8,7 +8,7 @@ import { INTERVIEW_QUESTIONS, getQuestionById } from "@/constants/interviewQuest
 import { getBadgeClass } from "@/constants/categories";
 import { Button, Card, Badge, EmptyState } from "@/components/ui";
 
-export default function QuestionsPage() {
+function QuestionsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const highlightId = searchParams.get("q") ?? null;
@@ -181,5 +181,19 @@ export default function QuestionsPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function QuestionsPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="page-section">
+          <p className="muted">Loading...</p>
+        </main>
+      }
+    >
+      <QuestionsPageContent />
+    </Suspense>
   );
 }
