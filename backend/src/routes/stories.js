@@ -1,7 +1,7 @@
 const express = require("express");
 const prisma = require("../prisma");
 const { requireAuth } = require("../middleware/auth");
-const { createStoryBodySchema } = require("../schemas/stories");
+const { createStoryBodySchema, updateStoryBodySchema } = require("../schemas/stories");
 
 const router = express.Router();
 
@@ -139,27 +139,23 @@ router.patch("/:id", requireAuth, async (req, res) => {
             return res.status(404).json({ error: "Story not found" });
         }
 
-        // 2) 업데이트할 데이터 준비 (partial update)
-        const { title, categories, situation, action, result } = req.body;
+        // 2) 업데이트할 데이터 검증 및 준비 (partial update)
+        const parsed = updateStoryBodySchema.safeParse(req.body);
+        if (!parsed.success) {
+            return res.status(400).json({
+                error: "Invalid request body",
+                details: parsed.error.issues,
+            });
+        }
 
+        const body = parsed.data;
         const updatedData = {};
-        if (typeof title === "string" && title.length > 0) {
-            updatedData.title = title;
-        }
-        if (Array.isArray(categories) && categories.length > 0) {
-            updatedData.categories = categories;
-        }
-        if (typeof situation === "string") {
-            updatedData.situation = situation;
-        }
-        if (typeof action === "string") {
-            updatedData.action = action;
-        }
-        if (typeof result === "string") {
-            updatedData.result = result;
-        }
+        if (body.title !== undefined) updatedData.title = body.title;
+        if (body.categories !== undefined) updatedData.categories = body.categories;
+        if (body.situation !== undefined) updatedData.situation = body.situation;
+        if (body.action !== undefined) updatedData.action = body.action;
+        if (body.result !== undefined) updatedData.result = body.result;
 
-        // 아무것도 업데이트할 게 없으면 에러
         if (Object.keys(updatedData).length === 0) {
             return res.status(400).json({ error: "No valid fields to update" });
         }
