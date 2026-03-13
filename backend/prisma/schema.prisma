@@ -8,11 +8,12 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  stories   Story[]
-  createdAt DateTime @default(now())
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  stories       Story[]
+  userQuestions UserQuestion[]
+  createdAt     DateTime       @default(now())
 }
 
 model Story {
@@ -37,6 +38,18 @@ model Question {
   isCommon Boolean @default(false)
 
   recommendedCategories String[]
+
+  createdAt     DateTime       @default(now())
+  userQuestions UserQuestion[]
+}
+
+model UserQuestion {
+  id         String @id @default(uuid())
+  userId     String
+  questionId String
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
 
   createdAt DateTime @default(now())
 }
