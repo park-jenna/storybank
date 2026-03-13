@@ -29,7 +29,8 @@ model Story {
 
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user          User                @relation(fields: [userId], references: [id])
+  questionLinks UserQuestionStory[]
 }
 
 model Question {
@@ -50,6 +51,18 @@ model UserQuestion {
 
   user     User     @relation(fields: [userId], references: [id])
   question Question @relation(fields: [questionId], references: [id])
+
+  createdAt           DateTime            @default(now())
+  userQuestionStories UserQuestionStory[]
+}
+
+model UserQuestionStory {
+  id             String @id @default(uuid())
+  userQuestionId String
+  storyId        String
+
+  userQuestion UserQuestion @relation(fields: [userQuestionId], references: [id])
+  story        Story        @relation(fields: [storyId], references: [id])
 
   createdAt DateTime @default(now())
 }
