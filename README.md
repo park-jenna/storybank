@@ -37,6 +37,24 @@ Save and organize behavioral interview stories. Create, edit, and refine your ST
 | Auth      | JWT, bcrypt                  |
 | Validation| Zod                          |
 
+## Database Models (Prisma)
+
+- **User**
+  - `id`, `email`, `password`, `createdAt`
+  - Relations: `stories`, `userQuestions`
+- **Story**
+  - `id`, `userId`, `categories[]`, `situation`, `action`, `result`, `title`, `createdAt`
+  - Relations: `user`, `questionLinks`
+- **Question**
+  - `id`, `content`, `isCommon`, `recommendedCategories[]`, `createdAt`
+  - Used for common interview questions and their recommended story categories.
+- **UserQuestion**
+  - `id`, `userId`, `questionId`, `createdAt`
+  - A question saved into a specific user's personal collection.
+- **UserQuestionStory**
+  - `id`, `userQuestionId`, `storyId`, `createdAt`
+  - Connects a saved question with one or more stories the user wants to use as answers.
+
 ## Project Structure
 
 ```
