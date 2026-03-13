@@ -6,6 +6,7 @@ const cors = require("cors");
 const storiesRouter = require("./routes/stories");
 const authRouter = require("./routes/auth");
 const questionsRouter = require("./routes/questions");
+const userQuestionsRouter = require("./routes/user-questions");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.get("/health", (req, res) => {
 app.use("/auth", authRouter);   // auth 관련 라우트들 (signup, login)
 app.use("/stories", storiesRouter); // stories 관련 라우트들
 app.use("/questions", questionsRouter);
+app.use("/user-questions", userQuestionsRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
