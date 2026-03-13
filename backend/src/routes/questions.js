@@ -2,6 +2,7 @@
 
 const express = require("express");
 const prisma = require("../prisma");
+const { requireAuth } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -57,6 +58,33 @@ router.get("/:id/recommendations", requireAuth, async (req, res) => {
     } catch (error) {
         console.error("Error fetching recommendations:", error);
         return res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+/*
+* POST /user-questions
+* Body: { questionId, storyIds: string[] }
+* authenticated user only
+*/
+router.post("/user-questions", requireAuth, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { questionId, storyIds } = req.body;
+
+        // 1) userQuestion 생성 (userId, questionId)
+        const userQuestion = await prisma.userQuestion.create({
+            data: { userId, questionId },
+        });
+
+        // 2) userQuestionStory 생성 (userQuestionId, storyIds)
+        const userQuestionStories = await prisma.userQuestionStory.createMany({
+            data: storyIds.map(storyId => ({ userQuestionId: userQuestion.id, storyId })),
+        });
+
+        return res.status(201).json({ userQuestion, userQuestionStories }); // 201: Created
+    } catch (error) {
+        console.error("Error creating user question:", error);
+        return res.status(500).json({ error: "Internal server error" }); // 500: Internal server error
     }
 });
 
