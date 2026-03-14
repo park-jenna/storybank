@@ -97,4 +97,34 @@ router.post("/", requireAuth, async (req, res) => {
     }
 });
 
+/*
+ * DELETE /user-questions/:id
+ * 저장한 질문 삭제 (본인 것만). 연결된 QuestionStory 먼저 삭제 후 Question 삭제.
+ */
+router.delete("/:id", requireAuth, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { id } = req.params;
+
+        const question = await prisma.question.findFirst({
+            where: { id, userId },
+            select: { id: true },
+        });
+
+        if (!question) {
+            return res.status(404).json({ error: "Question not found" });
+        }
+
+        await prisma.questionStory.deleteMany({ where: { questionId: id } });
+        await prisma.question.delete({
+            where: { id },
+        });
+
+        return res.json({ ok: true });
+    } catch (error) {
+        console.error("Error deleting user question:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 module.exports = router;

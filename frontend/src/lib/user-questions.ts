@@ -1,4 +1,4 @@
-import { apiGet, apiPost } from "./api";
+import { apiGet, apiPost, apiDelete } from "./api";
 
 export type Question = {
   id: string;
@@ -57,4 +57,10 @@ export type CreateUserQuestionResponse = {
 };
 export async function createUserQuestion(token: string, input: CreateUserQuestionInput) {
   return apiPost<CreateUserQuestionResponse>("/user-questions", input, { token });
+}
+
+// 저장한 질문 삭제 (본인 것만)
+export type DeleteUserQuestionResponse = { ok: true };
+export async function deleteUserQuestion(token: string, questionId: string) {
+  return apiDelete<DeleteUserQuestionResponse>(`/user-questions/${questionId}`, { token });
 }

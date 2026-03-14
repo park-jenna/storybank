@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { fetchUserQuestions, UserQuestionItem } from "@/lib/user-questions";
+import { fetchUserQuestions, deleteUserQuestion, UserQuestionItem } from "@/lib/user-questions";
 import { Button, Card, Badge, EmptyState } from "@/components/ui";
 
 export default function SavedQuestionsPage() {
@@ -12,6 +12,9 @@ export default function SavedQuestionsPage() {
   const [userQuestions, setUserQuestions] = useState<UserQuestionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmStep, setConfirmStep] = useState<1 | 2>(1);
 
   useEffect(() => {
     async function load() {
@@ -33,6 +36,39 @@ export default function SavedQuestionsPage() {
     }
     load();
   }, [router]);
+
+  const openDeleteConfirm = (questionId: string) => {
+    setConfirmDeleteId(questionId);
+    setConfirmStep(1);
+  };
+
+  const closeDeleteConfirm = () => {
+    setConfirmDeleteId(null);
+    setConfirmStep(1);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDeleteId) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      closeDeleteConfirm();
+      return;
+    }
+    if (confirmStep === 1) {
+      setConfirmStep(2);
+      return;
+    }
+    try {
+      setDeletingId(confirmDeleteId);
+      await deleteUserQuestion(token, confirmDeleteId);
+      setUserQuestions((prev) => prev.filter((uq) => uq.id !== confirmDeleteId));
+      closeDeleteConfirm();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete question.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -82,12 +118,58 @@ export default function SavedQuestionsPage() {
         />
       )}
 
+      {confirmDeleteId && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-confirm-title"
+        >
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-[var(--radius-lg)] p-6 shadow-lg max-w-md w-full mx-4">
+            <h2 id="delete-confirm-title" className="text-lg font-semibold mb-2">
+              {confirmStep === 1
+                ? "Remove this question from your list?"
+                : "This cannot be undone. Really delete?"}
+            </h2>
+            <div className="flex gap-3 justify-end mt-4">
+              <Button
+                type="button"
+                variant="default"
+                onClick={closeDeleteConfirm}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant={confirmStep === 2 ? "danger" : "primary"}
+                disabled={deletingId === confirmDeleteId}
+                onClick={handleConfirmDelete}
+              >
+                {deletingId === confirmDeleteId
+                  ? "Deleting..."
+                  : confirmStep === 1
+                    ? "Remove"
+                    : "Yes, delete"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {!loading && !error && userQuestions.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
           {userQuestions.map((uq) => (
             <Card key={uq.id} variant="default" className="block">
               <div className="flex justify-between items-start mb-2">
                 <span className="text-sm muted">{formatDate(uq.createdAt)}</span>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center gap-2 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--background-solid)] disabled:opacity-50"
+                  disabled={deletingId === uq.id}
+                  onClick={() => openDeleteConfirm(uq.id)}
+                >
+                  {deletingId === uq.id ? "Deleting..." : "Delete"}
+                </button>
               </div>
               <h3 className="text-lg font-semibold mb-2 line-clamp-2">
                 {uq.question.content}
