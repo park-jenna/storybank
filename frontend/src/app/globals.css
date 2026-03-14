@@ -2695,6 +2695,34 @@ a:not(.text-white):hover {
   max-width: 42rem;
 }
 
+/* Top nav link: “go to Common questions” — link style, not button */
+.saved-questions-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  padding: 8px 14px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  transition: background var(--transition), color var(--transition), border-color var(--transition), gap var(--transition);
+}
+
+.saved-questions-nav-link:hover {
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary);
+  gap: 0.55rem;
+}
+
+.saved-questions-nav-link-arrow {
+  font-size: 1.05em;
+  line-height: 1;
+  opacity: 0.95;
+}
+
 .saved-questions-card {
   display: flex;
   flex-direction: column;

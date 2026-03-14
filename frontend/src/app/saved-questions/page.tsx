@@ -87,10 +87,9 @@ export default function SavedQuestionsPage() {
     <main className="saved-questions-page page-section">
       <div className="saved-questions-page-header">
         <h1 className="saved-questions-page-title">Saved Questions</h1>
-        <Link href="/common-questions">
-          <Button variant="default">
-            View common interview questions
-          </Button>
+        <Link href="/common-questions" className="saved-questions-nav-link">
+          Browse common questions
+          <span className="saved-questions-nav-link-arrow" aria-hidden>→</span>
         </Link>
       </div>
       <p className="saved-questions-page-desc muted">
@@ -109,14 +108,14 @@ export default function SavedQuestionsPage() {
         <EmptyState
           icon="📋"
           title="No saved questions yet"
-          description="Save questions from the common list to see them here."
+          description="Browse the question bank, save the ones you want to practice, and link your STAR stories so you're ready for any interview."
           action={
             <Button
               variant="primary"
               className="mt-4"
               onClick={() => router.push("/common-questions")}
             >
-              View common questions
+              Browse common questions
             </Button>
           }
         />
