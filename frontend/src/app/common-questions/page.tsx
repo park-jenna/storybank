@@ -29,14 +29,14 @@ function CommonQuestionsContent() {
   const [showSavePanel, setShowSavePanel] = useState(false);
 
   useEffect(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (!token) {
-      router.replace("/login");
-      return;
-    }
     async function load() {
       try {
         setError(null);
+        const token = localStorage.getItem("token");
+        if (!token) {
+          router.replace("/login");
+          return;
+        }
         const data = await fetchCommonQuestions(token);
         setQuestions(data.questions);
         if (data.questions.length > 0 && !selectedQuestion) {
