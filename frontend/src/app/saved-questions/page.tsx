@@ -50,7 +50,7 @@ export default function SavedQuestionsPage() {
     <main className="saved-questions-page">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <h1 className="text-2xl font-semibold m-0">Saved Questions</h1>
-        <Link href="/questions/common">
+        <Link href="/common-questions">
           <Button variant="default">
             View common interview questions
           </Button>
@@ -74,7 +74,7 @@ export default function SavedQuestionsPage() {
             <Button
               variant="primary"
               className="mt-4"
-              onClick={() => router.push("/questions/common")}
+              onClick={() => router.push("/common-questions")}
             >
               View common questions
             </Button>

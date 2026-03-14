@@ -8,7 +8,7 @@ const navItems = [
   { href: "/stories", label: "Stories", icon: "📚" },
   { href: "/stories/new", label: "New Story", icon: "+" },
   { href: "/saved-questions", label: "Saved Questions", icon: "📋" },
-  { href: "/questions", label: "Questions", icon: "❓" },
+  { href: "/common-questions", label: "Common questions", icon: "❓" },
 ] as const;
 
 const SUPPORT_EMAIL = "jennapark@gatech.edu";
@@ -54,7 +54,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
             const isDashboard = href === "/dashboard";
             const isStories = href === "/stories";
             const isSavedQuestions = href === "/saved-questions";
-            const isQuestions = href === "/questions";
+            const isCommonQuestions = href === "/common-questions";
             const isActive =
               pathname === href ||
               (isDashboard && pathname === "/") ||
@@ -62,7 +62,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
                 pathname?.startsWith("/stories") &&
                 pathname !== "/stories/new") ||
               (isSavedQuestions && pathname?.startsWith("/saved-questions")) ||
-              (isQuestions && pathname?.startsWith("/questions"));
+              (isCommonQuestions && pathname?.startsWith("/common-questions"));
             return (
               <Link
                 key={href + label}
