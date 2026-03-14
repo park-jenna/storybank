@@ -8,16 +8,16 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  email         String         @unique
-  password      String
-  stories       Story[]
-  userQuestions UserQuestion[]
-  createdAt     DateTime       @default(now())
+  id        String     @id @default(uuid())
+  email     String     @unique
+  password  String
+  stories   Story[]
+  questions Question[]
+  createdAt DateTime   @default(now())
 }
 
 model Story {
-  id     String @id @default(uuid())
+  id     String   @id @default(uuid())
   userId String
 
   categories String[]
@@ -27,42 +27,28 @@ model Story {
   result    String
   title     String
 
-  createdAt DateTime @default(now())
-
-  user          User                @relation(fields: [userId], references: [id])
-  questionLinks UserQuestionStory[]
+  createdAt    DateTime       @default(now())
+  questionLinks QuestionStory[]
+  user         User           @relation(fields: [userId], references: [id])
 }
 
 model Question {
-  id       String  @id @default(uuid())
-  content  String
-  isCommon Boolean @default(false)
-
+  id                   String         @id @default(uuid())
+  userId               String
+  content              String
   recommendedCategories String[]
 
-  createdAt     DateTime       @default(now())
-  userQuestions UserQuestion[]
+  createdAt DateTime       @default(now())
+  user      User           @relation(fields: [userId], references: [id])
+  stories   QuestionStory[]
 }
 
-model UserQuestion {
-  id         String @id @default(uuid())
-  userId     String
+model QuestionStory {
+  id         String   @id @default(uuid())
   questionId String
-
-  user     User     @relation(fields: [userId], references: [id])
-  question Question @relation(fields: [questionId], references: [id])
-
-  createdAt           DateTime            @default(now())
-  userQuestionStories UserQuestionStory[]
-}
-
-model UserQuestionStory {
-  id             String @id @default(uuid())
-  userQuestionId String
-  storyId        String
-
-  userQuestion UserQuestion @relation(fields: [userQuestionId], references: [id])
-  story        Story        @relation(fields: [storyId], references: [id])
+  storyId    String
 
   createdAt DateTime @default(now())
+  question  Question @relation(fields: [questionId], references: [id])
+  story     Story    @relation(fields: [storyId], references: [id])
 }

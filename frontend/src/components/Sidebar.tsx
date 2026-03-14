@@ -7,6 +7,7 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: "⌂" },
   { href: "/stories", label: "Stories", icon: "📚" },
   { href: "/stories/new", label: "New Story", icon: "+" },
+  { href: "/saved-questions", label: "Saved Questions", icon: "📋" },
   { href: "/questions", label: "Questions", icon: "❓" },
 ] as const;
 
@@ -52,6 +53,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
           {navItems.map(({ href, label, icon }) => {
             const isDashboard = href === "/dashboard";
             const isStories = href === "/stories";
+            const isSavedQuestions = href === "/saved-questions";
             const isQuestions = href === "/questions";
             const isActive =
               pathname === href ||
@@ -59,6 +61,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
               (isStories &&
                 pathname?.startsWith("/stories") &&
                 pathname !== "/stories/new") ||
+              (isSavedQuestions && pathname?.startsWith("/saved-questions")) ||
               (isQuestions && pathname?.startsWith("/questions"));
             return (
               <Link

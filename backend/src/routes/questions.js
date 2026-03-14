@@ -1,22 +1,19 @@
-// /questions 아래에 붙일 라우트들을 이 파일에서 정의
+// /questions 아래에 붙일 라우트들 (공통 질문 = 백엔드 상수)
 
 const express = require("express");
 const prisma = require("../prisma");
 const { requireAuth } = require("../middleware/auth");
+const { COMMON_QUESTIONS, getCommonQuestionById } = require("../constants/commonQuestions");
 
 const router = express.Router();
 
 /*
  * GET /questions/common
- * 공통 질문만 조회 (isCommon === true). 로그인 없이 호출 가능.
+ * 공통 질문 목록 (백엔드 상수). 로그인 없이 호출 가능.
  */
 router.get("/common", async (req, res) => {
     try {
-        const questions = await prisma.question.findMany({
-            where: { isCommon: true },
-            orderBy: { createdAt: "desc" },
-        });
-        return res.json({ questions });
+        return res.json({ questions: COMMON_QUESTIONS });
     } catch (error) {
         console.error("Error fetching common questions:", error);
         return res.status(500).json({ error: "Internal server error" });
@@ -24,32 +21,26 @@ router.get("/common", async (req, res) => {
 });
 
 /*
-* GET / questions/:id/recommendations
-* :id = question id
-* authenticated user only
-*/
+ * GET /questions/:id/recommendations
+ * :id = common question id (상수 id). 해당 질문의 recommendedCategories로 유저 스토리 추천.
+ */
 router.get("/:id/recommendations", requireAuth, async (req, res) => {
     try {
         const userId = req.user.userId;
         const { id } = req.params;
 
-        // 1) 질문 먼저 찾기
-        const question = await prisma.question.findUnique({
-            where: { id },
-        });
-
+        const question = getCommonQuestionById(id);
         if (!question) {
             return res.status(404).json({ error: "Question not found" });
         }
 
-        // 2) 이 질문의 recommendedCategories 에 해당하는 스토리들 가져오기
+        const recommendedCategories = question.recommendedCategories ?? [];
         const recommendedStories = await prisma.story.findMany({
             where: {
-                userId, // 이 유저의 스토리만
-                // categories 가 question.recommendedCategories 에 해당하는 스토리들
-                categories: question.recommendedCategories.length 
-                ? { hasSome: question.recommendedCategories }
-                : undefined,  // 비어있는 경우 건너뛰기
+                userId,
+                categories: recommendedCategories.length
+                    ? { hasSome: recommendedCategories }
+                    : undefined,
             },
             orderBy: { createdAt: "desc" },
         });
