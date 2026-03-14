@@ -52,3 +52,9 @@ export function getCategoriesForQuestion(questionId: string): string[] {
 export function getQuestionById(questionId: string): InterviewQuestion | null {
   return INTERVIEW_QUESTIONS.find((q) => q.id === questionId) ?? null;
 }
+
+/** Common question id by content (for deep link to Common Questions). */
+export function getCommonQuestionIdByContent(content: string): string | null {
+  const q = INTERVIEW_QUESTIONS.find((q) => q.text === content);
+  return q?.id ?? null;
+}

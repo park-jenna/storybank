@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { fetchUserQuestions, deleteUserQuestion, UserQuestionItem } from "@/lib/user-questions";
+import { getCommonQuestionIdByContent } from "@/constants/interviewQuestions";
 import { Button, Card, Badge, EmptyState } from "@/components/ui";
 
 export default function SavedQuestionsPage() {
@@ -83,15 +84,18 @@ export default function SavedQuestionsPage() {
   };
 
   return (
-    <main className="saved-questions-page">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-        <h1 className="text-2xl font-semibold m-0">Saved Questions</h1>
+    <main className="saved-questions-page page-section">
+      <div className="saved-questions-page-header">
+        <h1 className="saved-questions-page-title">Saved Questions</h1>
         <Link href="/common-questions">
           <Button variant="default">
             View common interview questions
           </Button>
         </Link>
       </div>
+      <p className="saved-questions-page-desc muted">
+        Questions you saved and the stories you linked to answer them.
+      </p>
 
       {loading && <p className="muted mt-6">Loading saved questions...</p>}
 
@@ -157,53 +161,87 @@ export default function SavedQuestionsPage() {
       )}
 
       {!loading && !error && userQuestions.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
-          {userQuestions.map((uq) => (
-            <Card key={uq.id} variant="default" className="block">
-              <div className="flex justify-between items-start mb-2">
-                <span className="text-sm muted">{formatDate(uq.createdAt)}</span>
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center gap-2 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--background-solid)] disabled:opacity-50"
-                  disabled={deletingId === uq.id}
-                  onClick={() => openDeleteConfirm(uq.id)}
-                >
-                  {deletingId === uq.id ? "Deleting..." : "Delete"}
-                </button>
-              </div>
-              <h3 className="text-lg font-semibold mb-2 line-clamp-2">
-                {uq.question.content}
-              </h3>
-              {uq.question.recommendedCategories?.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {uq.question.recommendedCategories.slice(0, 3).map((cat) => (
-                    <Badge key={cat} category={cat} />
-                  ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4 saved-questions-grid">
+          {userQuestions.map((uq) => {
+            const commonId = getCommonQuestionIdByContent(uq.question.content);
+            const maxVisible = 3;
+            const visibleStories = uq.stories.slice(0, maxVisible);
+            const remainingCount = uq.stories.length - maxVisible;
+            return (
+              <Card key={uq.id} variant="default" className="saved-questions-card">
+                <div className="saved-questions-card-header">
+                  <span className="saved-questions-card-date muted">{formatDate(uq.createdAt)}</span>
+                  <button
+                    type="button"
+                    className="saved-questions-card-delete"
+                    disabled={deletingId === uq.id}
+                    onClick={() => openDeleteConfirm(uq.id)}
+                    aria-label="Remove this question from saved list"
+                    title="Remove from saved"
+                  >
+                    {deletingId === uq.id ? (
+                      <span className="saved-questions-card-delete-text">Deleting...</span>
+                    ) : (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                        <path d="M10 11v6M14 11v6" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
-              )}
-              {uq.stories.length > 0 ? (
-                <div className="mt-2">
-                  <p className="text-sm muted mb-1">
-                    Linked stories ({uq.stories.length})
-                  </p>
-                  <ul className="list-none p-0 m-0 space-y-1">
-                    {uq.stories.map((s) => (
-                      <li key={s.id}>
-                        <Link
-                          href={`/stories/${s.id}`}
-                          className="text-sm text-[var(--primary)] hover:underline"
-                        >
-                          {s.title}
-                        </Link>
-                      </li>
+                <h3 className="saved-questions-card-title">
+                  {uq.question.content}
+                </h3>
+                {uq.question.recommendedCategories?.length > 0 && (
+                  <div className="saved-questions-card-badges">
+                    {uq.question.recommendedCategories.slice(0, 4).map((cat) => (
+                      <Badge key={cat} category={cat} />
                     ))}
-                  </ul>
+                  </div>
+                )}
+                <div className="saved-questions-linked">
+                  <div className="saved-questions-linked-head">
+                    <span className="saved-questions-linked-label">
+                      Linked stories
+                      {uq.stories.length > 0 && (
+                        <span className="saved-questions-linked-count">{uq.stories.length}</span>
+                      )}
+                    </span>
+                    {commonId && (
+                      <Link href={`/common-questions?q=${commonId}`} className="saved-questions-linked-cta">
+                        {uq.stories.length > 0 ? "Add more" : "Link stories"}
+                      </Link>
+                    )}
+                  </div>
+                  {uq.stories.length > 0 ? (
+                    <>
+                      <ul className="saved-questions-linked-list" role="list">
+                        {visibleStories.map((s) => (
+                          <li key={s.id}>
+                            <Link href={`/stories/${s.id}`} className="saved-questions-linked-link">
+                              {s.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                      {remainingCount > 0 && (
+                        <p className="saved-questions-linked-more muted">
+                          +{remainingCount} more —{" "}
+                          {commonId && (
+                            <Link href={`/common-questions?q=${commonId}`} className="saved-questions-linked-cta-inline">
+                              manage in Common questions
+                            </Link>
+                          )}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="saved-questions-linked-empty muted">No stories linked yet.</p>
+                  )}
                 </div>
-              ) : (
-                <p className="text-sm muted mt-2">No stories linked yet.</p>
-              )}
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       )}
     </main>
