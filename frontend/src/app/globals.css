@@ -1007,6 +1007,39 @@ html.dark .dashboard-upcoming-card.gradient-3 { background: linear-gradient(135d
   box-shadow: 0 0 0 1px var(--primary);
 }
 
+.questions-list-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.questions-list-item-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.questions-list-item-saved {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #065f46;
+  background: #d1fae5;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.questions-selected-saved-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #065f46;
+  background: #d1fae5;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  margin-bottom: 8px;
+}
+
 /* Main */
 .questions-main {
   min-width: 0;

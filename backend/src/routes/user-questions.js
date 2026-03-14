@@ -48,7 +48,7 @@ router.get("/", requireAuth, async (req, res) => {
 /*
  * POST /user-questions
  * Body: { commonQuestionId: string, storyIds?: string[] }
- * 공통 질문 상수 id로 질문 조회 후, Question 생성 + QuestionStory 생성
+ * 이미 저장된 질문이면 스토리 연결만 갱신, 없으면 새로 생성.
  */
 router.post("/", requireAuth, async (req, res) => {
     try {
@@ -60,13 +60,23 @@ router.post("/", requireAuth, async (req, res) => {
             return res.status(400).json({ error: "Invalid commonQuestionId" });
         }
 
-        const question = await prisma.question.create({
-            data: {
-                userId,
-                content: common.content,
-                recommendedCategories: common.recommendedCategories ?? [],
-            },
+        const existing = await prisma.question.findFirst({
+            where: { userId, content: common.content },
         });
+
+        let question;
+        if (existing) {
+            question = existing;
+            await prisma.questionStory.deleteMany({ where: { questionId: existing.id } });
+        } else {
+            question = await prisma.question.create({
+                data: {
+                    userId,
+                    content: common.content,
+                    recommendedCategories: common.recommendedCategories ?? [],
+                },
+            });
+        }
 
         if (Array.isArray(storyIds) && storyIds.length > 0) {
             await prisma.questionStory.createMany({
@@ -77,7 +87,10 @@ router.post("/", requireAuth, async (req, res) => {
             });
         }
 
-        return res.status(201).json({ userQuestion: question });
+        return res.status(existing ? 200 : 201).json({
+            userQuestion: question,
+            alreadySaved: !!existing,
+        });
     } catch (error) {
         console.error("Error creating user question:", error);
         return res.status(500).json({ error: "Internal server error" });

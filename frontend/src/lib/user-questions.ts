@@ -3,9 +3,11 @@ import { apiGet, apiPost } from "./api";
 export type Question = {
   id: string;
   content: string;
-  isCommon: boolean;
+  isCommon?: boolean;
   recommendedCategories: string[];
-  createdAt: string;
+  createdAt?: string;
+  /** Present when fetched with auth; true if user has saved this question. */
+  alreadySaved?: boolean;
 };
 
 export type Story = {
@@ -35,10 +37,10 @@ export async function fetchUserQuestions(token: string) {
   return apiGet<UserQuestionsResponse>("/user-questions", token);
 }
 
-// 공통 질문 목록 (no auth required)
+// 공통 질문 목록 (로그인 필수). 각 질문에 alreadySaved 포함.
 export type CommonQuestionsResponse = { questions: Question[] };
-export async function fetchCommonQuestions() {
-  return apiGet<CommonQuestionsResponse>("/questions/common");
+export async function fetchCommonQuestions(token: string) {
+  return apiGet<CommonQuestionsResponse>("/questions/common", token);
 }
 
 // 질문별 추천 스토리 (auth required)
@@ -49,7 +51,10 @@ export async function fetchQuestionRecommendations(token: string, questionId: st
 
 // 질문 보관함에 저장 (commonQuestionId = 상수 id, storyIds = 연결할 스토리)
 export type CreateUserQuestionInput = { commonQuestionId: string; storyIds?: string[] };
-export type CreateUserQuestionResponse = { userQuestion: { id: string; userId: string; content: string; recommendedCategories: string[]; createdAt: string } };
+export type CreateUserQuestionResponse = {
+  userQuestion: { id: string; userId: string; content: string; recommendedCategories: string[]; createdAt: string };
+  alreadySaved?: boolean;
+};
 export async function createUserQuestion(token: string, input: CreateUserQuestionInput) {
   return apiPost<CreateUserQuestionResponse>("/user-questions", input, { token });
 }

@@ -24,14 +24,20 @@ function CommonQuestionsContent() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string>("");
   const [selectedStoryIds, setSelectedStoryIds] = useState<Set<string>>(new Set());
   const [showSavePanel, setShowSavePanel] = useState(false);
 
   useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
     async function load() {
       try {
         setError(null);
-        const data = await fetchCommonQuestions();
+        const data = await fetchCommonQuestions(token);
         setQuestions(data.questions);
         if (data.questions.length > 0 && !selectedQuestion) {
           setSelectedQuestion(data.questions[0]);
@@ -43,7 +49,7 @@ function CommonQuestionsContent() {
       }
     }
     load();
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (!selectedQuestion) {
@@ -77,14 +83,22 @@ function CommonQuestionsContent() {
     if (!selectedQuestion) return;
     setSaving(true);
     setSaveSuccess(false);
+    setSaveMessage("");
     try {
-      await createUserQuestion(token, {
+      const res = await createUserQuestion(token, {
         commonQuestionId: selectedQuestion.id,
         storyIds: Array.from(selectedStoryIds),
       });
       setSaveSuccess(true);
+      setSaveMessage(res.alreadySaved ? "Already in your list. Linked stories updated." : "Saved to your questions!");
       setShowSavePanel(false);
-      setTimeout(() => setSaveSuccess(false), 3000);
+      setQuestions((prev) =>
+        prev.map((q) => (q.id === selectedQuestion.id ? { ...q, alreadySaved: true } : q))
+      );
+      setTimeout(() => {
+        setSaveSuccess(false);
+        setSaveMessage("");
+      }, 3000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save.");
     } finally {
@@ -170,7 +184,12 @@ function CommonQuestionsContent() {
                     onClick={() => setSelectedQuestion(q)}
                     className={`questions-list-item ${selectedQuestion?.id === q.id ? "questions-list-item-active" : ""}`}
                   >
-                    {q.content}
+                    <span className="questions-list-item-text">{q.content}</span>
+                    {q.alreadySaved && (
+                      <span className="questions-list-item-saved" aria-label="Saved to your list">
+                        Saved
+                      </span>
+                    )}
                   </button>
                 </li>
               ))}
@@ -181,6 +200,9 @@ function CommonQuestionsContent() {
             {selectedQuestion ? (
               <>
                 <div className="questions-selected-block">
+                  {selectedQuestion.alreadySaved && (
+                    <span className="questions-selected-saved-badge" role="status">Saved to your list</span>
+                  )}
                   <div className="questions-selected-badges">
                     {(selectedQuestion.recommendedCategories ?? []).map((cat) => (
                       <span key={cat} className={`badge ${getBadgeClass(cat)}`}>
@@ -295,7 +317,7 @@ function CommonQuestionsContent() {
                             </Button>
                           </>
                         )}
-                        {saveSuccess && <span className="text-sm text-[var(--accent-green)]">Saved.</span>}
+                        {saveSuccess && saveMessage && <span className="text-sm text-[var(--accent-green)]">{saveMessage}</span>}
                       </div>
                     )}
                   </>

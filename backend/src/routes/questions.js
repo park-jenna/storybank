@@ -9,11 +9,21 @@ const router = express.Router();
 
 /*
  * GET /questions/common
- * 공통 질문 목록 (백엔드 상수). 로그인 없이 호출 가능.
+ * 공통 질문 목록 (백엔드 상수). 로그인 필수. 각 질문에 alreadySaved 포함.
  */
-router.get("/common", async (req, res) => {
+router.get("/common", requireAuth, async (req, res) => {
     try {
-        return res.json({ questions: COMMON_QUESTIONS });
+        const userId = req.user.userId;
+        const saved = await prisma.question.findMany({
+            where: { userId },
+            select: { content: true },
+        });
+        const savedContents = new Set(saved.map((q) => q.content));
+        const questions = COMMON_QUESTIONS.map((q) => ({
+            ...q,
+            alreadySaved: savedContents.has(q.content),
+        }));
+        return res.json({ questions });
     } catch (error) {
         console.error("Error fetching common questions:", error);
         return res.status(500).json({ error: "Internal server error" });
