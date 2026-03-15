@@ -1,15 +1,17 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
   fetchCommonQuestions,
   fetchQuestionRecommendations,
+  fetchUserQuestions,
   createUserQuestion,
   type Question,
   type Story,
+  type UserQuestionItem,
 } from "@/lib/user-questions";
 import { getBadgeClass } from "@/constants/categories";
 import { Button, Card, Badge, EmptyState } from "@/components/ui";
@@ -17,6 +19,7 @@ import { Button, Card, Badge, EmptyState } from "@/components/ui";
 function CommonQuestionsContent() {
   const router = useRouter();
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [userQuestions, setUserQuestions] = useState<UserQuestionItem[]>([]);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [recommendedStories, setRecommendedStories] = useState<Story[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
@@ -38,10 +41,14 @@ function CommonQuestionsContent() {
           router.replace("/login");
           return;
         }
-        const data = await fetchCommonQuestions(token);
-        setQuestions(data.questions);
-        if (data.questions.length > 0 && !selectedQuestion) {
-          setSelectedQuestion(data.questions[0]);
+        const [commonData, userData] = await Promise.all([
+          fetchCommonQuestions(token),
+          fetchUserQuestions(token),
+        ]);
+        setQuestions(commonData.questions);
+        setUserQuestions(userData.userQuestions ?? []);
+        if (commonData.questions.length > 0 && !selectedQuestion) {
+          setSelectedQuestion(commonData.questions[0]);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load questions.");
@@ -76,6 +83,21 @@ function CommonQuestionsContent() {
       .finally(() => setLoadingRecommendations(false));
   }, [selectedQuestion?.id]);
 
+  // 저장된 질문일 때 해당 질문에 연결된 스토리 (content 기준 매칭)
+  const linkedStories = useMemo(() => {
+    if (!selectedQuestion?.alreadySaved || userQuestions.length === 0) return [];
+    const uq = userQuestions.find((uq) => uq.question.content === selectedQuestion.content);
+    return uq?.stories ?? [];
+  }, [selectedQuestion?.content, selectedQuestion?.alreadySaved, userQuestions]);
+
+  const linkedStoryIds = useMemo(() => new Set(linkedStories.map((s) => s.id)), [linkedStories]);
+
+  // Recommended에서 이미 연결된 스토리 제외 (중복 표시 방지)
+  const recommendedStoriesFiltered = useMemo(
+    () => recommendedStories.filter((s) => !linkedStoryIds.has(s.id)),
+    [recommendedStories, linkedStoryIds]
+  );
+
   const handleSaveToMyQuestions = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -97,6 +119,9 @@ function CommonQuestionsContent() {
       setQuestions((prev) =>
         prev.map((q) => (q.id === selectedQuestion.id ? { ...q, alreadySaved: true } : q))
       );
+      // 연결된 스토리 목록 갱신을 위해 보관함 다시 로드
+      const refreshed = await fetchUserQuestions(token);
+      setUserQuestions(refreshed.userQuestions ?? []);
       setTimeout(() => {
         setSaveSuccess(false);
         setSaveMessage("");
@@ -236,14 +261,66 @@ function CommonQuestionsContent() {
                   </Card>
                 ) : (
                   <>
-                    <section className="questions-recommended-section" aria-labelledby="recommended-stories-heading">
+                    {selectedQuestion.alreadySaved && (
+                      <section className="questions-linked-section mt-4" aria-labelledby="linked-stories-heading">
+                        <div className="questions-recommended-header">
+                          <h3 id="linked-stories-heading" className="questions-stories-title">
+                            Linked stories
+                            <span className="questions-stories-count">{linkedStories.length}</span>
+                          </h3>
+                          <p className="questions-recommended-desc">
+                            Stories you linked to this question. These are the ones you plan to use when answering.
+                          </p>
+                        </div>
+                        {linkedStories.length === 0 ? (
+                          <p className="muted text-sm">No stories linked yet. Use &quot;Change linked stories&quot; below to link stories.</p>
+                        ) : (
+                          <ul className="questions-stories-grid mt-2">
+                            {linkedStories.map((s) => {
+                              const matchingCategories = (selectedQuestion?.recommendedCategories ?? []).filter(
+                                (c) => s.categories.includes(c)
+                              );
+                              return (
+                                <li key={s.id}>
+                                  <Link href={`/stories/${s.id}`} className="questions-story-link">
+                                    <article className="questions-story-card questions-story-card--linked">
+                                      <div className="questions-story-card-top">
+                                        <h4 className="questions-story-card-title">{s.title}</h4>
+                                        <time className="questions-story-card-date">{formatDate(s.createdAt)}</time>
+                                      </div>
+                                      {matchingCategories.length > 0 && (
+                                        <p className="questions-story-match-hint">
+                                          Matches: {matchingCategories.join(", ")}
+                                        </p>
+                                      )}
+                                      <p className="questions-story-card-summary">
+                                        {s.result || s.situation || "No summary"}
+                                      </p>
+                                      <div className="questions-story-card-badges">
+                                        {s.categories.slice(0, 3).map((c) => (
+                                          <Badge key={c} category={c} />
+                                        ))}
+                                      </div>
+                                      <span className="questions-story-card-cta">View story →</span>
+                                    </article>
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        )}
+                      </section>
+                    )}
+                    <section className="questions-recommended-section mt-4" aria-labelledby="recommended-stories-heading">
                       <div className="questions-recommended-header">
                         <h3 id="recommended-stories-heading" className="questions-stories-title">
-                          Recommended stories
-                          <span className="questions-stories-count">{recommendedStories.length}</span>
+                          {selectedQuestion.alreadySaved ? "More stories to link" : "Recommended stories"}
+                          <span className="questions-stories-count">{recommendedStoriesFiltered.length}</span>
                         </h3>
                         <p className="questions-recommended-desc">
-                          Your stories that match this question’s categories. Link the ones you want to use when answering.
+                          {selectedQuestion.alreadySaved
+                            ? "Other stories that match this question's categories. Link more to use when answering."
+                            : "Your stories that match this question's categories. Link the ones you want to use when answering."}
                         </p>
                       </div>
 
@@ -261,23 +338,32 @@ function CommonQuestionsContent() {
                         </ul>
                       )}
 
-                      {!loadingRecommendations && recommendedStories.length === 0 && (
+                      {!loadingRecommendations && recommendedStoriesFiltered.length === 0 && (
                         <EmptyState
                           icon="📚"
-                          title="No matching stories"
-                          description="You don't have any stories tagged with these categories yet. Add categories to your stories to see them here."
+                          title={selectedQuestion.alreadySaved ? "No other matching stories" : "No matching stories"}
+                          description={
+                            selectedQuestion.alreadySaved
+                              ? "You've linked all matching stories, or no other stories match these categories yet."
+                              : "You don't have any stories tagged with these categories yet. Add categories to your stories to see them here."
+                          }
                           action={
-                            <Button variant="primary" className="mt-4" onClick={() => router.push("/stories/new")}>
-                              + New Story
-                            </Button>
+                            !selectedQuestion.alreadySaved ? (
+                              <Button variant="primary" className="mt-4" onClick={() => router.push("/stories/new")}>
+                                + New Story
+                              </Button>
+                            ) : undefined
                           }
                         />
                       )}
 
-                      {!loadingRecommendations && recommendedStories.length > 0 && (
+                      {!loadingRecommendations && recommendedStoriesFiltered.length > 0 && (
                         <>
                           <ul className="questions-stories-grid mt-2">
-                            {recommendedStories.map((s) => {
+                            {(showSavePanel && selectedQuestion.alreadySaved
+                              ? [...linkedStories, ...recommendedStoriesFiltered]
+                              : recommendedStoriesFiltered
+                            ).map((s) => {
                               const matchingCategories = (selectedQuestion?.recommendedCategories ?? []).filter(
                                 (c) => s.categories.includes(c)
                               );
@@ -369,7 +455,12 @@ function CommonQuestionsContent() {
                             {!showSavePanel ? (
                               <Button
                                 variant="primary"
-                                onClick={() => setShowSavePanel(true)}
+                                onClick={() => {
+                                  setShowSavePanel(true);
+                                  if (selectedQuestion.alreadySaved) {
+                                    setSelectedStoryIds(new Set(linkedStories.map((s) => s.id)));
+                                  }
+                                }}
                               >
                                 {selectedQuestion.alreadySaved
                                   ? "Change linked stories"

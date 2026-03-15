@@ -1621,6 +1621,17 @@ html.dark .dashboard-upcoming-card.gradient-3 { background: linear-gradient(145d
   margin: 0;
 }
 
+/* Linked stories (saved question) section */
+.questions-linked-section {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.questions-story-card--linked {
+  border-left: 3px solid var(--primary);
+}
+
 /* Recommended stories section wrapper */
 .questions-recommended-section {
   margin-top: 1.5rem;
