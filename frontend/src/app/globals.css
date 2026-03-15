@@ -1781,14 +1781,50 @@ html.dark .dashboard-upcoming-card.gradient-3 { background: linear-gradient(145d
   box-shadow: var(--shadow-md), 0 0 0 1px var(--primary);
 }
 
-.questions-story-card-checkbox {
-  width: 18px;
-  height: 18px;
+/* Select toggle: + / ✓ circle button (replaces checkbox) */
+.questions-story-select-toggle-btn {
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
   margin: 0;
-  margin-top: 2px;
-  accent-color: var(--primary);
+  padding: 0;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--muted);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--transition), background-color var(--transition), color var(--transition), transform var(--transition);
+}
+
+.questions-story-select-toggle-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+}
+
+.questions-story-select-toggle-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.questions-story-select-toggle-btn--selected {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.questions-story-select-toggle-btn--selected:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.questions-story-select-toggle-btn-icon {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1;
 }
 
 /* Select panel: accordion-style story list (title only, expand for details) */

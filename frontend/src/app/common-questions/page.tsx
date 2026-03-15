@@ -288,13 +288,17 @@ function CommonQuestionsContent() {
                                       className={`questions-story-select-card ${selectedStoryIds.has(s.id) ? "questions-story-select-card--selected" : ""}`}
                                     >
                                       <div className="questions-story-select-row">
-                                        <input
-                                          type="checkbox"
-                                          checked={selectedStoryIds.has(s.id)}
-                                          onChange={() => toggleStorySelection(s.id)}
-                                          className="questions-story-card-checkbox"
-                                          aria-label={`Link "${s.title}" to this question`}
-                                        />
+                                        <button
+                                          type="button"
+                                          onClick={() => toggleStorySelection(s.id)}
+                                          className={`questions-story-select-toggle-btn ${selectedStoryIds.has(s.id) ? "questions-story-select-toggle-btn--selected" : ""}`}
+                                          aria-pressed={selectedStoryIds.has(s.id)}
+                                          aria-label={selectedStoryIds.has(s.id) ? `Unlink "${s.title}" from this question` : `Link "${s.title}" to this question`}
+                                        >
+                                          <span className="questions-story-select-toggle-btn-icon" aria-hidden>
+                                            {selectedStoryIds.has(s.id) ? "✓" : "+"}
+                                          </span>
+                                        </button>
                                         <button
                                           type="button"
                                           className="questions-story-select-toggle"
