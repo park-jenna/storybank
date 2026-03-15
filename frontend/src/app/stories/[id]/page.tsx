@@ -13,13 +13,12 @@ import { getQuestionsForCategories } from "@/constants/interviewQuestions";
 import { Button, Card } from "@/components/ui";
 import Link from "next/link";
 
-function storyCompletion(story: Story) {
-  let filled = 0;
-  if (story.situation?.trim()) filled++;
-  if (story.action?.trim()) filled++;
-  if (story.result?.trim()) filled++;
-  const percent = Math.round((filled / 3) * 100);
-  return { filled, percent };
+function starStatus(story: Story) {
+  return {
+    situation: !!story.situation?.trim(),
+    action: !!story.action?.trim(),
+    result: !!story.result?.trim(),
+  };
 }
 
 export default function StoryDetailPage() {
@@ -95,7 +94,12 @@ export default function StoryDetailPage() {
     );
   }
 
-  const { filled, percent } = storyCompletion(story);
+  const status = starStatus(story);
+  const missingSections = [
+    !status.situation && "Situation & Task",
+    !status.action && "Action",
+    !status.result && "Result",
+  ].filter(Boolean) as string[];
 
   return (
     <main className="page-section">
@@ -131,21 +135,17 @@ export default function StoryDetailPage() {
         <h1 className="story-detail-title">{story.title}</h1>
 
         <div className="story-detail-meta">
-          <div className="story-detail-meta-top">
-            <p className="muted story-detail-date">
-              Created: {new Date(story.createdAt).toLocaleDateString()}
-            </p>
-            <span className="story-detail-progress-text">
-              Completion: {filled}/3 sections ({percent}%)
-            </span>
-          </div>
-
-          <div className="story-detail-progress-bar">
-            <div
-              className="story-detail-progress-fill"
-              style={{ width: `${percent}%` }}
-            />
-          </div>
+          <p className="muted story-detail-date">
+            Created: {new Date(story.createdAt).toLocaleDateString()}
+          </p>
+          <p
+            className={`story-detail-star-status ${missingSections.length > 0 ? "story-detail-star-status--missing" : ""}`}
+            aria-label="STAR sections status"
+          >
+            {missingSections.length === 0
+              ? "STAR complete"
+              : `Missing: ${missingSections.join(", ")}`}
+          </p>
 
           <div className="story-detail-categories">
             {story.categories.map((c) => (
@@ -164,7 +164,10 @@ export default function StoryDetailPage() {
       <section className="story-detail-star">
         <div className="story-detail-star-grid">
           {/* Situation & Task */}
-          <div className="story-detail-star-card">
+          <div
+            className={`story-detail-star-card ${!status.situation ? "story-detail-star-card--missing" : ""}`}
+            aria-invalid={!status.situation}
+          >
             <div className="story-detail-star-label-row">
               <div className="story-detail-star-label">1. Situation &amp; Task</div>
               <span className="story-detail-step">Context &amp; goal</span>
@@ -181,7 +184,10 @@ export default function StoryDetailPage() {
           </div>
 
           {/* Action */}
-          <div className="story-detail-star-card">
+          <div
+            className={`story-detail-star-card ${!status.action ? "story-detail-star-card--missing" : ""}`}
+            aria-invalid={!status.action}
+          >
             <div className="story-detail-star-label-row">
               <div className="story-detail-star-label">2. Action</div>
               <span className="story-detail-step">What you did</span>
@@ -198,7 +204,10 @@ export default function StoryDetailPage() {
           </div>
 
           {/* Result */}
-          <div className="story-detail-star-card">
+          <div
+            className={`story-detail-star-card ${!status.result ? "story-detail-star-card--missing" : ""}`}
+            aria-invalid={!status.result}
+          >
             <div className="story-detail-star-label-row">
               <div className="story-detail-star-label">3. Result</div>
               <span className="story-detail-step">Impact &amp; learning</span>

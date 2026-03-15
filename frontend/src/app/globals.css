@@ -2100,14 +2100,7 @@ html.dark .story-detail-title {
   margin-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.story-detail-meta-top {
-  display: flex;
-  flex-wrap: wrap;
   gap: 12px;
-  align-items: center;
 }
 
 .story-detail-date {
@@ -2115,9 +2108,20 @@ html.dark .story-detail-title {
   font-size: 15px;
 }
 
-.story-detail-progress-text {
+.story-detail-star-status {
+  margin: 0;
   font-size: 15px;
-  color: var(--muted);
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.story-detail-star-status--missing {
+  color: #a16207;
+  font-weight: 600;
+}
+
+html.dark .story-detail-star-status--missing {
+  color: #facc15;
 }
 
 .story-detail-progress-bar {
@@ -2220,6 +2224,18 @@ html.dark .story-detail-title {
   border: 1px solid var(--border-light);
   padding: 18px 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.story-detail-star-card--missing {
+  border-color: rgba(234, 179, 8, 0.6);
+  background: rgba(234, 179, 8, 0.06);
+  box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.2);
+}
+
+html.dark .story-detail-star-card--missing {
+  border-color: rgba(234, 179, 8, 0.5);
+  background: rgba(234, 179, 8, 0.08);
+  box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.25);
 }
 
 .story-detail-star-label-row {
