@@ -1,14 +1,16 @@
 # StoryBank
 
-Save and organize behavioral interview stories. Create, edit, and refine your STAR-method responses (Situation/Task, Action, Result) for job interviews.
+A full-stack web app for preparing behavioral interviews. Create and organize STAR-method stories (Situation/Task, Action, Result), save common interview questions, and link questions to the stories you’ll use to answer them—all in one place.
 
 ## Features
 
 - **User accounts** — Sign up and log in with email; JWT-based authentication
-- **Story management** — Create, read, update, and delete your own stories
-- **STAR format** — Structure stories with Situation/Task, Action, and Result sections
+- **Story management** — Create, read, update, and delete your own STAR stories
+- **STAR format** — Structure each story with Situation/Task, Action, and Result
 - **Categories** — Tag stories with behavioral categories (Leadership, Teamwork, Problem Solving, etc.)
-- **Dashboard** — View and manage all your stories in one place
+- **Common questions** — Browse a curated list of interview questions with recommended categories; save any question to your collection and link one or more stories as answers
+- **Saved questions** — Manage your saved questions and their story mappings in one place
+- **Dashboard** — Overview of story completion, saved questions progress, category breakdown, and a “stories to complete” list for quick follow-up
 
 ## Live Demo & Test Account
 
@@ -19,7 +21,7 @@ Save and organize behavioral interview stories. Create, edit, and refine your ST
 
 ## Screenshots
 
-**Dashboard** — View and manage all your stories in one place.
+**Dashboard** — Stories and saved questions at a glance, with completion progress and category breakdown.
 
 <img src="img/dashboard.png" width="600" alt="Dashboard" />
 
@@ -29,56 +31,62 @@ Save and organize behavioral interview stories. Create, edit, and refine your ST
 
 ## Tech Stack
 
-| Layer      | Tech                         |
-|-----------|------------------------------|
-| Frontend  | Next.js 16, React 19, TypeScript, Tailwind CSS |
-| Backend   | Express.js, Node.js          |
-| Database  | PostgreSQL, Prisma ORM       |
-| Auth      | JWT, bcrypt                  |
-| Validation| Zod                          |
+| Layer       | Tech                                              |
+|------------|----------------------------------------------------|
+| Frontend   | Next.js 16, React 19, TypeScript, Tailwind CSS     |
+| Backend    | Express.js, Node.js                               |
+| Database   | PostgreSQL, Prisma ORM                            |
+| Auth       | JWT, bcrypt                                       |
+| Validation | Zod                                               |
 
-## Database Models (Prisma)
+## Database Schema (Prisma)
 
 - **User**
   - `id`, `email`, `password`, `createdAt`
-  - Relations: `stories`, `userQuestions`
+  - Relations: `stories`, `questions`
 - **Story**
-  - `id`, `userId`, `categories[]`, `situation`, `action`, `result`, `title`, `createdAt`
-  - Relations: `user`, `questionLinks`
+  - `id`, `userId`, `title`, `categories[]`, `situation`, `action`, `result`, `createdAt`
+  - Relations: `user`, `questionLinks` (QuestionStory)
 - **Question**
-  - `id`, `content`, `isCommon`, `recommendedCategories[]`, `createdAt`
-  - Used for common interview questions and their recommended story categories.
-- **UserQuestion**
-  - `id`, `userId`, `questionId`, `createdAt`
-  - A question saved into a specific user's personal collection.
-- **UserQuestionStory**
-  - `id`, `userQuestionId`, `storyId`, `createdAt`
-  - Connects a saved question with one or more stories the user wants to use as answers.
+  - `id`, `userId`, `content`, `recommendedCategories[]`, `createdAt`
+  - User-owned; created when a user saves a question from the common list (or adds their own).
+  - Relations: `user`, `stories` (via QuestionStory)
+- **QuestionStory**
+  - `id`, `questionId`, `storyId`, `createdAt`
+  - Links a saved question to one or more stories the user plans to use as answers.
 
 ## Project Structure
 
 ```
 storybank/
-├── frontend/          # Next.js app
+├── frontend/                 # Next.js app
 │   ├── src/
-│   │   ├── app/       # Pages (login, signup, dashboard, stories)
-│   │   ├── constants/ # Categories and badges
-│   │   └── lib/       # API client, auth helpers
+│   │   ├── app/              # Routes & pages
+│   │   │   ├── dashboard/    # Overview, progress, stories to complete
+│   │   │   ├── common-questions/  # Browse & save questions, link stories
+│   │   │   ├── saved-questions/   # My saved questions & story links
+│   │   │   ├── stories/      # List, new, edit, detail
+│   │   │   ├── login/, signup/
+│   │   │   └── page.tsx      # Landing
+│   │   ├── components/       # UI components
+│   │   ├── constants/        # Categories, common question definitions
+│   │   └── lib/              # API client, auth, stories, user-questions
 │   └── ...
-├── backend/           # Express API
+├── backend/                  # Express API
 │   ├── src/
-│   │   ├── routes/    # auth, stories
-│   │   ├── middleware/# auth middleware
-│   │   ├── schemas/   # Zod validation
-│   │   └── utils/     # JWT helpers
-│   └── prisma/        # Schema and migrations
+│   │   ├── routes/           # auth, stories, questions, user-questions
+│   │   ├── middleware/       # auth (JWT)
+│   │   ├── schemas/          # Zod validation
+│   │   ├── constants/        # commonQuestions (content + recommendedCategories)
+│   │   └── utils/            # JWT helpers
+│   └── prisma/               # Schema & migrations
 └── README.md
 ```
 
 ## Prerequisites
 
 - Node.js (v18+)
-- PostgreSQL database
+- PostgreSQL
 
 ## Setup
 
@@ -109,7 +117,7 @@ Start the server:
 npm run dev
 ```
 
-The API runs at `http://localhost:4000`.
+API base: `http://localhost:4000`.
 
 ### 2. Frontend
 
@@ -130,23 +138,28 @@ Start the dev server:
 npm run dev
 ```
 
-The app runs at `http://localhost:3000`.
+App: `http://localhost:3000`.
 
 ## API Overview
 
-| Method | Endpoint         | Auth | Description              |
-|--------|------------------|------|--------------------------|
-| GET    | `/health`        | No   | Health check             |
-| POST   | `/auth/signup`   | No   | Register (email, password) |
-| POST   | `/auth/login`    | No   | Login (email, password)  |
-| GET    | `/stories`       | Yes  | List user's stories      |
-| GET    | `/stories/:id`   | Yes  | Get single story         |
-| POST   | `/stories`       | Yes  | Create story             |
-| PATCH  | `/stories/:id`   | Yes  | Update story             |
-| DELETE | `/stories/:id`   | Yes  | Delete story             |
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/health` | No | Health check |
+| POST | `/auth/signup` | No | Register (email, password) |
+| POST | `/auth/login` | No | Login (email, password) |
+| GET | `/stories` | Yes | List current user's stories |
+| GET | `/stories/:id` | Yes | Get one story |
+| POST | `/stories` | Yes | Create story |
+| PATCH | `/stories/:id` | Yes | Update story |
+| DELETE | `/stories/:id` | Yes | Delete story |
+| GET | `/questions/common` | Yes | List common questions (with `alreadySaved` per question) |
+| GET | `/questions/:id/recommendations` | Yes | Recommended stories for a common question (by category) |
+| GET | `/user-questions` | Yes | List user's saved questions and linked stories |
+| POST | `/user-questions` | Yes | Save a common question (by `commonQuestionId`) and optionally link `storyIds` |
+| DELETE | `/user-questions/:id` | Yes | Delete a saved question and its story links |
 
-Stories require: `title`, `categories`, `situation`, `action`, `result`.
+Stories request body: `title`, `categories`, `situation`, `action`, `result`.
 
 ## License
 
-Demo project built for learning and portfolio purposes.
+Built for learning and portfolio use.
