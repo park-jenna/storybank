@@ -1,17 +1,18 @@
-// Dashboard - MeetCraft-style layout: top card grid, upcoming row, then all stories
+// Dashboard - Overview, in-progress stories, quick links
+// Design: visual hierarchy, consistency, scannability, accessibility
 
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { fetchStories, Story } from "@/lib/stories";
+import { fetchUserQuestions, UserQuestionItem } from "@/lib/user-questions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CATEGORIES, getBadgeClass, getChartColor } from "@/constants/categories";
+import { getChartColor } from "@/constants/categories";
 import {
+  Badge,
   Button,
   Card,
-  Chip,
-  Badge,
   EmptyState,
 } from "@/components/ui";
 
@@ -23,14 +24,31 @@ function storyProgress(s: Story): number {
   return Math.round((n / 3) * 100);
 }
 
+function isCompleted(s: Story): boolean {
+  return storyProgress(s) === 100;
+}
+
+function SeeAllLink({
+  href,
+  label,
+}: {
+  href: string;
+  label: string;
+}) {
+  return (
+    <Link href={href} className="dashboard-see-all" aria-label={`${label}, open list`}>
+      {label}
+      <span className="dashboard-see-all-arrow" aria-hidden>→</span>
+    </Link>
+  );
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [stories, setStories] = useState<Story[]>([]);
+  const [userQuestions, setUserQuestions] = useState<UserQuestionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const ALL = "All" as const;
-  const [selectedCategory, setSelectedCategory] = useState<string>(ALL);
 
   useEffect(() => {
     async function load() {
@@ -42,8 +60,12 @@ export default function DashboardPage() {
           router.replace("/login");
           return;
         }
-        const data = await fetchStories(token);
-        setStories(data.stories);
+        const [storiesRes, uqRes] = await Promise.all([
+          fetchStories(token),
+          fetchUserQuestions(token),
+        ]);
+        setStories(storiesRes.stories);
+        setUserQuestions(uqRes.userQuestions);
       } catch (err) {
         const msg =
           err instanceof Error ? err.message : "Failed to load stories.";
@@ -53,15 +75,9 @@ export default function DashboardPage() {
       }
     }
     load();
-  }, []);
-
-  const filteredStories = useMemo(() => {
-    if (selectedCategory === ALL) return stories;
-    return stories.filter((s) => s.categories.includes(selectedCategory));
-  }, [stories, selectedCategory]);
+  }, [router]);
 
   const hasAnyStories = stories.length > 0;
-  const hasFilteredStories = filteredStories.length > 0;
 
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -102,21 +118,20 @@ export default function DashboardPage() {
     [categoryCounts]
   );
 
-  const recentStories = useMemo(
-    () =>
-      [...stories]
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt || 0).getTime() -
-            new Date(a.createdAt || 0).getTime()
-        )
-        .slice(0, 4),
+  const questionsWithoutStory = useMemo(
+    () => userQuestions.filter((uq) => uq.stories.length === 0),
+    [userQuestions]
+  );
+
+  const completedCount = useMemo(
+    () => stories.filter(isCompleted).length,
     [stories]
   );
 
-  const upcomingRowStories = useMemo(
+  const inProgressStories = useMemo(
     () =>
       [...stories]
+        .filter((s) => storyProgress(s) < 100)
         .sort(
           (a, b) =>
             new Date(b.createdAt || 0).getTime() -
@@ -126,18 +141,19 @@ export default function DashboardPage() {
     [stories]
   );
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-    return `${Math.floor(diffDays / 365)} years ago`;
-  };
+  const recentRowStories = useMemo(
+    () =>
+      inProgressStories.length > 0
+        ? inProgressStories
+        : [...stories]
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt || 0).getTime() -
+                new Date(a.createdAt || 0).getTime()
+            )
+            .slice(0, 6),
+    [stories, inProgressStories]
+  );
 
   const gradientClass = (i: number) => {
     const classes = ["gradient-1", "gradient-2", "gradient-3"];
@@ -145,165 +161,151 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="dashboard-page">
-      {loading && (
-        <p className="muted mt-6">Loading stories...</p>
-      )}
+    <main className="dashboard-page" role="main" aria-label="Dashboard overview">
+      <div className="dashboard-container">
+        <header className="dashboard-header">
+          <h1 className="dashboard-title">Overview</h1>
+          <p className="dashboard-subtitle">
+            Your STAR stories at a glance
+          </p>
+        </header>
 
-      {!loading && !error && (
-        <>
-          {/* Top card grid - MeetCraft style */}
-          <div className="dashboard-grid-top">
-            {/* Overview card - wider, Top categories to the right of chart */}
-            <Card variant="overview" className="dashboard-card dashboard-card-overview">
-              <div className="overview-card-inner">
-                <h2 className="dashboard-card-title">
-                  Overview
-                  <Link href="/dashboard" className="see-all text-[14px]">
-                    See All
-                  </Link>
-                </h2>
-                <div className="overview-chart-row">
-                  <div className="relative w-[120px] h-[120px] shrink-0">
-                    {categorySegments.length > 0 ? (
-                      <div
-                        className="absolute inset-0 w-[120px] h-[120px] rounded-full z-0"
-                        style={{
-                          background: `conic-gradient(${categorySegments
-                            .map((s) => `${s.color} ${s.start}% ${s.end}%`)
-                            .join(", ")})`,
-                        }}
-                        aria-hidden
-                      />
-                    ) : (
-                      <div
-                        className="absolute inset-0 w-[120px] h-[120px] rounded-full bg-[var(--border-light)] z-0"
-                        aria-hidden
-                      />
-                    )}
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[72px] h-[72px] rounded-full bg-[var(--card)] flex flex-col items-center justify-center shadow-[0_0_0_2px_var(--border-light)] z-[1]">
-                      <span className="text-2xl font-extrabold leading-none text-[var(--foreground)]">
-                        {stories.length}
-                      </span>
-                      <span className="muted text-xs mt-0.5">Stories</span>
-                    </div>
-                  </div>
-                  <div className="flex gap-6 flex-wrap">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-xl font-bold text-[var(--foreground)]">
-                        {stories.length}
-                      </span>
-                      <span className="muted text-sm">Saved</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-xl font-bold text-[var(--foreground)]">
-                        {Object.keys(categoryCounts).length}
-                      </span>
-                      <span className="muted text-sm">Categories</span>
-                    </div>
-                  </div>
-                </div>
-                {topCategories.length > 0 && (
-                  <div className="overview-top-section">
-                    <span className="muted text-sm">Top:</span>
-                    <div className="overview-chips">
-                      {topCategories.map((cat) => (
-                        <Chip
-                          key={cat}
-                          selected={selectedCategory === cat}
-                          onClick={() => setSelectedCategory(cat)}
-                        >
-                          {cat}
-                        </Chip>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Card>
+        {loading && (
+          <div className="dashboard-loading" aria-live="polite" aria-busy="true">
+            <div className="dashboard-loading-spinner" aria-hidden />
+            <p className="dashboard-loading-text muted">Loading stories...</p>
+          </div>
+        )}
 
-            {/* Recent Stories list card */}
-            <div className="dashboard-card">
-              <h2 className="dashboard-card-title">
-                Recent Stories
-                <Link href="/dashboard" className="see-all text-[14px]">
-                  See All
-                </Link>
-              </h2>
-              <ul className="list-none p-0 m-0 space-y-2">
-                {recentStories.slice(0, 3).map((s) => (
-                  <li key={s.id}>
-                    <Link
-                      href={`/stories/${s.id}`}
-                      className="no-underline text-inherit flex flex-col gap-0.5 py-2 px-0 rounded-lg hover:bg-[var(--border-light)]/50 transition-colors"
-                    >
-                      <span className="text-[var(--foreground)] font-medium text-sm line-clamp-1">
-                        {s.title}
-                      </span>
-                      <span className="muted text-xs">
-                        {s.createdAt ? formatDate(s.createdAt) : "Recently"}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-                {recentStories.length === 0 && (
-                  <li className="muted text-sm py-2">No stories yet.</li>
-                )}
-              </ul>
-              <Link
-                href="/stories/new"
-                className="dashboard-add-story-link"
+        {!loading && !error && hasAnyStories && (
+          <>
+            <section
+              className="dashboard-grid-top"
+              aria-labelledby="dashboard-stats-heading"
+            >
+              <Card
+                variant="overview"
+                className="dashboard-card"
               >
-                + New Story
-              </Link>
-            </div>
-
-            {/* By category / Projects worked style */}
-            <div className="dashboard-card">
-              <h2 className="dashboard-card-title">
-                By Category
-                <Link href="/stories" className="see-all text-[14px]">
-                  See All
-                </Link>
-              </h2>
-              <div className="flex flex-col gap-2">
-                {categorySegments.length > 0 ? (
-                  categorySegments.slice(0, 4).map((seg) => (
-                    <div
-                      key={seg.name}
-                      className="flex items-center justify-between text-sm"
+                <div className="overview-card-inner">
+                  <div className="dashboard-card-title-row">
+                    <h2
+                      id="dashboard-stats-heading"
+                      className="dashboard-card-title"
                     >
-                      <span className="flex items-center gap-2">
-                        <span
-                          className="w-2.5 h-2.5 rounded-full shrink-0"
-                          style={{ background: seg.color }}
-                        />
-                        <span className="text-[var(--foreground)] truncate max-w-[120px]">
-                          {seg.name}
+                      Your stories
+                    </h2>
+                    <SeeAllLink href="/stories" label="See all" />
+                  </div>
+                  <div className="overview-stats-wrap">
+                    <div className="overview-stats-grid">
+                      <div className="overview-stat overview-stat-primary">
+                        <span className="overview-stat-value" aria-label={`${stories.length} total stories`}>
+                          {stories.length}
                         </span>
-                      </span>
-                      <span className="muted font-medium">{seg.count}</span>
+                        <span className="overview-stat-label muted">Total stories</span>
+                      </div>
+                      <div className="overview-stat">
+                        <span className="overview-stat-value">{completedCount}</span>
+                        <span className="overview-stat-label muted">Completed</span>
+                      </div>
+                      <div className="overview-stat">
+                        <span className="overview-stat-value">
+                          {stories.length - completedCount}
+                        </span>
+                        <span className="overview-stat-label muted">In progress</span>
+                      </div>
+                      <div className="overview-stat">
+                        <span className="overview-stat-value">
+                          {Object.keys(categoryCounts).length}
+                        </span>
+                        <span className="overview-stat-label muted">Categories</span>
+                      </div>
                     </div>
+                  </div>
+                  <div className="overview-top-section">
+                    <span className="overview-top-label muted">Top categories</span>
+                    {topCategories.length > 0 ? (
+                      <div className="overview-chips">
+                        {topCategories.map((cat) => (
+                          <span
+                            key={cat}
+                            className="overview-chip"
+                            style={{ "--chip-color": getChartColor(cat) } as React.CSSProperties}
+                          >
+                            {cat}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="overview-top-empty muted">Tag your stories with categories to see them here.</p>
+                    )}
+                  </div>
+                  <Link href="/stories/new" className="overview-cta-link">
+                    <span className="overview-cta-icon" aria-hidden>+</span>
+                    New story
+                  </Link>
+                </div>
+              </Card>
+
+                <Card className="dashboard-card dashboard-card-category">
+                <div className="dashboard-card-title-row">
+                  <h2 className="dashboard-card-title">By category</h2>
+                  <SeeAllLink href="/stories" label="See all" />
+                </div>
+              <div className="dashboard-category-list">
+                {categorySegments.length > 0 ? (
+                  categorySegments.slice(0, 5).map((seg) => (
+                    <Link
+                      key={seg.name}
+                      href={`/stories?category=${encodeURIComponent(seg.name)}`}
+                      className="dashboard-category-row"
+                      style={{ "--cat-color": seg.color } as React.CSSProperties}
+                    >
+                      <span className="dashboard-category-dot" aria-hidden />
+                      <span className="dashboard-category-name truncate">
+                        {seg.name}
+                      </span>
+                      <span className="dashboard-category-count muted">
+                        {seg.count} {seg.count === 1 ? "story" : "stories"}
+                      </span>
+                      <span className="dashboard-category-arrow" aria-hidden>→</span>
+                    </Link>
                   ))
                 ) : (
-                  <p className="muted text-sm">No categories yet.</p>
+                  <p className="dashboard-category-empty muted">
+                    Tag your stories with categories to see them here.
+                  </p>
                 )}
-              </div>
-            </div>
+                </div>
+              </Card>
+            </section>
 
-          </div>
-
-          {/* Upcoming / Recent row - horizontal cards with progress */}
-          {upcomingRowStories.length > 0 && (
-            <section className="page-section">
-              <h2 className="dashboard-section-title">
-                Recent Stories
-                <Link href="/dashboard" className="see-all text-[14px]">
-                  See All
-                </Link>
-              </h2>
-              <div className="dashboard-upcoming-row">
-                {upcomingRowStories.map((s, i) => {
+            {recentRowStories.length > 0 && (
+              <section
+                className="dashboard-section page-section"
+                aria-labelledby="dashboard-recent-heading"
+              >
+                <div className="dashboard-section-header">
+                  <div>
+                    <h2 id="dashboard-recent-heading" className="dashboard-section-title">
+                      {inProgressStories.length > 0
+                        ? "In progress"
+                        : "Recent stories"}
+                    </h2>
+                    <p className="dashboard-section-intro muted">
+                      {inProgressStories.length > 0
+                        ? "Stories with S, A, or R sections left to complete."
+                        : "Your latest STAR stories."}
+                    </p>
+                  </div>
+                  <SeeAllLink href="/stories" label="See all" />
+                </div>
+                <div className="dashboard-upcoming-row dashboard-upcoming-grid" role="list">
+                {recentRowStories.map((s, i) => {
+                  const hasS = !!s.situation?.trim();
+                  const hasA = !!s.action?.trim();
+                  const hasR = !!s.result?.trim();
                   const progress = storyProgress(s);
                   const daysAgo =
                     s.createdAt &&
@@ -316,144 +318,133 @@ export default function DashboardPage() {
                       key={s.id}
                       href={`/stories/${s.id}`}
                       className={`dashboard-upcoming-card ${gradientClass(i)}`}
+                      role="listitem"
                     >
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs muted">
-                          {daysAgo !== undefined ? `${daysAgo} days ago` : "Recently"}
-                        </span>
-                      </div>
-                      <h3 className="story-title-on-card text-base font-bold text-[var(--foreground)] m-0 mb-2 line-clamp-2">
+                      <span className="dashboard-card-meta muted">
+                        {daysAgo !== undefined
+                          ? `${daysAgo} day${daysAgo !== 1 ? "s" : ""} ago`
+                          : "Recently"}
+                      </span>
+                      <h3 className="dashboard-card-story-title">
                         {s.title}
                       </h3>
-                      <div className="dashboard-progress-bar">
-                        <div
-                          className="dashboard-progress-fill"
-                          style={{ width: `${progress}%` }}
-                        />
+                      <div className="star-completion" aria-label={`STAR completion ${progress}%`}>
+                        <span className="star-completion-label muted">STAR</span>
+                        <div className="star-completion-bars">
+                          {[
+                            { letter: "S", filled: hasS },
+                            { letter: "A", filled: hasA },
+                            { letter: "R", filled: hasR },
+                          ].map(({ letter, filled }) => (
+                            <div key={letter} className="star-completion-segment">
+                              <span className="star-completion-letter muted">
+                                {letter}
+                              </span>
+                              <div
+                                className={`star-completion-bar ${filled ? "star-completion-bar--filled" : ""}`}
+                                aria-hidden
+                              />
+                            </div>
+                          ))}
+                        </div>
+                        <span className="star-completion-pct muted" aria-hidden>
+                          {progress}%
+                        </span>
                       </div>
-                      <p className="text-xs muted mt-2 mb-0">
-                        Progress {progress}%
-                      </p>
                     </Link>
                   );
                 })}
-              </div>
-            </section>
-          )}
+                </div>
+              </section>
+            )}
 
-          {/* All Stories section */}
-          <section className="page-section">
-            <h2 className="page-section-title">All Stories</h2>
-            <div className="flex flex-wrap gap-3">
-              {[ALL, ...CATEGORIES].map((cat) => (
-                <Chip
-                  key={cat}
-                  selected={selectedCategory === cat}
-                  onClick={() => setSelectedCategory(cat)}
+            <section
+              className="dashboard-section page-section dashboard-unlinked-questions"
+              aria-labelledby="dashboard-questions-heading"
+            >
+              <div className="dashboard-section-header">
+                <div>
+                  <h2 id="dashboard-questions-heading" className="dashboard-section-title">
+                    Questions without a story
+                  </h2>
+                  <p className="dashboard-section-intro muted">
+                    {questionsWithoutStory.length > 0
+                      ? "Link a STAR story to each question so you're ready when interviewers ask."
+                      : userQuestions.length === 0
+                        ? "Save questions from Common questions, then link stories in Saved Questions."
+                        : "All saved questions have at least one story linked."}
+                  </p>
+                </div>
+                <Link
+                  href="/saved-questions"
+                  className="dashboard-see-all"
+                  aria-label="Open Saved Questions"
                 >
-                  {cat}
-                </Chip>
-              ))}
-            </div>
-            <p className="muted mt-4 mb-8 text-base">
-              Showing{" "}
-              <b>
-                {selectedCategory === ALL
-                  ? "all stories"
-                  : `stories in "${selectedCategory}"`}
-              </b>{" "}
-              ({filteredStories.length})
-            </p>
-          </section>
+                  Saved questions
+                  <span className="dashboard-see-all-arrow" aria-hidden>→</span>
+                </Link>
+              </div>
+              {questionsWithoutStory.length > 0 ? (
+                <Card className="dashboard-questions-card">
+                <ul className="dashboard-unlinked-list list-none p-0 m-0">
+                  {questionsWithoutStory.slice(0, 5).map((uq) => (
+                    <li key={uq.id}>
+                      <Link
+                        href="/saved-questions"
+                        className="dashboard-unlinked-item"
+                      >
+                        <span className="dashboard-unlinked-question">
+                          {uq.question.content}
+                        </span>
+                        {uq.question.recommendedCategories?.length > 0 && (
+                          <div className="dashboard-unlinked-cats">
+                            {uq.question.recommendedCategories
+                              .slice(0, 3)
+                              .map((cat) => (
+                                <Badge
+                                  key={cat}
+                                  category={cat}
+                                  className="!text-xs"
+                                />
+                              ))}
+                          </div>
+                        )}
+                        <span className="dashboard-unlinked-hint muted">
+                          Link a story →
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                </Card>
+              ) : null}
+            </section>
         </>
       )}
 
-      {error && (
-        <Card variant="error" className="mt-[18px]">
-          <p className="form-error m-0">Error: {error}</p>
-        </Card>
-      )}
+        {error && (
+          <Card variant="error" className="dashboard-error-card" role="alert">
+            <p className="form-error m-0">Error: {error}</p>
+          </Card>
+        )}
 
-      {!loading && !error && !hasAnyStories && (
-        <EmptyState
-          icon="📝"
-          title="No stories yet"
-          description="Create your first STAR story to get started"
-          action={
-            <Button
-              variant="primary"
-              className="mt-4"
-              onClick={() => router.push("/stories/new")}
-            >
-              + New Story
-            </Button>
-          }
-        />
-      )}
-
-      {!loading && !error && hasAnyStories && !hasFilteredStories && (
-        <EmptyState
-          icon="🔍"
-          title="No stories found"
-          description={`No stories in the "${selectedCategory}" category`}
-          action={
-            <Button className="mt-4" onClick={() => setSelectedCategory(ALL)}>
-              Show All Stories
-            </Button>
-          }
-        />
-      )}
-
-      {!loading && !error && hasFilteredStories && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 stories-card-grid">
-          {filteredStories.map((s) => (
-            <Link
-              key={s.id}
-              href={`/stories/${s.id}`}
-              className="no-underline text-inherit block min-w-0"
-            >
-              <Card variant="story">
-                <div className="flex justify-between items-start mb-1 shrink-0">
-                  <span className="text-base muted">
-                    {s.createdAt ? formatDate(s.createdAt) : "Recently"}
-                  </span>
-                  <Button
-                    variant="menu"
-                    className="p-1"
-                    onClick={(e) => {
-                      e.preventDefault();
-                    }}
-                  >
-                    ⋯
-                  </Button>
-                </div>
-                <h3 className="story-title-on-card text-2xl font-bold leading-snug text-[var(--foreground)] m-0 shrink-0 overflow-hidden line-clamp-2">
-                  {s.title}
-                </h3>
-                <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
-                  <p className="text-[var(--muted)] text-base leading-relaxed flex-1 min-w-0 overflow-hidden text-ellipsis line-clamp-3 m-0">
-                    {s.result
-                      ? `Summary: ${s.result}`
-                      : s.situation
-                        ? `Situation: ${s.situation}`
-                        : "Click to view full story"}
-                  </p>
-                </div>
-                <div className="flex gap-2 flex-wrap shrink-0">
-                  {s.categories.slice(0, 3).map((cat) => (
-                    <Badge key={cat} category={cat} />
-                  ))}
-                  {s.categories.length > 3 && (
-                    <span className="badge badge-primary">
-                      +{s.categories.length - 3}
-                    </span>
-                  )}
-                </div>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      )}
+        {!loading && !error && !hasAnyStories && (
+          <EmptyState
+            icon="📝"
+            title="No stories yet"
+            description="Create your first STAR story to get started."
+            action={
+              <Button
+                variant="primary"
+                className="empty-state-cta"
+                onClick={() => router.push("/stories/new")}
+              >
+                + New Story
+              </Button>
+            }
+          />
+        )}
+      </div>
     </main>
   );
 }

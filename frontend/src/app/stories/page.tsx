@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { fetchStories, Story } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
@@ -12,10 +12,26 @@ const ALL = "All" as const;
 
 export default function StoriesPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>(ALL);
+  const [internalCategory, setInternalCategory] = useState<string>(ALL);
+
+  const categoryFromUrl = searchParams.get("category");
+  const selectedCategory =
+    categoryFromUrl != null && categoryFromUrl !== ""
+      ? decodeURIComponent(categoryFromUrl)
+      : internalCategory;
+
+  function handleSelectCategory(cat: string) {
+    setInternalCategory(cat);
+    if (cat === ALL) {
+      router.replace("/stories");
+    } else {
+      router.replace(`/stories?category=${encodeURIComponent(cat)}`);
+    }
+  }
 
   useEffect(() => {
     async function load() {
@@ -74,7 +90,7 @@ export default function StoriesPage() {
                 <Chip
                   key={cat}
                   selected={selectedCategory === cat}
-                  onClick={() => setSelectedCategory(cat)}
+                  onClick={() => handleSelectCategory(cat)}
                 >
                   {cat}
                 </Chip>
@@ -122,7 +138,7 @@ export default function StoriesPage() {
           title="No stories found"
           description={`No stories in the \"${selectedCategory}\" category`}
           action={
-            <Button className="mt-4" onClick={() => setSelectedCategory(ALL)}>
+            <Button className="mt-4" onClick={() => handleSelectCategory(ALL)}>
               Show All Stories
             </Button>
           }
