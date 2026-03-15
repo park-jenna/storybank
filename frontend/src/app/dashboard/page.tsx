@@ -316,7 +316,7 @@ export default function DashboardPage() {
                   return (
                     <Link
                       key={s.id}
-                      href={`/stories/${s.id}`}
+                      href={`/stories/${s.id}/edit`}
                       className={`dashboard-upcoming-card ${gradientClass(i)}`}
                       role="listitem"
                     >
