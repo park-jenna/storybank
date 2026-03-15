@@ -11,6 +11,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { fetchStoryById, Story, updateStoryById } from "@/lib/stories";
+import { CATEGORIES } from "@/constants/categories";
 import { Button, Card, FormField, Input, Textarea } from "@/components/ui";
 
 export default function EditStoryPage() {
@@ -20,7 +21,7 @@ export default function EditStoryPage() {
 
   const [story, setStory] = useState<Story | null>(null);
   const [title, setTitle] = useState("");
-  const [categoriesText, setCategoriesText] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [situation, setSituation] = useState("");
   const [action, setAction] = useState("");
   const [result, setResult] = useState("");
@@ -46,7 +47,7 @@ export default function EditStoryPage() {
         const data = await fetchStoryById(token, storyId);
         setStory(data.story);
         setTitle(data.story.title ?? "");
-        setCategoriesText((data.story.categories ?? []).join(", "));
+        setSelectedCategories(data.story.categories ?? []);
         setSituation(data.story.situation ?? "");
         setAction(data.story.action ?? "");
         setResult(data.story.result ?? "");
@@ -73,18 +74,13 @@ export default function EditStoryPage() {
 
       const cleanTitle = title.trim();
       if (!cleanTitle) throw new Error("Title is required.");
-
-      const categories = categoriesText
-        .split(",")
-        .map((c) => c.trim())
-        .filter(Boolean);
-      if (categories.length === 0) {
+      if (selectedCategories.length === 0) {
         throw new Error("At least one category is required.");
       }
 
       await updateStoryById(token, storyId, {
         title: cleanTitle,
-        categories,
+        categories: selectedCategories,
         situation: situation.trim(),
         action: action.trim(),
         result: result.trim(),
@@ -97,6 +93,12 @@ export default function EditStoryPage() {
     } finally {
       setSaving(false);
     }
+  }
+
+  function toggleCategory(category: string, checked: boolean) {
+    setSelectedCategories((prev) =>
+      checked ? [...prev, category] : prev.filter((c) => c !== category)
+    );
   }
 
   if (loading) {
@@ -154,13 +156,29 @@ export default function EditStoryPage() {
         <FormField
           label="Categories"
           required
-          hint="Comma-separated (e.g., Leadership, Conflict)"
+          hint="Select one or more categories that best describe your story."
         >
-          <Input
-            value={categoriesText}
-            onChange={(e) => setCategoriesText(e.target.value)}
-            placeholder="E.g., Leadership, Conflict"
-          />
+          <div className="story-form-chips">
+            {CATEGORIES.map((category) => {
+              const selected = selectedCategories.includes(category);
+              return (
+                <label
+                  key={category}
+                  className={`chip story-form-chip ${selected ? "chip-selected" : ""}`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selected}
+                    onChange={(e) =>
+                      toggleCategory(category, e.target.checked)
+                    }
+                    className="sr-only"
+                  />
+                  {category}
+                </label>
+              );
+            })}
+          </div>
         </FormField>
 
         <FormField label="Situation / Task">
@@ -209,10 +227,6 @@ export default function EditStoryPage() {
           </Button>
         </div>
 
-        <p className="muted text-[13px] m-0">
-          Tip: Use commas in Categories to add multiple tags (e.g.,{" "}
-          <code>Leadership, Conflict</code>).
-        </p>
       </form>
     </main>
   );
