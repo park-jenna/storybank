@@ -188,9 +188,11 @@ export default function SavedQuestionsPage() {
                     )}
                   </button>
                 </div>
-                <h3 className="saved-questions-card-title">
-                  {uq.question.content}
-                </h3>
+                <Link href={`/saved-questions/${uq.id}`} className="saved-questions-card-title-link">
+                  <h3 className="saved-questions-card-title">
+                    {uq.question.content}
+                  </h3>
+                </Link>
                 {uq.question.recommendedCategories?.length > 0 && (
                   <div className="saved-questions-card-badges">
                     {uq.question.recommendedCategories.slice(0, 4).map((cat) => (

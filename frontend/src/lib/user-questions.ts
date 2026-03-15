@@ -1,4 +1,4 @@
-import { apiGet, apiPost, apiDelete } from "./api";
+import { apiGet, apiPost, apiDelete, apiPatch } from "./api";
 
 export type Question = {
   id: string;
@@ -57,6 +57,27 @@ export type CreateUserQuestionResponse = {
 };
 export async function createUserQuestion(token: string, input: CreateUserQuestionInput) {
   return apiPost<CreateUserQuestionResponse>("/user-questions", input, { token });
+}
+
+// 저장한 질문 단건 조회 (본인 것만)
+export type UserQuestionDetailResponse = { userQuestion: UserQuestionItem };
+export async function fetchUserQuestionById(token: string, questionId: string) {
+  return apiGet<UserQuestionDetailResponse>(`/user-questions/${questionId}`, token);
+}
+
+// 저장한 질문 수정 (본인 것만). content, recommendedCategories, storyIds 부분 수정 가능.
+export type UpdateUserQuestionInput = {
+  content?: string;
+  recommendedCategories?: string[];
+  storyIds?: string[];
+};
+export type UpdateUserQuestionResponse = { userQuestion: UserQuestionItem };
+export async function updateUserQuestion(
+  token: string,
+  questionId: string,
+  input: UpdateUserQuestionInput
+) {
+  return apiPatch<UpdateUserQuestionResponse>(`/user-questions/${questionId}`, input, { token });
 }
 
 // 저장한 질문 삭제 (본인 것만)

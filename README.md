@@ -1,7 +1,6 @@
 # StoryBank
 
-A full-stack web app for preparing behavioral interviews. Create and organize STAR-method stories (Situation/Task, Action, Result), save common interview questions, and link questions to the stories you’ll use to answer them—all in one place.
-
+A full-stack web app for preparing behavioral interviews. Create and organize STAR-method stories (Situation/Task, Action, Result).
 ## Features
 
 - **User accounts** — Sign up and log in with email; JWT-based authentication
@@ -155,10 +154,13 @@ App: `http://localhost:3000`.
 | GET | `/questions/common` | Yes | List common questions (with `alreadySaved` per question) |
 | GET | `/questions/:id/recommendations` | Yes | Recommended stories for a common question (by category) |
 | GET | `/user-questions` | Yes | List user's saved questions and linked stories |
+| GET | `/user-questions/:id` | Yes | Get one saved question and its linked stories |
 | POST | `/user-questions` | Yes | Save a common question (by `commonQuestionId`) and optionally link `storyIds` |
+| PATCH | `/user-questions/:id` | Yes | Update a saved question (`content`, `recommendedCategories`, `storyIds`) |
 | DELETE | `/user-questions/:id` | Yes | Delete a saved question and its story links |
 
-Stories request body: `title`, `categories`, `situation`, `action`, `result`.
+Stories request body: `title`, `categories`, `situation`, `action`, `result`.  
+Saved question (PATCH) body: `content?`, `recommendedCategories?`, `storyIds?`.
 
 ## License
 

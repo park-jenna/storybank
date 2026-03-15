@@ -4,6 +4,7 @@ const express = require("express");
 const prisma = require("../prisma");
 const { requireAuth } = require("../middleware/auth");
 const { getCommonQuestionById } = require("../constants/commonQuestions");
+const { updateUserQuestionBodySchema } = require("../schemas/user-questions");
 
 const router = express.Router();
 
@@ -93,6 +94,135 @@ router.post("/", requireAuth, async (req, res) => {
         });
     } catch (error) {
         console.error("Error creating user question:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+/*
+ * GET /user-questions/:id
+ * 저장한 질문 단건 조회 (본인 것만). 연결된 스토리 포함.
+ */
+router.get("/:id", requireAuth, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { id } = req.params;
+
+        const question = await prisma.question.findFirst({
+            where: { id, userId },
+            include: {
+                stories: {
+                    include: { story: true },
+                },
+            },
+        });
+
+        if (!question) {
+            return res.status(404).json({ error: "Question not found" });
+        }
+
+        const result = {
+            id: question.id,
+            createdAt: question.createdAt,
+            question: {
+                id: question.id,
+                content: question.content,
+                recommendedCategories: question.recommendedCategories ?? [],
+            },
+            stories: question.stories.map((qs) => qs.story),
+        };
+
+        return res.json({ userQuestion: result });
+    } catch (error) {
+        console.error("Error fetching user question:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+/*
+ * PATCH /user-questions/:id
+ * 저장한 질문 수정 (본인 것만). content, recommendedCategories, storyIds(연결 스토리) 부분 수정 가능.
+ * body: { content?, recommendedCategories?, storyIds? }
+ */
+router.patch("/:id", requireAuth, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { id } = req.params;
+
+        const existing = await prisma.question.findFirst({
+            where: { id, userId },
+        });
+
+        if (!existing) {
+            return res.status(404).json({ error: "Question not found" });
+        }
+
+        const parsed = updateUserQuestionBodySchema.safeParse(req.body);
+        if (!parsed.success) {
+            return res.status(400).json({
+                error: "Invalid request body",
+                details: parsed.error.issues,
+            });
+        }
+
+        const body = parsed.data;
+        const updatedData = {};
+        if (body.content !== undefined) updatedData.content = body.content;
+        if (body.recommendedCategories !== undefined)
+            updatedData.recommendedCategories = body.recommendedCategories;
+
+        const hasStoryIdsUpdate = body.storyIds !== undefined;
+        if (Object.keys(updatedData).length === 0 && !hasStoryIdsUpdate) {
+            return res.status(400).json({ error: "No valid fields to update" });
+        }
+
+        if (Object.keys(updatedData).length > 0) {
+            await prisma.question.update({
+                where: { id },
+                data: updatedData,
+            });
+        }
+
+        if (body.storyIds !== undefined) {
+            await prisma.questionStory.deleteMany({ where: { questionId: id } });
+            if (body.storyIds.length > 0) {
+                const userStoryIds = await prisma.story.findMany({
+                    where: { userId },
+                    select: { id: true },
+                });
+                const validIds = new Set(userStoryIds.map((s) => s.id));
+                const toLink = body.storyIds.filter((sid) => validIds.has(sid));
+                await prisma.questionStory.createMany({
+                    data: toLink.map((storyId) => ({
+                        questionId: id,
+                        storyId,
+                    })),
+                });
+            }
+        }
+
+        const updated = await prisma.question.findFirst({
+            where: { id, userId },
+            include: {
+                stories: {
+                    include: { story: true },
+                },
+            },
+        });
+
+        const result = {
+            id: updated.id,
+            createdAt: updated.createdAt,
+            question: {
+                id: updated.id,
+                content: updated.content,
+                recommendedCategories: updated.recommendedCategories ?? [],
+            },
+            stories: updated.stories.map((qs) => qs.story),
+        };
+
+        return res.json({ userQuestion: result });
+    } catch (error) {
+        console.error("Error updating user question:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 });

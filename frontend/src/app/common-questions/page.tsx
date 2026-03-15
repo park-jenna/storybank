@@ -239,6 +239,10 @@ function CommonQuestionsContent() {
                   {selectedQuestion.alreadySaved && (
                     <span className="questions-selected-saved-badge" role="status">Saved to your list</span>
                   )}
+                  <h2 className="questions-selected-title">{selectedQuestion.content}</h2>
+                  <p className="questions-selected-hint">
+                    Good categories to highlight for this question.
+                  </p>
                   <div className="questions-selected-badges">
                     {(selectedQuestion.recommendedCategories ?? []).map((cat) => (
                       <span key={cat} className={`badge ${getBadgeClass(cat)}`}>
@@ -246,10 +250,6 @@ function CommonQuestionsContent() {
                       </span>
                     ))}
                   </div>
-                  <h2 className="questions-selected-title">{selectedQuestion.content}</h2>
-                  <p className="questions-selected-hint">
-                    Good categories to highlight for this question.
-                  </p>
                 </div>
 
                 {!hasToken ? (
