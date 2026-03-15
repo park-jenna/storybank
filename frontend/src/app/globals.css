@@ -1137,6 +1137,20 @@ html.dark .sidebar-upgrade-card {
 .page-section .dashboard-section-title a.see-all:hover {
   text-decoration: underline;
 }
+.dashboard-carousel-fade-wrap {
+  position: relative;
+  isolation: isolate;
+}
+.dashboard-carousel-fade-edge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 8px;
+  width: 160px;
+  background: linear-gradient(to right, transparent 0%, transparent 30%, var(--background) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
 .dashboard-upcoming-row {
   display: flex;
   gap: 24px;
@@ -1145,7 +1159,18 @@ html.dark .sidebar-upgrade-card {
   margin-bottom: 0;
   -webkit-overflow-scrolling: touch;
 }
-/* Desktop: show as grid when enough space */
+/* Carousel: horizontal scroll with snap; padding-top so hover translateY(-3px) doesn’t clip */
+.dashboard-carousel {
+  scroll-snap-type: x mandatory;
+  padding-top: 6px;
+}
+.dashboard-carousel .dashboard-upcoming-card {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  min-width: 260px;
+  max-width: 260px;
+}
+/* Legacy grid (e.g. if reused elsewhere) */
 .dashboard-upcoming-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

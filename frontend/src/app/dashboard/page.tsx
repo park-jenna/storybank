@@ -301,8 +301,9 @@ export default function DashboardPage() {
                   </div>
                   <SeeAllLink href="/stories" label="See all" />
                 </div>
-                <div className="dashboard-upcoming-row dashboard-upcoming-grid" role="list">
-                {recentRowStories.map((s, i) => {
+                <div className="dashboard-carousel-fade-wrap">
+                  <div className="dashboard-upcoming-row dashboard-carousel" role="list">
+                    {recentRowStories.map((s, i) => {
                   const hasS = !!s.situation?.trim();
                   const hasA = !!s.action?.trim();
                   const hasR = !!s.result?.trim();
@@ -352,8 +353,10 @@ export default function DashboardPage() {
                         </span>
                       </div>
                     </Link>
-                  );
-                })}
+                    );
+                  })}
+                  </div>
+                  <div className="dashboard-carousel-fade-edge" aria-hidden />
                 </div>
               </section>
             )}
