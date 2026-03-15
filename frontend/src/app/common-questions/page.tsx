@@ -301,7 +301,9 @@ function CommonQuestionsContent() {
                             variant="primary"
                             onClick={() => setShowSavePanel(true)}
                           >
-                            Save to my questions
+                            {selectedQuestion.alreadySaved
+                              ? "Change linked stories"
+                              : "Save to my questions"}
                           </Button>
                         ) : (
                           <>
@@ -310,7 +312,11 @@ function CommonQuestionsContent() {
                               disabled={saving}
                               onClick={handleSaveToMyQuestions}
                             >
-                              {saving ? "Saving..." : `Save (${selectedStoryIds.size} story selected)`}
+                              {saving
+                                ? "Saving..."
+                                : selectedQuestion.alreadySaved
+                                  ? `Update linked stories (${selectedStoryIds.size} selected)`
+                                  : `Save (${selectedStoryIds.size} story selected)`}
                             </Button>
                             <Button variant="default" onClick={() => { setShowSavePanel(false); setSelectedStoryIds(new Set()); }}>
                               Cancel
