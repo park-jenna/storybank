@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -10,7 +10,7 @@ import { Button, Card, Chip, Badge, EmptyState } from "@/components/ui";
 
 const ALL = "All" as const;
 
-export default function StoriesPage() {
+function StoriesPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [stories, setStories] = useState<Story[]>([]);
@@ -196,6 +196,14 @@ export default function StoriesPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function StoriesPage() {
+  return (
+    <Suspense fallback={<main className="stories-page"><p className="muted mt-6">Loading...</p></main>}>
+      <StoriesPageContent />
+    </Suspense>
   );
 }
 
