@@ -166,7 +166,7 @@ export default function NewStoryPage() {
           </Button>
           <Button
             type="button"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/stories")}
             disabled={loading}
           >
             Cancel

@@ -10,6 +10,14 @@ import { Button, Card, Chip, Badge, EmptyState } from "@/components/ui";
 
 const ALL = "All" as const;
 
+function storyProgress(s: Story): number {
+  let n = 0;
+  if (s.situation?.trim()) n++;
+  if (s.action?.trim()) n++;
+  if (s.result?.trim()) n++;
+  return Math.round((n / 3) * 100);
+}
+
 function StoriesPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -61,6 +69,18 @@ function StoriesPageContent() {
     return stories.filter((s) => s.categories.includes(selectedCategory));
   }, [stories, selectedCategory]);
 
+  const inProgressStories = useMemo(
+    () =>
+      [...stories]
+        .filter((s) => storyProgress(s) < 100)
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt || 0).getTime() -
+            new Date(a.createdAt || 0).getTime()
+        ),
+    [stories]
+  );
+
   const hasAnyStories = stories.length > 0;
   const hasFilteredStories = filteredStories.length > 0;
 
@@ -85,7 +105,76 @@ function StoriesPageContent() {
         <>
           <section className="page-section">
             <h2 className="page-section-title">All Stories</h2>
-            <div className="flex flex-wrap gap-3">
+
+            {inProgressStories.length > 0 && (
+              <div
+                className="dashboard-section mt-0"
+                aria-labelledby="stories-in-progress-heading"
+              >
+                <h3 id="stories-in-progress-heading" className="dashboard-section-title text-base font-semibold">
+                  In progress
+                </h3>
+                <p className="dashboard-section-intro muted">
+                  Stories with S, A, or R sections left to complete.
+                </p>
+                <div className="dashboard-carousel-fade-wrap">
+                  <div className="dashboard-upcoming-row dashboard-carousel" role="list">
+                    {inProgressStories.map((s, i) => {
+                      const hasS = !!s.situation?.trim();
+                      const hasA = !!s.action?.trim();
+                      const hasR = !!s.result?.trim();
+                      const progress = storyProgress(s);
+                      const daysAgo =
+                        s.createdAt &&
+                        Math.floor(
+                          (Date.now() - new Date(s.createdAt).getTime()) /
+                            (1000 * 60 * 60 * 24)
+                        );
+                      const gradientClass = ["gradient-1", "gradient-2", "gradient-3"][i % 3];
+                      return (
+                        <Link
+                          key={s.id}
+                          href={`/stories/${s.id}/edit`}
+                          className={`dashboard-upcoming-card ${gradientClass}`}
+                          role="listitem"
+                        >
+                          <span className="dashboard-card-meta muted">
+                            {daysAgo !== undefined
+                              ? `${daysAgo} day${daysAgo !== 1 ? "s" : ""} ago`
+                              : "Recently"}
+                          </span>
+                          <h3 className="dashboard-card-story-title">{s.title}</h3>
+                          <div className="star-completion" aria-label={`STAR completion ${progress}%`}>
+                            <span className="star-completion-label muted">STAR</span>
+                            <div className="star-completion-bars">
+                              {[
+                                { letter: "S", filled: hasS },
+                                { letter: "A", filled: hasA },
+                                { letter: "R", filled: hasR },
+                              ].map(({ letter, filled }) => (
+                                <div key={letter} className="star-completion-segment">
+                                  <span className="star-completion-letter muted">{letter}</span>
+                                  <div
+                                    className={`star-completion-bar ${filled ? "star-completion-bar--filled" : ""}`}
+                                    aria-hidden
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                            <span className="star-completion-pct muted" aria-hidden>
+                              {progress}%
+                            </span>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                  <div className="dashboard-carousel-fade-edge" aria-hidden />
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-3 mt-4">
               {[ALL, ...CATEGORIES].map((cat) => (
                 <Chip
                   key={cat}

@@ -114,8 +114,8 @@ export default function EditStoryPage() {
           <p className="form-error">Error: {error}</p>
         </Card>
         <div className="mt-4">
-          <Button onClick={() => router.push("/dashboard")}>
-            ← Back to Dashboard
+          <Button onClick={() => router.push("/stories")}>
+            ← Back to Stories
           </Button>
         </div>
       </main>
