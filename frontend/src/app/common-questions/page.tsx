@@ -276,7 +276,7 @@ function CommonQuestionsContent() {
               <div className="common-questions-categories">
                 <span className="common-questions-categories-label">Good categories to highlight:</span>
                 {(selectedQuestion.recommendedCategories ?? []).map((cat) => (
-                  <span key={cat} className="tag">
+                  <span key={cat} className="tag tag-highlight">
                     {cat}
                   </span>
                 ))}
@@ -374,7 +374,10 @@ function CommonQuestionsContent() {
                                   <div className="story-card-missing" />
                                   <div className="story-card-cats">
                                     {s.categories.slice(0, 3).map((c) => (
-                                      <span key={c} className="tag">
+                                      <span
+                                        key={c}
+                                        className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-highlight" : ""}`}
+                                      >
                                         {c}
                                       </span>
                                     ))}
@@ -558,7 +561,10 @@ function CommonQuestionsContent() {
                                             </p>
                                             <div className="rc-cats" style={{ marginBottom: 6 }}>
                                               {s.categories.slice(0, 3).map((c) => (
-                                                <span key={c} className="tag">
+                                                <span
+                                                  key={c}
+                                                  className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-highlight" : ""}`}
+                                                >
                                                   {c}
                                                 </span>
                                               ))}
@@ -596,7 +602,10 @@ function CommonQuestionsContent() {
                                       <div className="story-card-missing" />
                                       <div className="story-card-cats">
                                         {s.categories.slice(0, 3).map((c) => (
-                                          <span key={c} className="tag">
+                                          <span
+                                            key={c}
+                                            className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-highlight" : ""}`}
+                                          >
                                             {c}
                                           </span>
                                         ))}

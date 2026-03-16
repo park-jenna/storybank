@@ -380,6 +380,14 @@
   border: 0.5px solid #D4DCC8;
 }
 
+/* Tag highlight — question’s “good categories to highlight” and matching categories in story cards */
+.tag.tag-highlight {
+  background: var(--green-light);
+  color: var(--green-primary);
+  border-color: var(--green-primary);
+  font-weight: 500;
+}
+
 /* Missing tag (yellow/orange) — single chip e.g. "Missing Action Result" */
 .tag-missing {
   font-size: 11px;
@@ -839,9 +847,9 @@
 .linked-story-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 0;
-  border-bottom: 0.5px solid #F0EDE8;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 0.5px solid var(--border-card);
 }
 
 .linked-story-item:last-of-type {
@@ -852,23 +860,27 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--green-dot);
+  background: var(--green-primary);
   flex-shrink: 0;
 }
 
 .linked-story-name {
-  font-size: 13px;
-  color: #3A6048;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--green-primary);
+  text-decoration: none;
   cursor: pointer;
   flex: 1;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.4;
 }
 
 .linked-story-name:hover {
-  color: var(--text-dark);
+  color: var(--green-hover);
+  text-decoration: underline;
 }
 
 .linked-more {

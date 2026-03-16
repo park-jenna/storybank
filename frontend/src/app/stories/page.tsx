@@ -229,7 +229,7 @@ function StoriesPageContent() {
             </div>
           )}
 
-          <div className="chips-row" style={{ marginBottom: "1.25rem" }}>
+          <div className="chips-row" style={{ marginBottom: "0.5rem" }}>
             {[ALL, ...CATEGORIES].map((cat) => (
               <div
                 key={cat}
@@ -248,6 +248,22 @@ function StoriesPageContent() {
               </div>
             ))}
           </div>
+          {hasAnyStories && (
+            <p
+              className="filter-result-summary"
+              style={{
+                fontSize: 13,
+                color: "var(--text-muted)",
+                marginBottom: "1.25rem",
+                marginTop: 0,
+              }}
+              aria-live="polite"
+            >
+              {selectedCategory === ALL
+                ? `Showing all (${stories.length})`
+                : `Showing ${filteredStories.length} in ${selectedCategory}`}
+            </p>
+          )}
 
           {!hasAnyStories && (
             <div className="empty-state">
