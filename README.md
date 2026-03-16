@@ -24,9 +24,9 @@ A full-stack web app for preparing behavioral interviews. Create and organize ST
 
 <img src="img/dashboard.png" width="600" alt="Dashboard" />
 
-**Add Story** — Create a new story with STAR format (Situation/Task, Action, Result).
+**Stories** — List, create, and manage your STAR stories.
 
-<img src="img/stories.png" width="500" alt="Add Story" />
+<img src="img/stories.png" width="500" alt="Stories" />
 
 ## Tech Stack
 
