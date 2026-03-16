@@ -90,6 +90,20 @@
   --transition-fast: 0.1s ease;
   --transition-base: 0.15s ease;
   --transition-slow: 0.2s ease;
+
+  /* Aliases for UI components (FormField, Input, Button, StarSection) */
+  --foreground:           var(--text-primary);
+  --muted:                var(--text-muted);
+  --muted-foreground:     var(--text-hint);
+  --card:                 var(--bg-card);
+  --border:               var(--border-input);
+  --radius:               var(--radius-md);
+  --primary:              var(--green-primary);
+  --primary-hover:       var(--green-hover);
+  --ring:                 var(--green-focus);
+  --background-solid:     var(--bg-chip);
+  --shadow:               0 1px 3px rgba(16, 40, 24, 0.06);
+  --shadow-md:            0 2px 8px rgba(16, 40, 24, 0.08);
 }
 
 
