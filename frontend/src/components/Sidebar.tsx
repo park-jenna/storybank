@@ -145,10 +145,19 @@ export default function Sidebar({ onClose }: SidebarProps) {
                     </svg>
                   )}
                   {href === "/common-questions" && (
-                    <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                      <path d="M12 17h.01" />
+                    <svg
+                      viewBox="0 0 24 24"
+                      width={18}
+                      height={18}
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden
+                    >
+                      <circle cx="11" cy="11" r="6" />
+                      <line x1="16" y1="16" x2="20" y2="20" />
                     </svg>
                   )}
                   {href === "/saved-questions" && (
