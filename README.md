@@ -26,14 +26,14 @@ A full-stack web app for preparing behavioral interviews. Create and organize ST
 
 **Add Story** — Create a new story with STAR format (Situation/Task, Action, Result).
 
-<img src="img/addStory.png" width="500" alt="Add Story" />
+<img src="img/story.png" width="500" alt="Add Story" />
 
 ## Tech Stack
 
 | Layer       | Tech                                              |
 |------------|----------------------------------------------------|
 | Frontend   | Next.js 16, React 19, TypeScript, Tailwind CSS     |
-| Backend    | Express.js, Node.js                               |
+| Backend    | Express 5, Node.js                                |
 | Database   | PostgreSQL, Prisma ORM                            |
 | Auth       | JWT, bcrypt                                       |
 | Validation | Zod                                               |
@@ -62,13 +62,15 @@ storybank/
 │   ├── src/
 │   │   ├── app/              # Routes & pages
 │   │   │   ├── dashboard/    # Overview, progress, stories to complete
+│   │   │   ├── questions/    # Browse questions by category (interview prep)
 │   │   │   ├── common-questions/  # Browse & save questions, link stories
 │   │   │   ├── saved-questions/   # My saved questions & story links
 │   │   │   ├── stories/      # List, new, edit, detail
 │   │   │   ├── login/, signup/
 │   │   │   └── page.tsx      # Landing
 │   │   ├── components/       # UI components
-│   │   ├── constants/        # Categories, common question definitions
+│   │   ├── constants/        # Categories, interview/common question definitions
+│   │   ├── contexts/         # Theme, etc.
 │   │   └── lib/              # API client, auth, stories, user-questions
 │   └── ...
 ├── backend/                  # Express API
