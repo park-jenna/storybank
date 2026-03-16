@@ -29,7 +29,7 @@ export default function HomePage() {
       <div style={{ marginBottom: "2rem" }}>
         <h1
           style={{
-            fontSize: 36,
+            fontSize: 38,
             fontWeight: 500,
             color: "var(--text-primary)",
             marginBottom: 10,
@@ -40,7 +40,7 @@ export default function HomePage() {
         </h1>
         <p
           style={{
-            fontSize: 15,
+            fontSize: 16,
             color: "var(--text-muted)",
             lineHeight: 1.6,
             maxWidth: 360,
@@ -115,7 +115,7 @@ export default function HomePage() {
               gap: 10,
               padding: "7px 0",
               borderBottom: "0.5px solid var(--border-card)",
-              fontSize: 13,
+              fontSize: 14,
               color: "var(--text-secondary)",
               lineHeight: 1.5,
             }}
@@ -132,7 +132,7 @@ export default function HomePage() {
       </div>
 
       {/* Footer note */}
-      <p style={{ fontSize: 11, color: "var(--text-faint)" }}>
+      <p style={{ fontSize: 12, color: "var(--text-faint)" }}>
         Demo project built for learning and portfolio purposes
       </p>
     </main>

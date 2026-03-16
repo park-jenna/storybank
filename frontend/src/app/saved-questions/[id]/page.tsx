@@ -67,7 +67,7 @@ export default function SavedQuestionDetailPage() {
   if (loading) {
     return (
       <main className="main-content">
-        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading question...</p>
+        <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading question...</p>
       </main>
     );
   }
@@ -108,7 +108,7 @@ export default function SavedQuestionDetailPage() {
     return (
       <main className="main-content">
         <div className="card" style={{ marginBottom: 12 }}>
-          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Question not found.</p>
+          <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Question not found.</p>
         </div>
         <button
           type="button"
@@ -180,7 +180,7 @@ export default function SavedQuestionDetailPage() {
       <div className="card" style={{ marginBottom: 12 }}>
         <h1
           style={{
-            fontSize: 20,
+            fontSize: 21,
             fontWeight: 500,
             color: "var(--text-primary)",
             marginBottom: 8,
@@ -189,7 +189,7 @@ export default function SavedQuestionDetailPage() {
         >
           {userQuestion.question.content}
         </h1>
-        <p style={{ fontSize: 12, color: "var(--text-hint)", marginBottom: 12 }}>
+        <p style={{ fontSize: 13, color: "var(--text-hint)", marginBottom: 12 }}>
           Saved: {new Date(userQuestion.createdAt).toLocaleDateString()}
         </p>
         {userQuestion.question.recommendedCategories?.length > 0 && (
@@ -235,7 +235,7 @@ export default function SavedQuestionDetailPage() {
               <Link
                 href={`/stories/${s.id}`}
                 className="btn-inline"
-                style={{ fontSize: 11, flexShrink: 0 }}
+                style={{ fontSize: 12, flexShrink: 0 }}
               >
                 View →
               </Link>

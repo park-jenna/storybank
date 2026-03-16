@@ -28,7 +28,7 @@ export function FormField({
       </span>
       {children}
       {hint && (
-        <span className="text-[13px] text-[var(--muted)]">{hint}</span>
+        <span className="text-[14px] text-[var(--muted)]">{hint}</span>
       )}
     </label>
   );

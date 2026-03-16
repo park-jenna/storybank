@@ -138,7 +138,7 @@ export default function DashboardPage() {
     <main className="main-content" role="main" aria-label="Dashboard overview">
       {loading && (
         <div aria-live="polite" aria-busy="true" style={{ padding: "2rem 0" }}>
-          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading stories...</p>
+          <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading stories...</p>
         </div>
       )}
 
@@ -164,9 +164,7 @@ export default function DashboardPage() {
             {/* Page header: Welcome + subtitle + New story */}
             <header className="page-header">
               <div className="page-header-left">
-                <h1 className="page-title">
-                  Welcome back, {USER_NAME}
-                </h1>
+                <h1 className="page-title">Welcome back</h1>
                 <p className="page-subtitle">
                   {inProgressStories.length} stories in progress
                   {" · "}

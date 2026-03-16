@@ -85,7 +85,7 @@ export default function StoryDetailPage() {
   if (loading) {
     return (
       <main className="main-content">
-        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+        <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
           Loading story...
         </p>
       </main>
@@ -128,7 +128,7 @@ export default function StoryDetailPage() {
     return (
       <main className="main-content">
         <div className="card" style={{ marginBottom: 12 }}>
-          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+          <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
             Story not found.
           </p>
         </div>
@@ -222,7 +222,7 @@ export default function StoryDetailPage() {
       <div className="card" style={{ marginBottom: 12 }}>
         <h1
           style={{
-            fontSize: 20,
+            fontSize: 21,
             fontWeight: 500,
             color: "var(--text-primary)",
             marginBottom: 8,
@@ -240,7 +240,7 @@ export default function StoryDetailPage() {
             marginBottom: 12,
           }}
         >
-          <span style={{ fontSize: 12, color: "var(--text-hint)" }}>
+          <span style={{ fontSize: 14, color: "var(--text-hint)" }}>
             Created: {new Date(story.createdAt).toLocaleDateString()}
           </span>
           <span
@@ -248,7 +248,7 @@ export default function StoryDetailPage() {
               display: "flex",
               alignItems: "center",
               gap: 5,
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: 500,
               color:
                 missingSections.length === 0
@@ -330,7 +330,7 @@ export default function StoryDetailPage() {
               return (
                 <p
                   style={{
-                    fontSize: 12,
+                    fontSize: 14,
                     color: "var(--text-muted)",
                     lineHeight: 1.6,
                   }}
@@ -392,7 +392,7 @@ export default function StoryDetailPage() {
                     <div
                       className="q-text-link"
                       style={{
-                        fontSize: 12,
+                        fontSize: 14,
                         color: "var(--text-primary)",
                         lineHeight: 1.4,
                         marginBottom: 4,

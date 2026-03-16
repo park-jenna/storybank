@@ -116,7 +116,7 @@ export default function EditSavedQuestionPage() {
   if (loading) {
     return (
       <main className="main-content">
-        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading...</p>
+        <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading...</p>
       </main>
     );
   }
@@ -233,7 +233,7 @@ export default function EditSavedQuestionPage() {
             </p>
 
             {stories.length === 0 ? (
-              <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+              <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
                 You have no stories yet.{" "}
                 <Link href="/stories/new" className="btn-inline">
                   Create a story
@@ -253,7 +253,7 @@ export default function EditSavedQuestionPage() {
                   <span className="section-label" style={{ marginBottom: 0 }}>
                     Stories to link
                   </span>
-                  <span style={{ fontSize: 12, color: "var(--text-hint)" }}>
+                  <span style={{ fontSize: 13, color: "var(--text-hint)" }}>
                     {selectedStoryIds.size} selected
                   </span>
                 </div>
@@ -311,7 +311,7 @@ export default function EditSavedQuestionPage() {
                                 onClick={() => toggleStoryExpanded(s.id)}
                                 aria-expanded={isExpanded}
                                 style={{
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   color: "var(--text-hint)",
                                   background: "none",
                                   border: "none",
@@ -326,7 +326,7 @@ export default function EditSavedQuestionPage() {
                             {matchingCategories.length > 0 && (
                               <p
                                 style={{
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   color: "var(--green-primary)",
                                   marginTop: 3,
                                 }}
@@ -339,7 +339,7 @@ export default function EditSavedQuestionPage() {
                               <div style={{ marginTop: 8 }}>
                                 <p
                                   style={{
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     color: "var(--text-muted)",
                                     lineHeight: 1.5,
                                     marginBottom: 6,

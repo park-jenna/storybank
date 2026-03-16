@@ -53,7 +53,7 @@ function QuestionsPageContent() {
   if (loading) {
     return (
       <main className="main-content">
-        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading common questions...</p>
+        <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading common questions...</p>
       </main>
     );
   }
@@ -148,7 +148,7 @@ function QuestionsPageContent() {
         >
           <h3
             style={{
-              fontSize: 14,
+              fontSize: 15,
               fontWeight: 500,
               color: "var(--text-muted)",
               marginBottom: 6,
@@ -158,7 +158,7 @@ function QuestionsPageContent() {
           </h3>
           <p
             style={{
-              fontSize: 13,
+              fontSize: 14,
               color: "var(--text-hint)",
               lineHeight: 1.6,
             }}
@@ -181,7 +181,7 @@ function QuestionsPageContent() {
           >
             <h2
               style={{
-                fontSize: 17,
+                fontSize: 18,
                 fontWeight: 500,
                 color: "var(--text-primary)",
                 lineHeight: 1.4,
@@ -201,7 +201,7 @@ function QuestionsPageContent() {
               marginBottom: "1.5rem",
             }}
           >
-            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+            <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
               Good categories to highlight:
             </span>
             {selectedQuestion.categories.map((cat) => (
@@ -274,7 +274,7 @@ export default function QuestionsPage() {
     <Suspense
       fallback={
         <main className="main-content">
-          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+          <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
             Loading common questions...
           </p>
         </main>

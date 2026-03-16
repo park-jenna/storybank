@@ -95,7 +95,7 @@ export default function EditStoryPage() {
   if (loading) {
     return (
       <main className="main-content">
-        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+        <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
           Loading story...
         </p>
       </main>

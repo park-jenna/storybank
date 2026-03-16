@@ -213,7 +213,7 @@ export default function SavedQuestionsPage() {
       </div>
 
       {loading && (
-        <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: "1.5rem" }}>
+        <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: "1.5rem" }}>
           Loading saved questions...
         </p>
       )}
@@ -475,13 +475,13 @@ export default function SavedQuestionsPage() {
                   >
                     RECOMMENDED STORIES
                   </span>
-                  <span style={{ fontSize: 12, color: "var(--text-hint)" }}>
+                  <span style={{ fontSize: 13, color: "var(--text-hint)" }}>
                     {storiesToShow.length}
                   </span>
                 </div>
                 <p
                   style={{
-                    fontSize: 12,
+                    fontSize: 13,
                     color: "var(--text-muted)",
                     marginBottom: 12,
                   }}
@@ -575,7 +575,7 @@ export default function SavedQuestionsPage() {
                                     onClick={() => toggleStoryExpanded(s.id)}
                                     aria-expanded={expandedStoryIds.has(s.id)}
                                     style={{
-                                      fontSize: 11,
+                                      fontSize: 12,
                                       color: "var(--text-hint)",
                                       background: "none",
                                       border: "none",
@@ -589,7 +589,7 @@ export default function SavedQuestionsPage() {
                                 {matchingCategories.length > 0 && (
                                   <p
                                     style={{
-                                      fontSize: 11,
+                                      fontSize: 12,
                                       color: "var(--green-primary)",
                                       marginTop: 3,
                                     }}

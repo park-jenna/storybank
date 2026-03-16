@@ -87,7 +87,7 @@ function StoriesPageContent() {
   return (
     <main className="main-content">
       {loading && (
-        <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: "1.5rem" }}>
+        <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: "1.5rem" }}>
           Loading stories...
         </p>
       )}
@@ -148,7 +148,7 @@ function StoriesPageContent() {
                     >
                       <div
                         style={{
-                          fontSize: 13,
+                          fontSize: 14,
                           fontWeight: 500,
                           color: "var(--text-primary)",
                           marginBottom: 5,
@@ -163,7 +163,7 @@ function StoriesPageContent() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
+                          fontSize: 12,
                           color: "var(--text-muted)",
                           marginBottom: 8,
                           display: "-webkit-box",
@@ -204,7 +204,7 @@ function StoriesPageContent() {
                         <button
                           type="button"
                           className="btn-warn"
-                          style={{ fontSize: 11, padding: "3px 9px" }}
+                          style={{ fontSize: 12, padding: "3px 9px" }}
                           onClick={(e) => {
                             e.stopPropagation();
                             router.push(`/stories/${s.id}/edit`);
@@ -339,7 +339,7 @@ export default function StoriesPage() {
     <Suspense
       fallback={
         <main className="main-content">
-          <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: "1.5rem" }}>
+          <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: "1.5rem" }}>
             Loading...
           </p>
         </main>

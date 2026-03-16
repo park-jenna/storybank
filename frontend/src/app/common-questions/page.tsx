@@ -162,7 +162,7 @@ function CommonQuestionsContent() {
   if (loadingQuestions) {
     return (
       <main className="main-content">
-        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading common questions...</p>
+        <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading common questions...</p>
       </main>
     );
   }
@@ -286,7 +286,7 @@ function CommonQuestionsContent() {
                 <div className="card" style={{ marginTop: 16 }}>
                   <p
                     style={{
-                      fontSize: 13,
+                      fontSize: 14,
                       color: "var(--text-muted)",
                       marginBottom: 12,
                     }}
@@ -323,13 +323,13 @@ function CommonQuestionsContent() {
                         >
                           LINKED STORIES
                         </span>
-                        <span style={{ fontSize: 12, color: "var(--text-hint)" }}>
+                        <span style={{ fontSize: 13, color: "var(--text-hint)" }}>
                           {linkedStories.length}
                         </span>
                       </div>
                       <p
                         style={{
-                          fontSize: 12,
+                          fontSize: 13,
                           color: "var(--text-muted)",
                           marginBottom: 12,
                         }}
@@ -406,13 +406,13 @@ function CommonQuestionsContent() {
                           ? "MORE STORIES TO LINK"
                           : "RECOMMENDED STORIES"}
                       </span>
-                      <span style={{ fontSize: 12, color: "var(--text-hint)" }}>
+                      <span style={{ fontSize: 13, color: "var(--text-hint)" }}>
                         {recommendedStoriesFiltered.length}
                       </span>
                     </div>
                     <p
                       style={{
-                        fontSize: 12,
+                        fontSize: 13,
                         color: "var(--text-muted)",
                         marginBottom: 12,
                       }}
@@ -529,7 +529,7 @@ function CommonQuestionsContent() {
                                             onClick={() => toggleStoryExpanded(s.id)}
                                             aria-expanded={expandedStoryIds.has(s.id)}
                                             style={{
-                                              fontSize: 11,
+                                              fontSize: 12,
                                               color: "var(--text-hint)",
                                               background: "none",
                                               border: "none",
@@ -543,7 +543,7 @@ function CommonQuestionsContent() {
                                         {matchingCategories.length > 0 && (
                                           <p
                                             style={{
-                                              fontSize: 11,
+                                              fontSize: 12,
                                               color: "var(--green-primary)",
                                               marginTop: 3,
                                             }}
@@ -686,7 +686,7 @@ export default function CommonQuestionsPage() {
     <Suspense
       fallback={
         <main className="main-content">
-          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading...</p>
+          <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading...</p>
         </main>
       }
     >

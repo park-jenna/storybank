@@ -15,7 +15,7 @@ export default function StarSection({
     <div
       className={`py-4 px-5 border-l-[3px] border-l-[var(--muted-foreground)] ${className}`}
     >
-      <div className="font-extrabold text-xs tracking-widest uppercase text-[var(--muted-foreground)]">
+      <div className="font-extrabold text-sm tracking-widest uppercase text-[var(--muted-foreground)]">
         {label}
       </div>
       <p className="mt-2 mb-0 text-[var(--muted)] whitespace-pre-wrap">

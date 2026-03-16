@@ -254,7 +254,7 @@ export default function NewStoryPage() {
             >
               <div
                 style={{
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: 500,
                   color: "var(--green-primary)",
                   marginBottom: 4,
@@ -264,7 +264,7 @@ export default function NewStoryPage() {
               </div>
               <p
                 style={{
-                  fontSize: 12,
+                  fontSize: 13,
                   color: "var(--text-secondary)",
                   lineHeight: 1.6,
                 }}
