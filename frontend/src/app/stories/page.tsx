@@ -118,14 +118,6 @@ function StoriesPageContent() {
             <div className="mb-5">
               <div className="section-label">IN PROGRESS</div>
               <div className="carousel-wrap">
-                <button
-                  type="button"
-                  className="pagination-arrow carousel-arrow carousel-arrow-left"
-                  aria-label="Previous in-progress stories"
-                  disabled
-                >
-                  ‹
-                </button>
                 <div className="carousel">
                 {inProgressStories.map((s) => {
                   const missing: string[] = [];
@@ -217,14 +209,6 @@ function StoriesPageContent() {
                   );
                 })}
                 </div>
-                <button
-                  type="button"
-                  className="pagination-arrow carousel-arrow carousel-arrow-right"
-                  aria-label="Next in-progress stories"
-                  disabled
-                >
-                  ›
-                </button>
               </div>
             </div>
           )}

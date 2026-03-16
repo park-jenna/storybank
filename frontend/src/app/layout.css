@@ -583,11 +583,37 @@
   gap: 10px;
   overflow-x: auto;
   padding: 0 36px 6px;
-  scrollbar-width: none;
 }
 
-.carousel-wrap .carousel::-webkit-scrollbar {
-  display: none;
+.carousel-wrap::before,
+.carousel-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.carousel-wrap::before {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    var(--bg-page) 0%,
+    rgba(235, 241, 233, 0.4) 40%,
+    transparent 100%
+  );
+}
+
+.carousel-wrap::after {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    var(--bg-page) 0%,
+    rgba(235, 241, 233, 0.4) 40%,
+    transparent 100%
+  );
 }
 
 .carousel-arrow {
