@@ -245,7 +245,7 @@ textarea {
 label {
   font-size: 13px;
   font-weight: 500;
-  color: #3A5040;
+  color: var(--text-dark);
   cursor: pointer;
 }
 

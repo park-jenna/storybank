@@ -137,8 +137,8 @@ export default function DashboardPage() {
   return (
     <main className="main-content" role="main" aria-label="Dashboard overview">
       {loading && (
-        <div aria-live="polite" aria-busy="true" style={{ padding: "2rem 0" }}>
-          <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading stories...</p>
+        <div className="loading-state" aria-live="polite" aria-busy="true">
+          <p className="loading-message">Loading stories...</p>
         </div>
       )}
 

@@ -87,13 +87,13 @@ function StoriesPageContent() {
   return (
     <main className="main-content">
       {loading && (
-        <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: "1.5rem" }}>
-          Loading stories...
-        </p>
+        <div className="loading-state">
+          <p className="loading-message">Loading stories...</p>
+        </div>
       )}
 
       {error && (
-        <div className="error-banner show" role="alert" style={{ marginTop: 18 }}>
+        <div className="error-banner show mt-5" role="alert">
           Error: {error}
         </div>
       )}
@@ -115,7 +115,7 @@ function StoriesPageContent() {
           </div>
 
           {inProgressStories.length > 0 && (
-            <div style={{ marginBottom: "1.5rem" }}>
+            <div className="mb-5">
               <div className="section-label">IN PROGRESS</div>
               <div className="carousel-wrap">
                 <button
