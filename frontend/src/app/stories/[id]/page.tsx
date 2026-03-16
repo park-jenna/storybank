@@ -51,6 +51,9 @@ export default function StoryDetailPage() {
   const [story, setStory] = useState<Story | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmStep, setConfirmStep] = useState<1 | 2>(1);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -199,20 +202,7 @@ export default function StoryDetailPage() {
           <button
             type="button"
             className="btn-warn"
-            onClick={async () => {
-              const ok = confirm("Are you sure you want to delete this story?");
-              if (!ok) return;
-
-              try {
-                const token = localStorage.getItem("token");
-                if (!token) throw new Error("No token found. Please log in again.");
-
-                await deleteStoryById(token, story.id);
-                router.push("/stories");
-              } catch (err) {
-                alert(err instanceof Error ? err.message : "Failed to delete story.");
-              }
-            }}
+            onClick={() => setShowDeleteConfirm(true)}
           >
             Delete
           </button>
@@ -415,6 +405,107 @@ export default function StoryDetailPage() {
           })()}
         </div>
       </div>
+
+      {showDeleteConfirm && (
+        <div
+          className="modal-overlay show"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-confirm-title"
+        >
+          <div className="modal">
+            {confirmStep === 1 && !deleting && (
+              <>
+                <h3 className="modal-title" id="delete-confirm-title">
+                  Remove this story from your list?
+                </h3>
+                <p className="modal-subtitle">
+                  You can always create a new story later.
+                </p>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setConfirmStep(1);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-warn"
+                    onClick={async () => {
+                      if (!story) return;
+                      if (confirmStep === 1) {
+                        setConfirmStep(2);
+                        return;
+                      }
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </>
+            )}
+
+            {confirmStep === 2 && !deleting && (
+              <>
+                <h3 className="modal-title" id="delete-confirm-title">
+                  This cannot be undone. Really delete?
+                </h3>
+                <p className="modal-subtitle">
+                  Deleting this story will also unlink it from any saved questions.
+                </p>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setConfirmStep(1);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-danger"
+                    disabled={deleting}
+                    onClick={async () => {
+                      if (!story) return;
+                      try {
+                        setDeleting(true);
+                        const token = localStorage.getItem("token");
+                        if (!token) {
+                          throw new Error("No token found. Please log in again.");
+                        }
+                        await deleteStoryById(token, story.id);
+                        router.push("/stories");
+                      } catch (err) {
+                        alert(
+                          err instanceof Error
+                            ? err.message
+                            : "Failed to delete story."
+                        );
+                      } finally {
+                        setDeleting(false);
+                        setShowDeleteConfirm(false);
+                        setConfirmStep(1);
+                      }
+                    }}
+                  >
+                    Yes, delete
+                  </button>
+                </div>
+              </>
+            )}
+
+            {deleting && <p className="modal-deleting">Deleting...</p>}
+          </div>
+        </div>
+      )}
     </main>
   );
 }
