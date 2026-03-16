@@ -86,7 +86,8 @@
   padding: 1rem 1.125rem;
   cursor: pointer;
   border: 0.5px solid var(--border-card);
-  transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s, border-color 0.15s;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -94,7 +95,8 @@
 
 .story-card:hover {
   background: var(--bg-hover);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  border-color: var(--border-input);
   transform: translateY(-1px);
 }
 
@@ -123,9 +125,9 @@
   font-size: 12px;
   color: var(--text-muted);
   line-height: 1.5;
-  margin-bottom: 7px;
+  margin-bottom: 8px;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -148,6 +150,13 @@
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
+}
+
+/* Story card matches line (e.g. "Matches: Conflict Resolution") */
+.story-card-matches {
+  font-size: 11px;
+  color: var(--green-primary);
+  margin-bottom: 4px;
 }
 
 /* Ensure story grid links stretch so cards align in height */

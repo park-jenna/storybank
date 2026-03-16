@@ -364,13 +364,7 @@ function CommonQuestionsContent() {
                                     <div className="story-card-title">{s.title}</div>
                                   </div>
                                   {matchingCategories.length > 0 && (
-                                    <p
-                                      style={{
-                                        fontSize: 11,
-                                        color: "var(--green-primary)",
-                                        marginBottom: 4,
-                                      }}
-                                    >
+                                    <p className="story-card-matches">
                                       Matches: {matchingCategories.join(", ")}
                                     </p>
                                   )}
@@ -592,13 +586,7 @@ function CommonQuestionsContent() {
                                         <div className="story-card-title">{s.title}</div>
                                       </div>
                                       {matchingCategories.length > 0 && (
-                                        <p
-                                          style={{
-                                            fontSize: 11,
-                                            color: "var(--green-primary)",
-                                            marginBottom: 4,
-                                          }}
-                                        >
+                                        <p className="story-card-matches">
                                           Matches: {matchingCategories.join(", ")}
                                         </p>
                                       )}
