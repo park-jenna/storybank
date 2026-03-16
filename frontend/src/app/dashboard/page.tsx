@@ -49,6 +49,7 @@ function SeeAllLink({ href, label }: { href: string; label: string }) {
 }
 
 const USER_NAME = "User"; // TODO: from auth when available
+const CATEGORY_GOAL = 3;
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -287,16 +288,27 @@ export default function DashboardPage() {
                   <div>
                     {CATEGORIES.map((cat) => {
                       const count = categoryCounts[cat] ?? 0;
-                      const pct = Math.round((count / maxCategoryCount) * 100);
+                      const pct = Math.min(
+                        100,
+                        Math.round((count / CATEGORY_GOAL) * 100)
+                      );
+                      const isBelowAlert = count < 2;
                       return (
-                        <div key={cat} className="progress-wrap">
+                        <div
+                          key={cat}
+                          className={`progress-wrap${
+                            isBelowAlert ? " progress-wrap-alert" : ""
+                          }`}
+                        >
                           <div className="progress-label">
                             <span className="progress-label-text">{cat}</span>
                             <span className="progress-label-count">{count}</span>
                           </div>
                           <div className="progress-bg">
                             <div
-                              className={`progress-fill ${count === 0 ? "warn" : ""}`}
+                              className={`progress-fill${
+                                isBelowAlert ? " warn" : ""
+                              }`}
                               style={{ width: `${pct}%` }}
                             />
                           </div>

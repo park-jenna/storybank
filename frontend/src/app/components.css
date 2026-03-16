@@ -600,6 +600,11 @@
   background: #E89878;
 }
 
+.progress-wrap-alert .progress-label-text,
+.progress-wrap-alert .progress-label-count {
+  color: var(--warn-text);
+}
+
 
 /* ------------------------------------------------------------
    6. STAR COMPONENTS

@@ -107,12 +107,17 @@ router.delete("/:id", requireAuth, async (req, res) => {
             return res.status(404).json({ error: "Story not found" });
         }
 
-        // 2) 스토리 삭제
+        // 2) 이 스토리와 연결된 질문 링크 먼저 삭제 (FK 제약 때문에 순서 중요)
+        await prisma.questionStory.deleteMany({
+            where: { storyId: id },
+        });
+
+        // 3) 스토리 삭제
         await prisma.story.delete({
             where: { id },
         });
 
-        // 3) 응답
+        // 4) 응답
         return res.json({ ok: true });
     } catch (error) {
         console.error("Error deleting story:", error);
