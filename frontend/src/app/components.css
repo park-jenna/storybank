@@ -39,6 +39,13 @@
   color: var(--text-primary);
 }
 
+.card-empty-hint {
+  font-size: 13px;
+  color: var(--text-hint);
+  margin: 0;
+  padding: 8px 0;
+}
+
 /* Stat card */
 .stat-card {
   background: var(--bg-card);

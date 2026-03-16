@@ -149,23 +149,12 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {!loading && !error && !hasAnyStories && (
-        <div className="empty-state">
-          <div className="empty-state-icon">📝</div>
-          <h3 className="empty-state-title">No stories yet</h3>
-          <p className="empty-state-desc">Create your first STAR story to get started.</p>
-          <Link href="/stories/new" className="btn-primary">
-            + New story
-          </Link>
-        </div>
-      )}
-
-        {!loading && !error && hasAnyStories && (
+      {!loading && !error && (
           <>
             {/* Page header: Welcome + subtitle + New story */}
             <header className="page-header">
               <div className="page-header-left">
-                <h1 className="page-title">Welcome back</h1>
+                <h1 className="page-title">{hasAnyStories ? "Welcome back" : "Welcome"}</h1>
                 <p className="page-subtitle">
                   {inProgressStories.length} stories in progress
                   {" · "}
@@ -220,6 +209,9 @@ export default function DashboardPage() {
                     <h2 className="card-title">In progress</h2>
                     <SeeAllLink href="/stories" label="View all" />
                   </div>
+                  {inProgressStories.length === 0 ? (
+                    <p className="card-empty-hint">No stories in progress. Create one to get started.</p>
+                  ) : null}
                   {inProgressStories.slice(0, 5).map((s) => {
                     const progress = storyProgress(s);
                     const dotClass =
@@ -254,8 +246,11 @@ export default function DashboardPage() {
                 <div className="card">
                   <div className="card-head">
                     <h2 className="card-title">Completed</h2>
-                    <SeeAllLink href="/stories" label={`View ${completedCount}`} />
+                    <SeeAllLink href="/stories" label={completedCount > 0 ? `View ${completedCount}` : "View all"} />
                   </div>
+                  {completedStories.length === 0 ? (
+                    <p className="card-empty-hint">Complete a STAR story to see it here.</p>
+                  ) : null}
                   {completedStories.slice(0, 5).map((s) => {
                     const linked = getLinkedCount(s.id, userQuestions);
                     return (
@@ -329,6 +324,9 @@ export default function DashboardPage() {
                     <h2 className="card-title">Saved questions</h2>
                     <SeeAllLink href="/saved-questions" label="View all" />
                   </div>
+                  {userQuestions.length === 0 ? (
+                    <p className="card-empty-hint">Save interview questions and link them to your stories.</p>
+                  ) : null}
                   {userQuestions
                     .slice()
                     .sort((a, b) => b.stories.length - a.stories.length)
