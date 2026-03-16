@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -13,6 +13,9 @@ import {
   type Story,
   type UserQuestionItem,
 } from "@/lib/user-questions";
+import { CATEGORIES } from "@/constants/categories";
+
+const ALL = "All" as const;
 
 function CommonQuestionsContent() {
   const router = useRouter();
@@ -29,6 +32,7 @@ function CommonQuestionsContent() {
   const [selectedStoryIds, setSelectedStoryIds] = useState<Set<string>>(new Set());
   const [showSavePanel, setShowSavePanel] = useState(false);
   const [expandedStoryIds, setExpandedStoryIds] = useState<Set<string>>(new Set());
+  const [selectedCategory, setSelectedCategory] = useState<string>(ALL);
 
   useEffect(() => {
     async function load() {
@@ -46,7 +50,9 @@ function CommonQuestionsContent() {
         setQuestions(commonData.questions);
         setUserQuestions(userData.userQuestions ?? []);
         if (commonData.questions.length > 0 && !selectedQuestion) {
-          setSelectedQuestion(commonData.questions[0]);
+          const first = commonData.questions[0];
+          setSelectedQuestion(first);
+          // 카테고리 필터 기본값은 All 유지
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load questions.");
@@ -80,6 +86,13 @@ function CommonQuestionsContent() {
       .catch(() => setRecommendedStories([]))
       .finally(() => setLoadingRecommendations(false));
   }, [selectedQuestion?.id]);
+
+  const filteredQuestions = useMemo(() => {
+    if (selectedCategory === ALL) return questions;
+    return questions.filter((q) =>
+      (q.recommendedCategories ?? []).includes(selectedCategory)
+    );
+  }, [questions, selectedCategory]);
 
   const linkedStories = useMemo(() => {
     if (!selectedQuestion?.alreadySaved || userQuestions.length === 0) return [];
@@ -159,6 +172,18 @@ function CommonQuestionsContent() {
 
   const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token");
 
+  const handleSelectCategory = (cat: string) => {
+    setSelectedCategory(cat);
+    if (!selectedQuestion) return;
+    // 현재 선택된 질문이 필터 후 목록에 없으면 선택 해제
+    const stillVisible = (cat === ALL ? questions : filteredQuestions).some(
+      (q) => q.id === selectedQuestion.id
+    );
+    if (!stillVisible) {
+      setSelectedQuestion(null);
+    }
+  };
+
   if (loadingQuestions) {
     return (
       <main className="main-content">
@@ -211,6 +236,28 @@ function CommonQuestionsContent() {
         </div>
       </div>
 
+      {questions.length > 0 && (
+        <div className="chips-row" style={{ marginBottom: "0.5rem" }}>
+          {[ALL, ...CATEGORIES].map((cat) => (
+            <div
+              key={cat}
+              role="button"
+              tabIndex={0}
+              className={`chip${selectedCategory === cat ? " active" : ""}`}
+              onClick={() => handleSelectCategory(cat)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleSelectCategory(cat);
+                }
+              }}
+            >
+              {cat}
+            </div>
+          ))}
+        </div>
+      )}
+
       {questions.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">❓</div>
@@ -224,7 +271,7 @@ function CommonQuestionsContent() {
         <div className="common-questions-layout">
           <aside className="common-questions-list" aria-label="Question list">
             <div className="q-list">
-              {questions.map((q, i) => (
+              {filteredQuestions.map((q, i) => (
                 <div
                   key={q.id}
                   role="button"
