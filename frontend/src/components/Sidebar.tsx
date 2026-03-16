@@ -95,9 +95,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
 
       <div className="sidebar-inner">
         <Link href="/" className="sidebar-logo">
-          <span className="sidebar-logo-icon" aria-hidden>
-            📖
-          </span>
           StoryBank
         </Link>
 
