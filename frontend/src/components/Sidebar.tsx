@@ -16,8 +16,8 @@ function storyProgress(s: { situation?: string | null; action?: string | null; r
 
 const PREPARE_ITEMS = [
   { href: "/stories", label: "My Stories", badgeKey: "stories" as const },
-  { href: "/common-questions", label: "Common Questions", badgeKey: null },
   { href: "/saved-questions", label: "Saved Questions", badgeKey: "questions" as const },
+  { href: "/common-questions", label: "Common Questions", badgeKey: null },
 ] as const;
 
 const USER_DISPLAY_NAME = "User"; // TODO: from auth when available
