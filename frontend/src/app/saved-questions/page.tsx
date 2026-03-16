@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
@@ -13,6 +13,9 @@ import {
   type Story,
 } from "@/lib/user-questions";
 import { getCommonQuestionIdByContent } from "@/constants/interviewQuestions";
+import { CATEGORIES } from "@/constants/categories";
+
+const ALL = "All" as const;
 
 export default function SavedQuestionsPage() {
   const router = useRouter();
@@ -31,6 +34,7 @@ export default function SavedQuestionsPage() {
   const [expandedStoryIds, setExpandedStoryIds] = useState<Set<string>>(new Set());
   const [savingLinks, setSavingLinks] = useState(false);
   const [saveLinkSuccess, setSaveLinkSuccess] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>(ALL);
 
   useEffect(() => {
     async function load() {
@@ -87,6 +91,17 @@ export default function SavedQuestionsPage() {
     () => [...(linkingUserQuestion?.stories ?? []), ...recommendedFiltered],
     [linkingUserQuestion?.stories, recommendedFiltered]
   );
+
+  const filteredUserQuestions = useMemo(() => {
+    if (selectedCategory === ALL) return userQuestions;
+    return userQuestions.filter((uq) =>
+      (uq.question.recommendedCategories ?? []).includes(selectedCategory)
+    );
+  }, [userQuestions, selectedCategory]);
+
+  const handleSelectCategory = (cat: string) => {
+    setSelectedCategory(cat);
+  };
 
   const toggleStorySelection = (storyId: string) => {
     setSelectedStoryIds((prev) => {
@@ -212,6 +227,28 @@ export default function SavedQuestionsPage() {
         </Link>
       </div>
 
+      {userQuestions.length > 0 && !linkingUserQuestion && (
+        <div className="chips-row" style={{ marginBottom: "0.5rem" }}>
+          {[ALL, ...CATEGORIES].map((cat) => (
+            <div
+              key={cat}
+              role="button"
+              tabIndex={0}
+              className={`chip${selectedCategory === cat ? " active" : ""}`}
+              onClick={() => handleSelectCategory(cat)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleSelectCategory(cat);
+                }
+              }}
+            >
+              {cat}
+            </div>
+          ))}
+        </div>
+      )}
+
       {loading && (
         <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: "1.5rem" }}>
           Loading saved questions...
@@ -307,9 +344,9 @@ export default function SavedQuestionsPage() {
         </div>
       )}
 
-      {!loading && !error && userQuestions.length > 0 && !linkingUserQuestion && (
+      {!loading && !error && filteredUserQuestions.length > 0 && !linkingUserQuestion && (
         <div className="q-card-grid" style={{ marginTop: 16 }}>
-          {userQuestions.map((uq) => {
+          {filteredUserQuestions.map((uq) => {
             const commonId = getCommonQuestionIdByContent(uq.question.content);
             const maxVisible = 3;
             const visibleStories = uq.stories.slice(0, maxVisible);
@@ -401,6 +438,24 @@ export default function SavedQuestionsPage() {
           })}
         </div>
       )}
+
+      {!loading &&
+        !error &&
+        userQuestions.length > 0 &&
+        filteredUserQuestions.length === 0 &&
+        !linkingUserQuestion && (
+          <div className="empty-state" style={{ marginTop: 24 }}>
+            <div className="empty-state-icon">🔍</div>
+            <h3 className="empty-state-title">No questions in this category</h3>
+            <p className="empty-state-desc">
+              You don&apos;t have any saved questions tagged with &quot;{selectedCategory}&quot; yet.
+              Try another category or save more questions from the common questions page.
+            </p>
+            <Link href="/common-questions" className="btn-secondary">
+              Browse more questions
+            </Link>
+          </div>
+        )}
 
       {!loading && !error && userQuestions.length > 0 && linkingUserQuestion && (
         <div className="common-questions-layout" style={{ marginTop: 16 }}>
