@@ -337,7 +337,12 @@ export default function DashboardPage() {
                       const linkedCount = uq.stories.length;
                       const hasStory = linkedCount > 0;
                       return (
-                        <div key={uq.id} className="q-row">
+                        <Link
+                          key={uq.id}
+                          href="/saved-questions"
+                          className="q-row"
+                          style={{ textDecoration: "none" }}
+                        >
                           <div className={`q-icon ${hasStory ? "q-done" : "q-empty"}`} />
                           <div className="q-txt">{uq.question.content}</div>
                           <div className={`q-n${!hasStory ? " q-warn" : ""}`}>
@@ -345,7 +350,7 @@ export default function DashboardPage() {
                               ? `${linkedCount} story${linkedCount !== 1 ? "s" : ""}`
                               : "No story"}
                           </div>
-                        </div>
+                        </Link>
                       );
                     })}
                   <div className="cta-row" style={{ marginTop: 12 }}>
