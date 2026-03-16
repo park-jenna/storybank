@@ -301,7 +301,12 @@ export default function DashboardPage() {
                           }`}
                         >
                           <div className="progress-label">
-                            <span className="progress-label-text">{cat}</span>
+                            <Link
+                              href={`/stories?category=${encodeURIComponent(cat)}`}
+                              className="progress-label-text"
+                            >
+                              {cat}
+                            </Link>
                             <span className="progress-label-count">{count}</span>
                           </div>
                           <div className="progress-bg">
