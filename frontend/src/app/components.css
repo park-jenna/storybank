@@ -119,6 +119,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  min-height: 38px;
 }
 
 .story-card-situation {
@@ -126,6 +127,7 @@
   color: var(--text-muted);
   line-height: 1.5;
   margin-bottom: 8px;
+  min-height: 60px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -176,6 +178,9 @@
   cursor: pointer;
   border: 0.5px solid var(--border-card);
   transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
 }
 
 .carousel-card:hover {
@@ -392,6 +397,9 @@
   background: var(--warn-badge-bg);
   color: var(--warn-badge-text);
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1px 0;
 }
 
 /* Chips row */

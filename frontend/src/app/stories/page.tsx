@@ -121,7 +121,7 @@ function StoriesPageContent() {
                 <div className="carousel">
                 {inProgressStories.map((s) => {
                   const missing: string[] = [];
-                  if (!s.situation?.trim()) missing.push("S/T");
+                  if (!s.situation?.trim()) missing.push("Situation/Task");
                   if (!s.action?.trim()) missing.push("Action");
                   if (!s.result?.trim()) missing.push("Result");
                   return (
@@ -138,61 +138,75 @@ function StoriesPageContent() {
                         }
                       }}
                     >
-                      <div
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 500,
-                          color: "var(--text-primary)",
-                          marginBottom: 5,
-                          lineHeight: 1.35,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {s.title}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 12,
-                          color: "var(--text-muted)",
-                          marginBottom: 8,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          lineHeight: 1.4,
-                        }}
-                      >
-                        {s.situation || (
-                          <span style={{ color: "#C8B890", fontStyle: "italic" }}>
-                            No situation written yet.
-                          </span>
-                        )}
+                      <div style={{ minHeight: 70 }}>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 500,
+                            color: "var(--text-primary)",
+                            marginBottom: 5,
+                            lineHeight: 1.35,
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {s.title}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: "var(--text-muted)",
+                            marginBottom: 8,
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {s.situation || (
+                            <span style={{ color: "#C8B890", fontStyle: "italic" }}>
+                              No situation written yet.
+                            </span>
+                          )}
+                        </div>
                       </div>
                       {missing.length > 0 && (
-                        <div className="story-card-missing">
-                          <span className="tag-missing">
-                            Missing {missing.join(" ")}
+                        <div
+                          className="story-card-missing"
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            gap: 6,
+                            marginBottom: 8,
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: 12,
+                              color: "var(--warn-text)",
+                              fontWeight: 500,
+                            }}
+                          >
+                            Missing:
                           </span>
+                          {missing.map((m) => (
+                            <span key={m} className="tag-missing">
+                              {m}
+                            </span>
+                          ))}
                         </div>
                       )}
                       <div
                         style={{
                           display: "flex",
-                          gap: 4,
-                          flexWrap: "wrap",
-                          marginBottom: 8,
+                          justifyContent: "flex-end",
+                          marginTop: "auto",
                         }}
                       >
-                        {s.categories.map((c) => (
-                          <span key={c} className="tag">
-                            {c}
-                          </span>
-                        ))}
-                      </div>
-                      <div style={{ display: "flex", justifyContent: "flex-end" }}>
                         <button
                           type="button"
                           className="btn-warn"
@@ -284,7 +298,7 @@ function StoriesPageContent() {
               {filteredStories.map((s) => {
                 const isComplete = storyProgress(s) === 100;
                 const missing: string[] = [];
-                if (!s.situation?.trim()) missing.push("S/T");
+                if (!s.situation?.trim()) missing.push("Situation/Task");
                 if (!s.action?.trim()) missing.push("Action");
                 if (!s.result?.trim()) missing.push("Result");
                 return (
@@ -296,30 +310,68 @@ function StoriesPageContent() {
                     <div className="story-card">
                       <div className="story-card-top">
                         <div className="story-card-title">{s.title}</div>
-                        {isComplete && (
-                          <span className="badge badge-done">Complete</span>
-                        )}
                       </div>
                       <div
                         className={`story-card-situation${!s.situation ? " empty" : ""}`}
                       >
                         {s.situation || "No situation written yet."}
                       </div>
-                      <div className="story-card-missing">
-                        {missing.length > 0 && (
-                          <span className="tag-missing">
-                            Missing {missing.join(" ")}
+                      {isComplete ? (
+                        <div
+                          className="story-card-missing"
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            gap: 6,
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: 12,
+                              color: "var(--success-text)",
+                              fontWeight: 500,
+                            }}
+                          >
+                            STAR complete
                           </span>
-                        )}
-                      </div>
+                        </div>
+                      ) : (
+                        missing.length > 0 && (
+                          <div
+                            className="story-card-missing"
+                            style={{
+                              alignItems: "center",
+                              justifyContent: "flex-start",
+                              gap: 6,
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontSize: 12,
+                                color: "var(--warn-text)",
+                                fontWeight: 500,
+                              }}
+                            >
+                              Missing:
+                            </span>
+                            {missing.map((m) => (
+                              <span key={m} className="tag-missing">
+                                {m}
+                              </span>
+                            ))}
+                          </div>
+                        )
+                      )}
                       <div className="story-card-cats">
-                        {s.categories.slice(0, 3).map((c) => (
+                        {s.categories.slice(0, 2).map((c) => (
                           <span key={c} className="tag">
                             {c}
                           </span>
                         ))}
-                        {s.categories.length > 3 && (
-                          <span className="tag">+{s.categories.length - 3}</span>
+                        {s.categories.length > 2 && (
+                          <span className="tag">+{s.categories.length - 2}</span>
                         )}
                       </div>
                     </div>
