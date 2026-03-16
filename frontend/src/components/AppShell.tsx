@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 
-/** Routes that use minimal layout (no sidebar): landing, login, signup */
 const PUBLIC_PATHS = ["/", "/login", "/signup"];
 
 export default function AppShell({
@@ -17,29 +15,32 @@ export default function AppShell({
   const isPublicPage = pathname ? PUBLIC_PATHS.includes(pathname) : false;
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  if (isPublicPage) {
+    return <main className="main-content">{children}</main>;
+  }
+
   return (
-    <div
-      className={`layout-wrapper${isPublicPage ? " layout-wrapper--auth" : ""}${!isPublicPage && sidebarOpen ? " sidebar-is-open" : ""}`}
-    >
-      {!isPublicPage && (
-        <>
-          <div
-            className="sidebar-backdrop"
-            aria-hidden
-            onClick={() => setSidebarOpen(false)}
-          />
-          <Sidebar onClose={() => setSidebarOpen(false)} />
-        </>
-      )}
-      <div className={`layout-right${isPublicPage ? " layout-right--auth" : ""}`}>
-        <Navbar
-          onMenuClick={!isPublicPage ? () => setSidebarOpen(true) : undefined}
+    <div className={`app-layout${sidebarOpen ? " sidebar-is-open" : ""}`}>
+      <div className="app-layout-sidebar-col">
+        <div
+          className={`sidebar-backdrop${sidebarOpen ? " sidebar-backdrop--visible" : ""}`}
+          aria-hidden
+          onClick={() => setSidebarOpen(false)}
         />
-        <main className="layout-main">
-          <div className={`app-shell${isPublicPage ? " app-shell--auth" : ""}`}>
-            {children}
-          </div>
-        </main>
+        <Sidebar onClose={() => setSidebarOpen(false)} />
+      </div>
+      <div className="app-layout-body">
+        <button
+          type="button"
+          className="mobile-menu-btn"
+          aria-label="Open menu"
+          onClick={() => setSidebarOpen(true)}
+        >
+          <svg viewBox="0 0 24 24" width={20} height={20} stroke="currentColor" strokeWidth={2} fill="none" aria-hidden>
+            <path d="M3 12h18M3 6h18M3 18h18" strokeLinecap="round" />
+          </svg>
+        </button>
+        {children}
       </div>
     </div>
   );

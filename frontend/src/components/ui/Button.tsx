@@ -38,23 +38,6 @@ const sizePadding: Record<ButtonSize, React.CSSProperties> = {
 const base =
   "inline-flex items-center justify-center gap-2 rounded-[var(--radius)] font-medium cursor-pointer select-none transition-all duration-200 whitespace-nowrap no-underline disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-[0.98]";
 
-export function getButtonClassName(
-  variant: ButtonVariant = "default",
-  size: ButtonSize = "md"
-): string {
-  const isMenu = variant === "menu";
-  const border = isMenu ? "" : "border";
-  return `${base} ${border} ${variantClasses[variant]} ${sizeClasses[size]}`;
-}
-
-export function getButtonStyle(
-  variant: ButtonVariant,
-  size: ButtonSize
-): React.CSSProperties {
-  if (variant === "menu") return {};
-  return sizePadding[size];
-}
-
 export default function Button({
   variant = "default",
   size = "md",

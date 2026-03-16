@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchStories, Story } from "@/lib/stories";
 import { INTERVIEW_QUESTIONS, getQuestionById } from "@/constants/interviewQuestions";
-import { getBadgeClass } from "@/constants/categories";
-import { Button, Card, Badge, EmptyState } from "@/components/ui";
 
 function QuestionsPageContent() {
   const router = useRouter();
@@ -52,134 +50,221 @@ function QuestionsPageContent() {
     return stories.filter((s) => s.categories.some((c) => allowed.has(c)));
   }, [stories, selectedQuestion]);
 
-  const formatDate = (dateString: string) => {
-    const d = new Date(dateString);
-    const now = new Date();
-    const diffDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-    return `${Math.floor(diffDays / 365)} years ago`;
-  };
-
   if (loading) {
     return (
-      <main className="page-section">
-        <p className="muted">Loading...</p>
+      <main className="main-content">
+        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading common questions...</p>
       </main>
     );
   }
 
   if (error) {
     return (
-      <main className="page-section">
-        <Card variant="error">
-          <p className="form-error m-0">Error: {error}</p>
-        </Card>
-        <Button className="mt-4" onClick={() => router.push("/dashboard")}>
-          ← Dashboard
-        </Button>
+      <main className="main-content">
+        <div className="error-banner show" role="alert">
+          Error: {error}
+        </div>
+        <button
+          type="button"
+          className="back-btn"
+          style={{ marginTop: 12 }}
+          onClick={() => router.push("/saved-questions")}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width={14}
+            height={14}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Saved Questions
+        </button>
       </main>
     );
   }
 
   return (
-    <main className="questions-page page-section">
-      <h1 className="questions-page-title">Interview questions</h1>
-      <p className="questions-page-subtitle">
-        Pick a question to see which stories you can use to answer it.
+    <main className="main-content">
+      <div className="topbar">
+        <button
+          type="button"
+          className="back-btn"
+          onClick={() => router.push("/saved-questions")}
+        >
+          <svg
+            viewBox="0 0 14 14"
+            width={14}
+            height={14}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Saved Questions
+        </button>
+      </div>
+      <h1 className="page-title">Common interview questions</h1>
+      <p className="page-subtitle" style={{ marginBottom: "1.5rem" }}>
+        Choose a question to see recommended categories and your matching stories.
       </p>
 
-      <div className="questions-layout">
-        <aside className="questions-sidebar" aria-label="Question list">
-          <p className="questions-list-label">Choose a question</p>
-          <ul className="questions-list">
-            {INTERVIEW_QUESTIONS.map((q) => (
-              <li key={q.id}>
-                <button
-                  type="button"
-                  onClick={() => setSelectedQuestionId(q.id)}
-                  className={`questions-list-item ${selectedQuestionId === q.id ? "questions-list-item-active" : ""}`}
-                >
-                  {q.text}
-                </button>
-              </li>
+      <div className="q-list">
+        {INTERVIEW_QUESTIONS.map((q, i) => (
+          <div
+            key={q.id}
+            role="button"
+            tabIndex={0}
+            className={`q-row${selectedQuestionId === q.id ? " active" : ""}`}
+            onClick={() => setSelectedQuestionId(q.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setSelectedQuestionId(q.id);
+              }
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
+              <span className="q-row-num">{String(i + 1).padStart(2, "0")}</span>
+              <span className="q-row-text">{q.text}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {!selectedQuestion ? (
+        <div
+          style={{ textAlign: "center", padding: "3rem 2rem" }}
+          aria-live="polite"
+        >
+          <h3
+            style={{
+              fontSize: 14,
+              fontWeight: 500,
+              color: "var(--text-muted)",
+              marginBottom: 6,
+            }}
+          >
+            Select a question from the list
+          </h3>
+          <p
+            style={{
+              fontSize: 13,
+              color: "var(--text-hint)",
+              lineHeight: 1.6,
+            }}
+          >
+            Choose a question above to see recommended categories and your matching stories.
+          </p>
+        </div>
+      ) : (
+        <>
+          <hr className="divider" />
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              gap: 16,
+              marginBottom: "1.25rem",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: 17,
+                fontWeight: 500,
+                color: "var(--text-primary)",
+                lineHeight: 1.4,
+                flex: 1,
+              }}
+            >
+              {selectedQuestion.text}
+            </h2>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              flexWrap: "wrap",
+              marginBottom: "1.5rem",
+            }}
+          >
+            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+              Good categories to highlight:
+            </span>
+            {selectedQuestion.categories.map((cat) => (
+              <span key={cat} className="tag">
+                {cat}
+              </span>
             ))}
-          </ul>
-        </aside>
+          </div>
 
-        <section className="questions-main" aria-label="Selected question and matching stories">
-          {selectedQuestion ? (
-            <>
-              <div className="questions-selected-block">
-                <div className="questions-selected-badges">
-                  {selectedQuestion.categories.map((cat) => (
-                    <span key={cat} className={`badge ${getBadgeClass(cat)}`}>
-                      {cat}
-                    </span>
-                  ))}
-                </div>
-                <h2 className="questions-selected-title">{selectedQuestion.text}</h2>
-                <p className="questions-selected-hint">
-                  Stories tagged with <strong>any of these</strong> can answer this question.
-                </p>
-              </div>
-
-              <h3 className="questions-stories-title">
-                Your stories <span className="questions-stories-count">{matchingStories.length}</span>
-              </h3>
-
-              {matchingStories.length === 0 ? (
-                <EmptyState
-                  icon="📚"
-                  title="No matching stories"
-                  description={`You don't have any stories tagged with ${selectedQuestion.categories.length === 1 ? `"${selectedQuestion.categories[0]}"` : "any of these categories"} yet. Add one to a story to use it here.`}
-                  action={
-                    <Button variant="primary" className="mt-4" onClick={() => router.push("/stories/new")}>
-                      + New Story
-                    </Button>
-                  }
-                />
-              ) : (
-                <ul className="questions-stories-grid">
-                  {matchingStories.map((s) => (
-                    <li key={s.id}>
-                      <Link href={`/stories/${s.id}`} className="questions-story-link">
-                        <article className="questions-story-card">
-                          <div className="questions-story-card-top">
-                            <h4 className="questions-story-card-title">{s.title}</h4>
-                            <time className="questions-story-card-date">{formatDate(s.createdAt)}</time>
-                          </div>
-                          <p className="questions-story-card-summary">
-                            {s.result || s.situation || "No summary"}
-                          </p>
-                          <div className="questions-story-card-badges">
-                            {s.categories.slice(0, 3).map((c) => (
-                              <Badge key={c} category={c} />
-                            ))}
-                            {s.categories.length > 3 && (
-                              <span className="badge badge-primary">+{s.categories.length - 3}</span>
-                            )}
-                          </div>
-                        </article>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </>
-          ) : (
-            <div className="questions-empty" aria-live="polite">
-              <div className="questions-empty-icon" aria-hidden>?</div>
-              <p className="questions-empty-text">
-                Select a question from the list to see which of your stories you can use to answer it.
+          {matchingStories.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state-icon">📚</div>
+              <h3 className="empty-state-title">No matching stories</h3>
+              <p className="empty-state-desc">
+                You don&apos;t have any stories tagged with{" "}
+                {selectedQuestion.categories.length === 1
+                  ? `"${selectedQuestion.categories[0]}"`
+                  : "any of these categories"}{" "}
+                yet.
               </p>
+              <Link href="/stories/new" className="btn-primary">
+                + New story
+              </Link>
+            </div>
+          ) : (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                gap: 10,
+              }}
+            >
+              {matchingStories.map((s) => (
+                <Link
+                  key={s.id}
+                  href={`/stories/${s.id}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <div className="story-card">
+                    <div className="story-card-top">
+                      <div className="story-card-title">{s.title}</div>
+                    </div>
+                    <div className="story-card-situation">
+                      {s.situation || s.result || "No summary"}
+                    </div>
+                    <div className="story-card-missing" />
+                    <div className="story-card-cats">
+                      {s.categories.slice(0, 3).map((c) => (
+                        <span key={c} className="tag">
+                          {c}
+                        </span>
+                      ))}
+                      {s.categories.length > 3 && (
+                        <span className="tag">+{s.categories.length - 3}</span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
           )}
-        </section>
-      </div>
+        </>
+      )}
     </main>
   );
 }
@@ -188,8 +273,10 @@ export default function QuestionsPage() {
   return (
     <Suspense
       fallback={
-        <main className="page-section">
-          <p className="muted">Loading...</p>
+        <main className="main-content">
+          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+            Loading common questions...
+          </p>
         </main>
       }
     >

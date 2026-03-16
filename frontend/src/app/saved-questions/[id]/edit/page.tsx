@@ -7,7 +7,6 @@ import Link from "next/link";
 import { fetchUserQuestionById, updateUserQuestion } from "@/lib/user-questions";
 import { fetchStories, Story } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
-import { Button, Card, FormField, Textarea, Badge } from "@/components/ui";
 
 export default function EditSavedQuestionPage() {
   const router = useRouter();
@@ -116,180 +115,299 @@ export default function EditSavedQuestionPage() {
 
   if (loading) {
     return (
-      <main className="page-section">
-        <p className="muted">Loading...</p>
+      <main className="main-content">
+        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading...</p>
       </main>
     );
   }
 
   if (error && !content && stories.length === 0) {
     return (
-      <main className="page-section">
-        <Card variant="error">
-          <p className="form-error">Error: {error}</p>
-        </Card>
-        <div className="mt-4">
-          <Button onClick={() => router.push("/saved-questions")}>← Back to Saved Questions</Button>
+      <main className="main-content">
+        <div className="error-banner show" role="alert">
+          Error: {error}
         </div>
+        <button
+          type="button"
+          className="back-btn"
+          style={{ marginTop: 12 }}
+          onClick={() => router.push("/saved-questions")}
+        >
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Back to Saved Questions
+        </button>
       </main>
     );
   }
 
   return (
-    <main className="page-section">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="story-form-title">Edit Saved Question</h1>
-        <Button type="button" onClick={() => router.push(`/saved-questions/${questionId}`)}>
-          ← Back
-        </Button>
-      </header>
-
-      <form onSubmit={handleSave} className="story-form-card">
-        <FormField label="Question" required>
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="E.g., Tell me about a time you had a conflict with a teammate."
-            rows={3}
-            required
-          />
-        </FormField>
-
-        <FormField
-          label="Categories"
-          hint="Optional. Select one or more categories that match this question."
+    <main className="main-content">
+      <div className="topbar">
+        <button
+          type="button"
+          className="back-btn"
+          onClick={() => router.push(`/saved-questions/${questionId}`)}
         >
-          <div className="story-form-chips">
-            {CATEGORIES.map((category) => {
-              const selected = selectedCategories.includes(category);
-              return (
-                <label
-                  key={category}
-                  className={`chip story-form-chip ${selected ? "chip-selected" : ""}`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selected}
-                    onChange={(e) => toggleCategory(category, e.target.checked)}
-                    className="sr-only"
-                  />
-                  {category}
-                </label>
-              );
-            })}
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Back
+        </button>
+      </div>
+      <div className="page-header-left" style={{ marginBottom: "1.5rem" }}>
+        <h1 className="page-title">Edit Saved Question</h1>
+      </div>
+
+      <form onSubmit={handleSave}>
+        <div className="card">
+          <div className="field">
+            <label className="field-label">
+              Question <span className="field-required">*</span>
+            </label>
+            <textarea
+              className="textarea"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="E.g., Tell me about a time you had a conflict with a teammate."
+              rows={3}
+              required
+            />
           </div>
-        </FormField>
 
-        <FormField
-          label="Linked stories"
-          hint="Choose which stories you want to use to answer this question. Click + to link, expand to see details."
-        >
-          {stories.length === 0 ? (
-            <p className="muted">
-              You have no stories yet.{" "}
-              <Link href="/stories/new" className="text-[var(--primary)] hover:underline">
-                Create a story
-              </Link>{" "}
-              first, then link it here.
+          <div className="field">
+            <label className="field-label">Categories</label>
+            <p className="field-hint">
+              Optional. Select one or more categories that match this question.
             </p>
-          ) : (
-            <section className="questions-recommended-section mt-2" aria-label="Stories to link">
-              <div className="questions-recommended-header">
-                <h3 className="questions-stories-title">
-                  Stories to link
-                  <span className="questions-stories-count">{selectedStoryIds.size}</span>
-                </h3>
-                <p className="questions-recommended-desc">
+            <div className="chips-row">
+              {CATEGORIES.map((category) => {
+                const selected = selectedCategories.includes(category);
+                return (
+                  <label
+                    key={category}
+                    className={`chip${selected ? " active" : ""}`}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selected}
+                      onChange={(e) => toggleCategory(category, e.target.checked)}
+                      className="visually-hidden"
+                    />
+                    {category}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="field-label">Linked stories</label>
+            <p className="field-hint">
+              Choose which stories you want to use to answer this question.
+              Click + to link, expand to see details.
+            </p>
+
+            {stories.length === 0 ? (
+              <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+                You have no stories yet.{" "}
+                <Link href="/stories/new" className="btn-inline">
+                  Create a story
+                </Link>{" "}
+                first, then link it here.
+              </p>
+            ) : (
+              <div style={{ marginTop: 8 }} aria-label="Stories to link">
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 8,
+                    marginBottom: 4,
+                  }}
+                >
+                  <span className="section-label" style={{ marginBottom: 0 }}>
+                    Stories to link
+                  </span>
+                  <span style={{ fontSize: 12, color: "var(--text-hint)" }}>
+                    {selectedStoryIds.size} selected
+                  </span>
+                </div>
+                <p className="field-hint" style={{ marginBottom: 10 }}>
                   Click the + button to link a story to this question; click again to unlink.
                 </p>
-              </div>
-              <ul className="questions-stories-grid mt-2" role="list">
-                {stories.map((s) => {
-                  const matchingCategories = selectedCategories.filter((c) =>
-                    s.categories.includes(c)
-                  );
-                  return (
-                    <li key={s.id}>
+
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 8 }}
+                  role="list"
+                >
+                  {stories.map((s) => {
+                    const isSelected = selectedStoryIds.has(s.id);
+                    const isExpanded = expandedStoryIds.has(s.id);
+                    const matchingCategories = selectedCategories.filter((c) =>
+                      s.categories.includes(c)
+                    );
+                    return (
                       <div
-                        className={`questions-story-select-card ${selectedStoryIds.has(s.id) ? "questions-story-select-card--selected" : ""}`}
+                        key={s.id}
+                        className={`rec-item${isSelected ? " selected" : ""}`}
+                        style={{ cursor: "default" }}
+                        role="listitem"
                       >
-                        <div className="questions-story-select-row">
-                          <button
-                            type="button"
+                        <div className="rc-row" style={{ alignItems: "flex-start" }}>
+                          <div
+                            className={`rec-check${isSelected ? " selected" : ""}`}
+                            style={{
+                              marginTop: 3,
+                              cursor: "pointer",
+                              flexShrink: 0,
+                            }}
                             onClick={() => toggleStory(s.id)}
-                            className={`questions-story-select-toggle-btn ${selectedStoryIds.has(s.id) ? "questions-story-select-toggle-btn--selected" : ""}`}
-                            aria-pressed={selectedStoryIds.has(s.id)}
-                            aria-label={selectedStoryIds.has(s.id) ? `Unlink "${s.title}"` : `Link "${s.title}"`}
+                            role="checkbox"
+                            aria-checked={isSelected}
+                            aria-label={
+                              isSelected ? `Unlink "${s.title}"` : `Link "${s.title}"`
+                            }
                           >
-                            <span className="questions-story-select-toggle-btn-icon" aria-hidden>
-                              {selectedStoryIds.has(s.id) ? "✓" : "+"}
-                            </span>
-                          </button>
-                          <button
-                            type="button"
-                            className="questions-story-select-toggle"
-                            onClick={() => toggleStoryExpanded(s.id)}
-                            aria-expanded={expandedStoryIds.has(s.id)}
-                          >
-                            <span className="questions-story-select-title">{s.title}</span>
-                            <span className="questions-story-select-chevron" aria-hidden>
-                              {expandedStoryIds.has(s.id) ? "▼" : "▶"}
-                            </span>
-                          </button>
-                        </div>
-                        {matchingCategories.length > 0 && (
-                          <p className="questions-story-match-hint">
-                            Matches: {matchingCategories.join(", ")}
-                          </p>
-                        )}
-                        {expandedStoryIds.has(s.id) && (
-                          <div className="questions-story-select-detail">
-                            <time className="questions-story-card-date">
-                              {formatDate(s.createdAt)}
-                            </time>
-                            <p className="questions-story-card-summary">
-                              {s.result || s.situation || "No summary"}
-                            </p>
-                            <div className="questions-story-card-badges">
-                              {s.categories.slice(0, 3).map((c) => (
-                                <Badge key={c} category={c} />
-                              ))}
-                            </div>
-                            <Link
-                              href={`/stories/${s.id}`}
-                              className="questions-story-view-link"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              View story →
-                            </Link>
+                            {isSelected ? "✓" : ""}
                           </div>
-                        )}
+
+                          <div className="rc-info" style={{ flex: 1, minWidth: 0 }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: 8,
+                              }}
+                            >
+                              <div className="rc-title">{s.title}</div>
+                              <button
+                                type="button"
+                                onClick={() => toggleStoryExpanded(s.id)}
+                                aria-expanded={isExpanded}
+                                style={{
+                                  fontSize: 11,
+                                  color: "var(--text-hint)",
+                                  background: "none",
+                                  border: "none",
+                                  cursor: "pointer",
+                                  flexShrink: 0,
+                                }}
+                              >
+                                {isExpanded ? "▼" : "▶"}
+                              </button>
+                            </div>
+
+                            {matchingCategories.length > 0 && (
+                              <p
+                                style={{
+                                  fontSize: 11,
+                                  color: "var(--green-primary)",
+                                  marginTop: 3,
+                                }}
+                              >
+                                Matches: {matchingCategories.join(", ")}
+                              </p>
+                            )}
+
+                            {isExpanded && (
+                              <div style={{ marginTop: 8 }}>
+                                <p
+                                  style={{
+                                    fontSize: 12,
+                                    color: "var(--text-muted)",
+                                    lineHeight: 1.5,
+                                    marginBottom: 6,
+                                  }}
+                                >
+                                  {s.result || s.situation || "No summary"}
+                                </p>
+                                <div className="chips-row" style={{ marginBottom: 8 }}>
+                                  {s.categories.slice(0, 3).map((c) => (
+                                    <span key={c} className="tag">
+                                      {c}
+                                    </span>
+                                  ))}
+                                </div>
+                                <Link
+                                  href={`/stories/${s.id}`}
+                                  className="btn-inline"
+                                  style={{ fontSize: 12 }}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  View story →
+                                </Link>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {error && (
+            <div
+              className="error-banner show"
+              role="alert"
+              style={{ marginBottom: 12 }}
+            >
+              Error: {error}
+            </div>
           )}
-        </FormField>
 
-        {error && (
-          <p className="form-error" role="alert">
-            Error: {error}
-          </p>
-        )}
-
-        <div className="story-form-actions">
-          <Button type="submit" variant="primary" disabled={saving}>
-            {saving ? "Saving..." : "Save Changes"}
-          </Button>
-          <Button
-            type="button"
-            onClick={() => router.push(`/saved-questions/${questionId}`)}
-            disabled={saving}
+          <div
+            className="btn-group"
+            style={{
+              marginTop: "1.25rem",
+              paddingTop: "1.25rem",
+              borderTop: "0.5px solid var(--border-card)",
+            }}
           >
-            Cancel
-          </Button>
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={saving}
+            >
+              {saving ? "Saving..." : "Save Changes"}
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => router.push(`/saved-questions/${questionId}`)}
+              disabled={saving}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </form>
     </main>

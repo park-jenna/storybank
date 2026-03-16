@@ -21,7 +21,7 @@ export function FormField({
   children,
 }: FormFieldProps) {
   return (
-    <label className={`grid gap-1.5 ${className}`}>
+    <label className={`flex flex-col gap-sm ${className}`}>
       <span className="font-semibold text-[var(--foreground)]">
         {label}
         {required ? " *" : ""}
@@ -35,7 +35,7 @@ export function FormField({
 }
 
 const inputBase =
-  "w-full px-4 py-3 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] outline-none transition-all duration-200 text-base font-[inherit] placeholder:text-[var(--muted-foreground)] focus:ring-[3px] focus:ring-[var(--ring)] focus:border-[var(--primary)]";
+  "w-full pl-5 pr-4 py-3 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] outline-none transition-all duration-200 text-base font-[inherit] placeholder:text-[var(--muted-foreground)] focus:ring-[3px] focus:ring-[var(--ring)] focus:border-[var(--primary)]";
 
 export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={inputBase} {...props} />;

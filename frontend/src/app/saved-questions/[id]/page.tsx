@@ -5,8 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { fetchUserQuestionById, deleteUserQuestion, UserQuestionItem } from "@/lib/user-questions";
-import { getBadgeClass } from "@/constants/categories";
-import { Button, Card, Badge } from "@/components/ui";
 
 export default function SavedQuestionDetailPage() {
   const router = useRouter();
@@ -68,137 +66,268 @@ export default function SavedQuestionDetailPage() {
 
   if (loading) {
     return (
-      <main className="page-section">
-        <p className="muted">Loading question...</p>
+      <main className="main-content">
+        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading question...</p>
       </main>
     );
   }
 
   if (error) {
     return (
-      <main className="page-section">
-        <Card variant="error">
-          <p className="form-error">Error: {error}</p>
-        </Card>
-        <div className="mt-4">
-          <Button onClick={() => router.push("/saved-questions")}>← Back to Saved Questions</Button>
+      <main className="main-content">
+        <div className="error-banner show" role="alert">
+          Error: {error}
         </div>
+        <button
+          type="button"
+          className="back-btn"
+          style={{ marginTop: 12 }}
+          onClick={() => router.push("/saved-questions")}
+        >
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Back to Saved Questions
+        </button>
       </main>
     );
   }
 
   if (!userQuestion) {
     return (
-      <main className="page-section">
-        <Card className="p-6">
-          <p className="m-0">Question not found.</p>
-        </Card>
-        <div className="mt-4">
-          <Button onClick={() => router.push("/saved-questions")}>← Back to Saved Questions</Button>
+      <main className="main-content">
+        <div className="card" style={{ marginBottom: 12 }}>
+          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Question not found.</p>
         </div>
+        <button
+          type="button"
+          className="back-btn"
+          onClick={() => router.push("/saved-questions")}
+        >
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Back to Saved Questions
+        </button>
       </main>
     );
   }
 
   return (
-    <main className="page-section">
-      <header className="story-detail-header">
-        <div className="story-detail-header-top">
-          <Button onClick={() => router.push("/saved-questions")}>← Back to Saved Questions</Button>
-          <div className="story-detail-actions">
-            <Button onClick={() => router.push(`/saved-questions/${userQuestion.id}/edit`)}>
-              Edit
-            </Button>
-            <Button
-              variant="danger"
-              onClick={() => setShowDeleteConfirm(true)}
-            >
-              Delete
-            </Button>
-          </div>
-        </div>
-        <h1 className="story-detail-title saved-question-detail-title">
-          {userQuestion.question.content}
-        </h1>
-        <div className="story-detail-meta">
-          <p className="muted story-detail-date">
-            Saved: {new Date(userQuestion.createdAt).toLocaleDateString()}
-          </p>
-          {userQuestion.question.recommendedCategories?.length > 0 && (
-            <div className="story-detail-categories">
-              {userQuestion.question.recommendedCategories.map((c) => (
-                <span key={c} className={`badge ${getBadgeClass(c)}`}>
-                  {c}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      </header>
-
-      <section className="saved-question-detail-section" aria-label="Linked stories">
-        <h2 className="page-section-title">Linked stories</h2>
-        {userQuestion.stories.length === 0 ? (
-          <p className="muted">No stories linked yet. Edit this question to add story links.</p>
-        ) : (
-          <ul className="saved-question-detail-stories" role="list">
-            {userQuestion.stories.map((s) => (
-              <li key={s.id}>
-                <Link href={`/stories/${s.id}`} className="saved-question-detail-story-link">
-                  <span className="saved-question-detail-story-title">{s.title}</span>
-                  <div className="saved-question-detail-story-badges">
-                    {s.categories.slice(0, 3).map((cat) => (
-                      <Badge key={cat} category={cat} />
-                    ))}
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="mt-4">
-          <Button
-            variant="primary"
+    <main className="main-content">
+      <div className="topbar">
+        <button
+          type="button"
+          className="back-btn"
+          onClick={() => router.push("/saved-questions")}
+        >
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Back to Saved Questions
+        </button>
+        <div className="btn-group">
+          <button
+            type="button"
+            className="btn-secondary"
             onClick={() => router.push(`/saved-questions/${userQuestion.id}/edit`)}
           >
-            {userQuestion.stories.length === 0 ? "Link stories" : "Edit / Add or remove stories"}
-          </Button>
+            Edit
+          </button>
+          <button
+            type="button"
+            className="btn-warn"
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            Delete
+          </button>
         </div>
-      </section>
+      </div>
+
+      <div className="card" style={{ marginBottom: 12 }}>
+        <h1
+          style={{
+            fontSize: 20,
+            fontWeight: 500,
+            color: "var(--text-primary)",
+            marginBottom: 8,
+            lineHeight: 1.3,
+          }}
+        >
+          {userQuestion.question.content}
+        </h1>
+        <p style={{ fontSize: 12, color: "var(--text-hint)", marginBottom: 12 }}>
+          Saved: {new Date(userQuestion.createdAt).toLocaleDateString()}
+        </p>
+        {userQuestion.question.recommendedCategories?.length > 0 && (
+          <div className="chips-row">
+            {userQuestion.question.recommendedCategories.map((c) => (
+              <span key={c} className="tag">
+                {c}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="card" aria-label="Linked stories">
+        <div className="card-head">
+          <h2 className="card-title">Linked stories</h2>
+        </div>
+
+        {userQuestion.stories.length === 0 ? (
+          <p className="no-stories-text">
+            No stories linked yet. Edit this question to add story links.
+          </p>
+        ) : (
+          userQuestion.stories.map((s) => (
+            <div key={s.id} className="story-row" style={{ cursor: "default" }}>
+              <div className="dot dot-done" aria-hidden />
+              <div className="story-row-info">
+                <Link
+                  href={`/stories/${s.id}`}
+                  className="story-row-title"
+                  style={{ textDecoration: "none" }}
+                >
+                  {s.title}
+                </Link>
+                <div className="chips-row" style={{ marginTop: 4 }}>
+                  {s.categories.slice(0, 3).map((cat) => (
+                    <span key={cat} className="tag">
+                      {cat}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <Link
+                href={`/stories/${s.id}`}
+                className="btn-inline"
+                style={{ fontSize: 11, flexShrink: 0 }}
+              >
+                View →
+              </Link>
+            </div>
+          ))
+        )}
+
+        <div
+          style={{
+            marginTop: 14,
+            paddingTop: 14,
+            borderTop: "0.5px solid var(--border-card)",
+          }}
+        >
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => router.push(`/saved-questions/${userQuestion.id}/edit`)}
+          >
+            {userQuestion.stories.length === 0
+              ? "Link stories"
+              : "Edit / Add or remove stories"}
+          </button>
+        </div>
+      </div>
 
       {showDeleteConfirm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          className="modal-overlay show"
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-confirm-title"
         >
-          <div className="bg-[var(--card)] border border-[var(--border)] rounded-[var(--radius-lg)] p-6 shadow-lg max-w-md w-full mx-4">
-            <h2 id="delete-confirm-title" className="text-lg font-semibold mb-2">
-              {confirmStep === 1
-                ? "Remove this question from your list?"
-                : "This cannot be undone. Really delete?"}
-            </h2>
-            <div className="flex gap-3 justify-end mt-4">
-              <Button
-                type="button"
-                variant="default"
-                onClick={() => {
-                  setShowDeleteConfirm(false);
-                  setConfirmStep(1);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                variant={confirmStep === 2 ? "danger" : "primary"}
-                disabled={deleting}
-                onClick={handleDelete}
-              >
-                {deleting ? "Deleting..." : confirmStep === 1 ? "Remove" : "Yes, delete"}
-              </Button>
-            </div>
+          <div className="modal">
+            {confirmStep === 1 && !deleting && (
+              <>
+                <h3 className="modal-title" id="delete-confirm-title">
+                  Remove this question from your list?
+                </h3>
+                <p className="modal-subtitle">
+                  You can always re-save it from the common questions page.
+                </p>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setConfirmStep(1);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button type="button" className="btn-warn" onClick={handleDelete}>
+                    Remove
+                  </button>
+                </div>
+              </>
+            )}
+
+            {confirmStep === 2 && !deleting && (
+              <>
+                <h3 className="modal-title" id="delete-confirm-title">
+                  This cannot be undone. Really delete?
+                </h3>
+                <p className="modal-subtitle">
+                  Removing this question will also unlink all stories attached to it.
+                </p>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setConfirmStep(1);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-danger"
+                    disabled={deleting}
+                    onClick={handleDelete}
+                  >
+                    Yes, delete
+                  </button>
+                </div>
+              </>
+            )}
+
+            {deleting && <p className="modal-deleting">Deleting...</p>}
           </div>
         </div>
       )}

@@ -1,18 +1,9 @@
-// frontend/src/app/stories/[id]/edit/page.tsx
-// 1) URL 파라미터에서 id 읽기
-// 2) token 을 local storage 에서 읽기
-// 3) fetchStoryById(token, id) 함수 호출로 기존 스토리 데이터 가져오기
-// 4) 폼 UI 에 기존 스토리 데이터 채워서 표시(prefill)
-// 5) 사용자가 수정 후 제출 시 API 호출 (updateStoryById(token, id, input))
-// 6) 수정 완료 후 스토리 상세 페이지로(/stories/:id) 리다이렉트, 실패시 에러 표시
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { fetchStoryById, Story, updateStoryById } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
-import { Button, Card, FormField, Input, Textarea } from "@/components/ui";
 
 export default function EditStoryPage() {
   const router = useRouter();
@@ -103,130 +94,202 @@ export default function EditStoryPage() {
 
   if (loading) {
     return (
-      <main className="page-section">
-        <p className="muted">Loading story...</p>
+      <main className="main-content">
+        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+          Loading story...
+        </p>
       </main>
     );
   }
 
   if (error && !story) {
     return (
-      <main className="page-section">
-        <Card variant="error">
-          <p className="form-error">Error: {error}</p>
-        </Card>
-        <div className="mt-4">
-          <Button onClick={() => router.push("/stories")}>
-            ← Back to Stories
-          </Button>
+      <main className="main-content">
+        <div className="error-banner show" role="alert">
+          Error: {error}
         </div>
+        <button
+          type="button"
+          className="back-btn"
+          style={{ marginTop: 12 }}
+          onClick={() => router.push("/stories")}
+        >
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Back to Stories
+        </button>
       </main>
     );
   }
 
   return (
-    <main className="page-section">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="story-form-title">Edit Story</h1>
-          {story && (
-            <p className="muted mt-2 mb-0">
-              Editing: <strong>{story.title}</strong>
-            </p>
-          )}
-        </div>
-        <Button
+    <main className="main-content">
+      <div className="topbar">
+        <button
           type="button"
+          className="back-btn"
           onClick={() => router.push(`/stories/${storyId}`)}
         >
-          ← Back
-        </Button>
-      </header>
-
-      <form onSubmit={handleSave} className="story-form-card">
-        <FormField label="Title" required>
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="E.g., Leading a team project"
-            required
-          />
-        </FormField>
-
-        <FormField
-          label="Categories"
-          required
-          hint="Select one or more categories that best describe your story."
-        >
-          <div className="story-form-chips">
-            {CATEGORIES.map((category) => {
-              const selected = selectedCategories.includes(category);
-              return (
-                <label
-                  key={category}
-                  className={`chip story-form-chip ${selected ? "chip-selected" : ""}`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selected}
-                    onChange={(e) =>
-                      toggleCategory(category, e.target.checked)
-                    }
-                    className="sr-only"
-                  />
-                  {category}
-                </label>
-              );
-            })}
-          </div>
-        </FormField>
-
-        <FormField label="Situation / Task">
-          <Textarea
-            value={situation}
-            onChange={(e) => setSituation(e.target.value)}
-            placeholder="What was the context?"
-            rows={3}
-          />
-        </FormField>
-
-        <FormField label="Action">
-          <Textarea
-            value={action}
-            onChange={(e) => setAction(e.target.value)}
-            placeholder="What did you do?"
-            rows={3}
-          />
-        </FormField>
-
-        <FormField label="Result">
-          <Textarea
-            value={result}
-            onChange={(e) => setResult(e.target.value)}
-            placeholder="What was the outcome?"
-            rows={3}
-          />
-        </FormField>
-
-        {error && (
-          <p className="form-error" role="alert">
-            Error: {error}
-          </p>
-        )}
-
-        <div className="story-form-actions">
-          <Button type="submit" variant="primary" disabled={saving}>
-            {saving ? "Saving..." : "Save Changes"}
-          </Button>
-          <Button
-            type="button"
-            onClick={() => router.push(`/stories/${storyId}`)}
-            disabled={saving}
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
           >
-            Cancel
-          </Button>
-        </div>
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Back
+        </button>
+      </div>
+      <div className="page-header-left" style={{ marginBottom: "1.5rem" }}>
+        <h1 className="page-title">Edit Story</h1>
+        {story && (
+          <div className="page-subtitle-editing">
+            <span>Editing:</span>
+            <span className="editing-badge">{story.title}</span>
+          </div>
+        )}
+      </div>
 
+      <form onSubmit={handleSave}>
+        <div className="card">
+          <div className="field">
+            <label className="field-label">
+              Title <span className="field-required">*</span>
+            </label>
+            <input
+              className="input"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="E.g., Leading a team project"
+              required
+            />
+          </div>
+
+          <div className="field">
+            <label className="field-label">
+              Categories <span className="field-required">*</span>
+            </label>
+            <p className="field-hint">
+              Select one or more categories that best describe your story.
+            </p>
+            <div className="chips-row">
+              {CATEGORIES.map((category) => {
+                const selected = selectedCategories.includes(category);
+                return (
+                  <label
+                    key={category}
+                    className={`chip${selected ? " active" : ""}`}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selected}
+                      onChange={(e) =>
+                        toggleCategory(category, e.target.checked)
+                      }
+                      className="visually-hidden"
+                    />
+                    {category}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="star-section-title">✦ STAR breakdown</div>
+
+          <div className="star-field">
+            <div className="star-field-label">Situation & Task</div>
+            <div className="star-field-sublabel">Context & goal</div>
+            <textarea
+              className="textarea"
+              value={situation}
+              onChange={(e) => setSituation(e.target.value)}
+              placeholder="What was the context?"
+              rows={3}
+            />
+          </div>
+
+          <div className="star-field">
+            <div className="star-field-label">Action</div>
+            <div className="star-field-sublabel">What you did</div>
+            <textarea
+              className="textarea"
+              value={action}
+              onChange={(e) => setAction(e.target.value)}
+              placeholder="What did you do?"
+              rows={3}
+            />
+          </div>
+
+          <div className="star-field">
+            <div className="star-field-label">Result</div>
+            <div className="star-field-sublabel">Impact & learning</div>
+            <textarea
+              className="textarea"
+              value={result}
+              onChange={(e) => setResult(e.target.value)}
+              placeholder="What was the outcome?"
+              rows={3}
+            />
+          </div>
+
+          {error && (
+            <div
+              className="error-banner show"
+              role="alert"
+              style={{ marginBottom: 12 }}
+            >
+              Error: {error}
+            </div>
+          )}
+
+          <div
+            style={{
+              marginTop: "1.25rem",
+              paddingTop: "1.25rem",
+              borderTop: "0.5px solid var(--border-card)",
+            }}
+          >
+            <div className="btn-group">
+              <button
+                type="submit"
+                className="btn-primary"
+                disabled={saving}
+              >
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => router.push(`/stories/${storyId}`)}
+                disabled={saving}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       </form>
     </main>
   );

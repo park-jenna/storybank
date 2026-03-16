@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { login } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { login } from "@/lib/auth";
 import { Button, FormField, Input } from "@/components/ui";
 
 export default function LoginPage() {
@@ -37,55 +37,78 @@ export default function LoginPage() {
     }
 
     return (
-        <main className="auth-page">
-            <div className="auth-form-wrap">
-                <h1 className="auth-title">Log in</h1>
-                <p className="auth-subtitle">
-                    Access your dashboard to create and manage STAR stories.
+    <main className="auth-page">
+      <div className="auth-shell">
+        <section className="auth-hero">
+          <div className="auth-logo">StoryBank</div>
+          <h1 className="auth-title">Welcome back</h1>
+          <p className="auth-subtitle">
+            Log in to continue crafting clear, memorable STAR stories for your next interview.
+          </p>
+
+          <ul className="auth-bullets">
+            <li>See your stories at a glance on the dashboard</li>
+            <li>Track which stories still need Situation / Action / Result</li>
+            <li>Link stories to common interview questions</li>
+          </ul>
+        </section>
+
+        <section className="auth-panel" aria-label="Log in to StoryBank">
+          <div className="auth-form-card">
+            <h2 className="auth-panel-title">Log in</h2>
+            <p className="auth-panel-subtitle">
+              Enter your email and password to access your workspace.
+            </p>
+
+            <form onSubmit={handleSubmit} className="auth-form">
+              <FormField label="Email">
+                <Input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  required
+                  autoFocus
+                />
+              </FormField>
+
+              <FormField label="Password">
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  required
+                />
+              </FormField>
+
+              {error && (
+                <p className="auth-error" role="alert">
+                  {error}
                 </p>
+              )}
 
-                <form onSubmit={handleSubmit} className="auth-form-card auth-form">
-                <FormField label="Email">
-                    <Input
-                        type="email"
-                        placeholder="you@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        autoComplete="email"
-                        required
-                        autoFocus
-                    />
-                </FormField>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={loading}
+                className="auth-submit-btn"
+              >
+                {loading ? "Logging in..." : "Log in"}
+              </Button>
+            </form>
 
-                <FormField label="Password">
-                    <Input
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        autoComplete="current-password"
-                        required
-                    />
-                </FormField>
-
-                {error && (
-                    <p className="auth-error" role="alert">
-                        {error}
-                    </p>
-                )}
-
-                <Button type="submit" variant="primary" disabled={loading} className="auth-submit-btn">
-                    {loading ? "Logging in..." : "Log in"}
-                </Button>
-                </form>
-
-                <p className="muted auth-footer">
-                    Don&apos;t have an account?{" "}
-                    <Link href="/signup" className="auth-link">
-                        Sign up
-                    </Link>
-                </p>
-            </div>
-        </main>
+            <p className="auth-footer">
+              Don&apos;t have an account?{" "}
+              <Link href="/signup" className="auth-link">
+                Sign up
+              </Link>
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
     );
 }

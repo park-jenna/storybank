@@ -13,8 +13,6 @@ import {
   type Story,
   type UserQuestionItem,
 } from "@/lib/user-questions";
-import { getBadgeClass } from "@/constants/categories";
-import { Button, Card, Badge, EmptyState } from "@/components/ui";
 
 function CommonQuestionsContent() {
   const router = useRouter();
@@ -83,7 +81,6 @@ function CommonQuestionsContent() {
       .finally(() => setLoadingRecommendations(false));
   }, [selectedQuestion?.id]);
 
-  // 저장된 질문일 때 해당 질문에 연결된 스토리 (content 기준 매칭)
   const linkedStories = useMemo(() => {
     if (!selectedQuestion?.alreadySaved || userQuestions.length === 0) return [];
     const uq = userQuestions.find((uq) => uq.question.content === selectedQuestion.content);
@@ -92,7 +89,6 @@ function CommonQuestionsContent() {
 
   const linkedStoryIds = useMemo(() => new Set(linkedStories.map((s) => s.id)), [linkedStories]);
 
-  // Recommended에서 이미 연결된 스토리 제외 (중복 표시 방지)
   const recommendedStoriesFiltered = useMemo(
     () => recommendedStories.filter((s) => !linkedStoryIds.has(s.id)),
     [recommendedStories, linkedStoryIds]
@@ -119,7 +115,6 @@ function CommonQuestionsContent() {
       setQuestions((prev) =>
         prev.map((q) => (q.id === selectedQuestion.id ? { ...q, alreadySaved: true } : q))
       );
-      // 연결된 스토리 목록 갱신을 위해 보관함 다시 로드
       const refreshed = await fetchUserQuestions(token);
       setUserQuestions(refreshed.userQuestions ?? []);
       setTimeout(() => {
@@ -162,353 +157,536 @@ function CommonQuestionsContent() {
     return d.toLocaleDateString();
   };
 
+  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token");
+
   if (loadingQuestions) {
     return (
-      <main className="page-section">
-        <p className="muted">Loading common questions...</p>
+      <main className="main-content">
+        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading common questions...</p>
       </main>
     );
   }
 
   if (error && questions.length === 0) {
     return (
-      <main className="page-section">
-        <Card variant="error">
-          <p className="form-error m-0">Error: {error}</p>
-        </Card>
-        <Button className="mt-4" onClick={() => router.push("/saved-questions")}>
-          ← Saved Questions
-        </Button>
+      <main className="main-content">
+        <div className="error-banner show" role="alert">
+          Error: {error}
+        </div>
+        <button
+          type="button"
+          className="back-btn"
+          style={{ marginTop: 12 }}
+          onClick={() => router.push("/saved-questions")}
+        >
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Saved Questions
+        </button>
       </main>
     );
   }
 
-  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token");
-
   return (
-    <main className="questions-page page-section">
-      <div className="flex items-center justify-between gap-4 mb-4">
-        <h1 className="questions-page-title">Common interview questions</h1>
-        <Link href="/saved-questions" className="text-sm text-[var(--primary)] hover:underline">
-          ← Saved Questions
-        </Link>
+    <main className="main-content">
+      <div className="page-header">
+        <div className="page-header-left">
+          <h1 className="page-title">Common interview questions</h1>
+          <p className="page-subtitle">
+            Choose a question to see recommended categories and your matching stories.
+            Save to your list and link stories.
+          </p>
+        </div>
       </div>
-      <p className="questions-page-subtitle">
-        Choose a question to see recommended categories and your matching stories. Save to your list and link stories.
-      </p>
 
       {questions.length === 0 ? (
-        <EmptyState
-          icon="❓"
-          title="No common questions"
-          description="There are no common questions in the list yet."
-          action={
-            <Button className="mt-4" onClick={() => router.push("/saved-questions")}>
-              ← Saved Questions
-            </Button>
-          }
-        />
+        <div className="empty-state">
+          <div className="empty-state-icon">❓</div>
+          <h3 className="empty-state-title">No common questions</h3>
+          <p className="empty-state-desc">There are no common questions in the list yet.</p>
+          <Link href="/saved-questions" className="btn-secondary">
+            Saved Questions
+          </Link>
+        </div>
       ) : (
-        <div className="questions-layout">
-          <aside className="questions-sidebar" aria-label="Question list">
-            <p className="questions-list-label">Choose a question</p>
-            <ul className="questions-list">
-              {questions.map((q) => (
-                <li key={q.id}>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedQuestion(q)}
-                    className={`questions-list-item ${selectedQuestion?.id === q.id ? "questions-list-item-active" : ""}`}
-                  >
-                    <span className="questions-list-item-text">{q.content}</span>
-                    {q.alreadySaved && (
-                      <span className="questions-list-item-saved" aria-label="Saved to your list">
-                        Saved
-                      </span>
-                    )}
-                  </button>
-                </li>
+        <div className="common-questions-layout">
+          <aside className="common-questions-list" aria-label="Question list">
+            <div className="q-list">
+              {questions.map((q, i) => (
+                <div
+                  key={q.id}
+                  role="button"
+                  tabIndex={0}
+                  className={`q-row${selectedQuestion?.id === q.id ? " active" : ""}`}
+                  onClick={() => setSelectedQuestion(q)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedQuestion(q);
+                    }
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
+                    <span className="q-row-num">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="q-row-text">{q.content}</span>
+                  </div>
+                  {q.alreadySaved && (
+                    <span className="badge badge-saved" aria-label="Saved to your list">
+                      Saved
+                    </span>
+                  )}
+                </div>
               ))}
-            </ul>
+            </div>
           </aside>
 
-          <section className="questions-main" aria-label="Selected question and recommendations">
-            {selectedQuestion ? (
-              <>
-                <div className="questions-selected-block">
-                  {selectedQuestion.alreadySaved && (
-                    <span className="questions-selected-saved-badge" role="status">Saved to your list</span>
-                  )}
-                  <h2 className="questions-selected-title">{selectedQuestion.content}</h2>
-                  <p className="questions-selected-hint">
-                    Good categories to highlight for this question.
+          <div className="common-questions-detail">
+            {!selectedQuestion ? (
+              <div className="common-questions-placeholder" aria-live="polite">
+                <p className="common-questions-placeholder-title">Select a question</p>
+                <p className="common-questions-placeholder-desc">
+                  Choose a question from the list to see recommended categories and your matching stories.
+                </p>
+              </div>
+            ) : (
+            <div className="common-questions-detail-inner">
+              <div className="common-questions-detail-header">
+                <h2 className="common-questions-detail-title">
+                  {selectedQuestion.content}
+                </h2>
+                {selectedQuestion.alreadySaved && (
+                  <span className="badge badge-saved" role="status">
+                    Saved to your list
+                  </span>
+                )}
+              </div>
+
+              <div className="common-questions-categories">
+                <span className="common-questions-categories-label">Good categories to highlight:</span>
+                {(selectedQuestion.recommendedCategories ?? []).map((cat) => (
+                  <span key={cat} className="tag">
+                    {cat}
+                  </span>
+                ))}
+              </div>
+
+              {!hasToken ? (
+                <div className="card" style={{ marginTop: 16 }}>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      color: "var(--text-muted)",
+                      marginBottom: 12,
+                    }}
+                  >
+                    Log in to see your recommended stories and save this question.
                   </p>
-                  <div className="questions-selected-badges">
-                    {(selectedQuestion.recommendedCategories ?? []).map((cat) => (
-                      <span key={cat} className={`badge ${getBadgeClass(cat)}`}>
-                        {cat}
-                      </span>
-                    ))}
-                  </div>
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() => router.replace("/login")}
+                  >
+                    Log in
+                  </button>
                 </div>
-
-                {!hasToken ? (
-                  <Card variant="default" className="mt-4 p-4">
-                    <p className="muted mb-2">Log in to see your recommended stories and save this question.</p>
-                    <Button variant="primary" onClick={() => router.replace("/login")}>
-                      Log in
-                    </Button>
-                  </Card>
-                ) : (
-                  <>
-                    {selectedQuestion.alreadySaved && (
-                      <section className="questions-linked-section mt-4" aria-labelledby="linked-stories-heading">
-                        <div className="questions-recommended-header">
-                          <h3 id="linked-stories-heading" className="questions-stories-title">
-                            Linked stories
-                            <span className="questions-stories-count">{linkedStories.length}</span>
-                          </h3>
-                          <p className="questions-recommended-desc">
-                            Stories you linked to this question. These are the ones you plan to use when answering.
-                          </p>
-                        </div>
-                        {linkedStories.length === 0 ? (
-                          <p className="muted text-sm">No stories linked yet. Use &quot;Change linked stories&quot; below to link stories.</p>
-                        ) : (
-                          <ul className="questions-stories-grid mt-2">
-                            {linkedStories.map((s) => {
-                              const matchingCategories = (selectedQuestion?.recommendedCategories ?? []).filter(
-                                (c) => s.categories.includes(c)
-                              );
-                              return (
-                                <li key={s.id}>
-                                  <Link href={`/stories/${s.id}`} className="questions-story-link">
-                                    <article className="questions-story-card questions-story-card--linked">
-                                      <div className="questions-story-card-top">
-                                        <h4 className="questions-story-card-title">{s.title}</h4>
-                                        <time className="questions-story-card-date">{formatDate(s.createdAt)}</time>
-                                      </div>
-                                      {matchingCategories.length > 0 && (
-                                        <p className="questions-story-match-hint">
-                                          Matches: {matchingCategories.join(", ")}
-                                        </p>
-                                      )}
-                                      <p className="questions-story-card-summary">
-                                        {s.result || s.situation || "No summary"}
-                                      </p>
-                                      <div className="questions-story-card-badges">
-                                        {s.categories.slice(0, 3).map((c) => (
-                                          <Badge key={c} category={c} />
-                                        ))}
-                                      </div>
-                                      <span className="questions-story-card-cta">View story →</span>
-                                    </article>
-                                  </Link>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        )}
-                      </section>
-                    )}
-                    <section className="questions-recommended-section mt-4" aria-labelledby="recommended-stories-heading">
-                      <div className="questions-recommended-header">
-                        <h3 id="recommended-stories-heading" className="questions-stories-title">
-                          {selectedQuestion.alreadySaved ? "More stories to link" : "Recommended stories"}
-                          <span className="questions-stories-count">{recommendedStoriesFiltered.length}</span>
-                        </h3>
-                        <p className="questions-recommended-desc">
-                          {selectedQuestion.alreadySaved
-                            ? "Other stories that match this question's categories. Link more to use when answering."
-                            : "Your stories that match this question's categories. Link the ones you want to use when answering."}
-                        </p>
+              ) : (
+                <>
+                  {selectedQuestion.alreadySaved && (
+                    <div
+                      style={{ marginBottom: "1.5rem" }}
+                      aria-labelledby="linked-stories-heading"
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "baseline",
+                          gap: 8,
+                          marginBottom: 4,
+                        }}
+                      >
+                        <span
+                          className="section-label"
+                          id="linked-stories-heading"
+                          style={{ marginBottom: 0 }}
+                        >
+                          LINKED STORIES
+                        </span>
+                        <span style={{ fontSize: 12, color: "var(--text-hint)" }}>
+                          {linkedStories.length}
+                        </span>
                       </div>
+                      <p
+                        style={{
+                          fontSize: 12,
+                          color: "var(--text-muted)",
+                          marginBottom: 12,
+                        }}
+                      >
+                        Stories you linked to this question. These are the ones you plan to use when answering.
+                      </p>
 
-                      {loadingRecommendations && (
-                        <ul className="questions-stories-grid questions-stories-skeleton" aria-hidden>
-                          {[1, 2, 3, 4].map((i) => (
-                            <li key={i}>
-                              <div className="questions-story-card questions-story-skeleton">
-                                <div className="questions-story-skeleton-line questions-story-skeleton-title" />
-                                <div className="questions-story-skeleton-line" />
-                                <div className="questions-story-skeleton-line questions-story-skeleton-short" />
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-
-                      {!loadingRecommendations && recommendedStoriesFiltered.length === 0 && (
-                        <EmptyState
-                          icon="📚"
-                          title={selectedQuestion.alreadySaved ? "No other matching stories" : "No matching stories"}
-                          description={
-                            selectedQuestion.alreadySaved
-                              ? "You've linked all matching stories, or no other stories match these categories yet."
-                              : "You don't have any stories tagged with these categories yet. Add categories to your stories to see them here."
-                          }
-                          action={
-                            !selectedQuestion.alreadySaved ? (
-                              <Button variant="primary" className="mt-4" onClick={() => router.push("/stories/new")}>
-                                + New Story
-                              </Button>
-                            ) : undefined
-                          }
-                        />
-                      )}
-
-                      {!loadingRecommendations && recommendedStoriesFiltered.length > 0 && (
-                        <>
-                          <ul className="questions-stories-grid mt-2">
-                            {(showSavePanel && selectedQuestion.alreadySaved
-                              ? [...linkedStories, ...recommendedStoriesFiltered]
-                              : recommendedStoriesFiltered
-                            ).map((s) => {
-                              const matchingCategories = (selectedQuestion?.recommendedCategories ?? []).filter(
-                                (c) => s.categories.includes(c)
-                              );
-                              return (
-                                <li key={s.id}>
-                                  {showSavePanel ? (
-                                    <div
-                                      className={`questions-story-select-card ${selectedStoryIds.has(s.id) ? "questions-story-select-card--selected" : ""}`}
+                      {linkedStories.length === 0 ? (
+                        <p className="no-stories-text">
+                          No stories linked yet. Use &quot;Change linked stories&quot; below to link stories.
+                        </p>
+                      ) : (
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                            gap: 10,
+                          }}
+                        >
+                          {linkedStories.map((s) => {
+                            const matchingCategories = (
+                              selectedQuestion?.recommendedCategories ?? []
+                            ).filter((c) => s.categories.includes(c));
+                            return (
+                              <Link
+                                key={s.id}
+                                href={`/stories/${s.id}`}
+                                style={{ textDecoration: "none" }}
+                              >
+                                <div className="story-card">
+                                  <div className="story-card-top">
+                                    <div className="story-card-title">{s.title}</div>
+                                  </div>
+                                  {matchingCategories.length > 0 && (
+                                    <p
+                                      style={{
+                                        fontSize: 11,
+                                        color: "var(--green-primary)",
+                                        marginBottom: 4,
+                                      }}
                                     >
-                                      <div className="questions-story-select-row">
-                                        <button
-                                          type="button"
-                                          onClick={() => toggleStorySelection(s.id)}
-                                          className={`questions-story-select-toggle-btn ${selectedStoryIds.has(s.id) ? "questions-story-select-toggle-btn--selected" : ""}`}
-                                          aria-pressed={selectedStoryIds.has(s.id)}
-                                          aria-label={selectedStoryIds.has(s.id) ? `Unlink "${s.title}" from this question` : `Link "${s.title}" to this question`}
-                                        >
-                                          <span className="questions-story-select-toggle-btn-icon" aria-hidden>
-                                            {selectedStoryIds.has(s.id) ? "✓" : "+"}
-                                          </span>
-                                        </button>
-                                        <button
-                                          type="button"
-                                          className="questions-story-select-toggle"
-                                          onClick={() => toggleStoryExpanded(s.id)}
-                                          aria-expanded={expandedStoryIds.has(s.id)}
-                                        >
-                                          <span className="questions-story-select-title">{s.title}</span>
-                                          <span className="questions-story-select-chevron" aria-hidden>
-                                            {expandedStoryIds.has(s.id) ? "▼" : "▶"}
-                                          </span>
-                                        </button>
+                                      Matches: {matchingCategories.join(", ")}
+                                    </p>
+                                  )}
+                                  <div className="story-card-situation">
+                                    {s.result || s.situation || "No summary"}
+                                  </div>
+                                  <div className="story-card-missing" />
+                                  <div className="story-card-cats">
+                                    {s.categories.slice(0, 3).map((c) => (
+                                      <span key={c} className="tag">
+                                        {c}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div aria-labelledby="recommended-stories-heading">
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "baseline",
+                        gap: 8,
+                        marginBottom: 4,
+                      }}
+                    >
+                      <span
+                        className="section-label"
+                        id="recommended-stories-heading"
+                        style={{ marginBottom: 0 }}
+                      >
+                        {selectedQuestion.alreadySaved
+                          ? "MORE STORIES TO LINK"
+                          : "RECOMMENDED STORIES"}
+                      </span>
+                      <span style={{ fontSize: 12, color: "var(--text-hint)" }}>
+                        {recommendedStoriesFiltered.length}
+                      </span>
+                    </div>
+                    <p
+                      style={{
+                        fontSize: 12,
+                        color: "var(--text-muted)",
+                        marginBottom: 12,
+                      }}
+                    >
+                      {selectedQuestion.alreadySaved
+                        ? "Other stories that match this question's categories. Link more to use when answering."
+                        : "Your stories that match this question's categories. Link the ones you want to use when answering."}
+                    </p>
+
+                    {loadingRecommendations && (
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                          gap: 10,
+                        }}
+                        aria-hidden
+                      >
+                        {[1, 2, 3, 4].map((i) => (
+                          <div key={i} className="skeleton-card">
+                            <div
+                              className="skeleton skeleton-line"
+                              style={{ width: "80%" }}
+                            />
+                            <div className="skeleton skeleton-line" />
+                            <div
+                              className="skeleton skeleton-line"
+                              style={{ width: "50%" }}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {!loadingRecommendations && recommendedStoriesFiltered.length === 0 && (
+                      <div className="empty-state">
+                        <div className="empty-state-icon">📚</div>
+                        <h3 className="empty-state-title">
+                          {selectedQuestion.alreadySaved
+                            ? "No other matching stories"
+                            : "No matching stories"}
+                        </h3>
+                        <p className="empty-state-desc">
+                          {selectedQuestion.alreadySaved
+                            ? "You've linked all matching stories, or no other stories match these categories yet."
+                            : "You don't have any stories tagged with these categories yet. Add categories to your stories to see them here."}
+                        </p>
+                        {!selectedQuestion.alreadySaved && (
+                          <Link href="/stories/new" className="btn-primary">
+                            + New story
+                          </Link>
+                        )}
+                      </div>
+                    )}
+
+                    {!loadingRecommendations && recommendedStoriesFiltered.length > 0 && (
+                      <>
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                            gap: 10,
+                            marginTop: 8,
+                          }}
+                        >
+                          {(showSavePanel && selectedQuestion.alreadySaved
+                            ? [...linkedStories, ...recommendedStoriesFiltered]
+                            : recommendedStoriesFiltered
+                          ).map((s) => {
+                            const matchingCategories = (
+                              selectedQuestion?.recommendedCategories ?? []
+                            ).filter((c) => s.categories.includes(c));
+                            return (
+                              <div key={s.id}>
+                                {showSavePanel ? (
+                                  <div
+                                    className={`rec-item${selectedStoryIds.has(s.id) ? " selected" : ""}`}
+                                    style={{ cursor: "default" }}
+                                  >
+                                    <div
+                                      className="rc-row"
+                                      style={{ alignItems: "flex-start" }}
+                                    >
+                                      <div
+                                        className={`rec-check${selectedStoryIds.has(s.id) ? " selected" : ""}`}
+                                        style={{
+                                          marginTop: 3,
+                                          cursor: "pointer",
+                                          flexShrink: 0,
+                                        }}
+                                        onClick={() => toggleStorySelection(s.id)}
+                                        role="checkbox"
+                                        aria-checked={selectedStoryIds.has(s.id)}
+                                        aria-label={
+                                          selectedStoryIds.has(s.id)
+                                            ? `Unlink "${s.title}" from this question`
+                                            : `Link "${s.title}" to this question`
+                                        }
+                                      >
+                                        {selectedStoryIds.has(s.id) ? "✓" : ""}
                                       </div>
-                                      {matchingCategories.length > 0 && (
-                                        <p className="questions-story-match-hint">
-                                          Matches: {matchingCategories.join(", ")}
-                                        </p>
-                                      )}
-                                      {expandedStoryIds.has(s.id) && (
-                                        <div className="questions-story-select-detail">
-                                          <time className="questions-story-card-date">{formatDate(s.createdAt)}</time>
-                                          <p className="questions-story-card-summary">
-                                            {s.result || s.situation || "No summary"}
-                                          </p>
-                                          <div className="questions-story-card-badges">
-                                            {s.categories.slice(0, 3).map((c) => (
-                                              <Badge key={c} category={c} />
-                                            ))}
-                                          </div>
-                                          <Link
-                                            href={`/stories/${s.id}`}
-                                            className="questions-story-view-link"
-                                            onClick={(e) => e.stopPropagation()}
+                                      <div className="rc-info">
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
+                                            gap: 8,
+                                          }}
+                                        >
+                                          <div className="rc-title">{s.title}</div>
+                                          <button
+                                            type="button"
+                                            onClick={() => toggleStoryExpanded(s.id)}
+                                            aria-expanded={expandedStoryIds.has(s.id)}
+                                            style={{
+                                              fontSize: 11,
+                                              color: "var(--text-hint)",
+                                              background: "none",
+                                              border: "none",
+                                              cursor: "pointer",
+                                              flexShrink: 0,
+                                            }}
                                           >
-                                            View story →
-                                          </Link>
-                                        </div>
-                                      )}
-                                    </div>
-                                  ) : (
-                                    <Link href={`/stories/${s.id}`} className="questions-story-link">
-                                      <article className="questions-story-card">
-                                        <div className="questions-story-card-top">
-                                          <h4 className="questions-story-card-title">{s.title}</h4>
-                                          <time className="questions-story-card-date">{formatDate(s.createdAt)}</time>
+                                            {expandedStoryIds.has(s.id) ? "▼" : "▶"}
+                                          </button>
                                         </div>
                                         {matchingCategories.length > 0 && (
-                                          <p className="questions-story-match-hint">
+                                          <p
+                                            style={{
+                                              fontSize: 11,
+                                              color: "var(--green-primary)",
+                                              marginTop: 3,
+                                            }}
+                                          >
                                             Matches: {matchingCategories.join(", ")}
                                           </p>
                                         )}
-                                        <p className="questions-story-card-summary">
-                                          {s.result || s.situation || "No summary"}
+                                        {expandedStoryIds.has(s.id) && (
+                                          <div style={{ marginTop: 8 }}>
+                                            <p className="rc-sit">
+                                              {s.result || s.situation || "No summary"}
+                                            </p>
+                                            <div className="rc-cats" style={{ marginBottom: 6 }}>
+                                              {s.categories.slice(0, 3).map((c) => (
+                                                <span key={c} className="tag">
+                                                  {c}
+                                                </span>
+                                              ))}
+                                            </div>
+                                            <Link
+                                              href={`/stories/${s.id}`}
+                                              className="btn-inline"
+                                              style={{ fontSize: 12 }}
+                                              onClick={(e) => e.stopPropagation()}
+                                            >
+                                              View story →
+                                            </Link>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <Link
+                                    href={`/stories/${s.id}`}
+                                    style={{ textDecoration: "none" }}
+                                  >
+                                    <div className="story-card">
+                                      <div className="story-card-top">
+                                        <div className="story-card-title">{s.title}</div>
+                                      </div>
+                                      {matchingCategories.length > 0 && (
+                                        <p
+                                          style={{
+                                            fontSize: 11,
+                                            color: "var(--green-primary)",
+                                            marginBottom: 4,
+                                          }}
+                                        >
+                                          Matches: {matchingCategories.join(", ")}
                                         </p>
-                                        <div className="questions-story-card-badges">
-                                          {s.categories.slice(0, 3).map((c) => (
-                                            <Badge key={c} category={c} />
-                                          ))}
-                                        </div>
-                                        <span className="questions-story-card-cta">View story →</span>
-                                      </article>
-                                    </Link>
-                                  )}
-                                </li>
-                              );
-                            })}
-                          </ul>
-                          <div className="questions-recommended-actions">
-                            {!showSavePanel ? (
-                              <Button
-                                variant="primary"
+                                      )}
+                                      <div className="story-card-situation">
+                                        {s.result || s.situation || "No summary"}
+                                      </div>
+                                      <div className="story-card-missing" />
+                                      <div className="story-card-cats">
+                                        {s.categories.slice(0, 3).map((c) => (
+                                          <span key={c} className="tag">
+                                            {c}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </Link>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <div
+                          style={{
+                            borderTop: "0.5px solid var(--border-card)",
+                            paddingTop: 14,
+                            marginTop: 14,
+                          }}
+                        >
+                          {!showSavePanel ? (
+                            <button
+                              type="button"
+                              className="btn-secondary"
+                              onClick={() => {
+                                setShowSavePanel(true);
+                                if (selectedQuestion.alreadySaved) {
+                                  setSelectedStoryIds(new Set(linkedStories.map((s) => s.id)));
+                                }
+                              }}
+                            >
+                              {selectedQuestion.alreadySaved
+                                ? "Change linked stories"
+                                : "Save to my questions"}
+                            </button>
+                          ) : (
+                            <div className="btn-group">
+                              <button
+                                type="button"
+                                className="btn-primary"
+                                disabled={saving}
+                                onClick={handleSaveToMyQuestions}
+                              >
+                                {saving
+                                  ? "Saving..."
+                                  : selectedQuestion.alreadySaved
+                                    ? `Update (${selectedStoryIds.size} selected)`
+                                    : `Save (${selectedStoryIds.size} selected)`}
+                              </button>
+                              <button
+                                type="button"
+                                className="btn-secondary"
                                 onClick={() => {
-                                  setShowSavePanel(true);
-                                  if (selectedQuestion.alreadySaved) {
-                                    setSelectedStoryIds(new Set(linkedStories.map((s) => s.id)));
-                                  }
+                                  setShowSavePanel(false);
+                                  setSelectedStoryIds(new Set());
                                 }}
                               >
-                                {selectedQuestion.alreadySaved
-                                  ? "Change linked stories"
-                                  : "Save to my questions"}
-                              </Button>
-                            ) : (
-                              <>
-                                <Button
-                                  variant="primary"
-                                  disabled={saving}
-                                  onClick={handleSaveToMyQuestions}
-                                >
-                                  {saving
-                                    ? "Saving..."
-                                    : selectedQuestion.alreadySaved
-                                      ? `Update (${selectedStoryIds.size} selected)`
-                                      : `Save (${selectedStoryIds.size} selected)`}
-                                </Button>
-                                <Button
-                                  variant="default"
-                                  onClick={() => {
-                                    setShowSavePanel(false);
-                                    setSelectedStoryIds(new Set());
-                                  }}
-                                >
-                                  Cancel
-                                </Button>
-                              </>
-                            )}
-                            {saveSuccess && saveMessage && (
-                              <span className="questions-save-success" role="status">
-                                {saveMessage}
-                              </span>
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </section>
-                  </>
-                )}
-              </>
-            ) : (
-              <div className="questions-empty" aria-live="polite">
-                <div className="questions-empty-icon" aria-hidden>?</div>
-                <p className="questions-empty-text">Select a question from the list.</p>
-              </div>
+                                Cancel
+                              </button>
+                            </div>
+                          )}
+                          {saveSuccess && saveMessage && (
+                            <div
+                              className="success-msg show"
+                              role="status"
+                              style={{ marginTop: 10 }}
+                            >
+                              {saveMessage}
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
             )}
-          </section>
+          </div>
         </div>
       )}
     </main>
@@ -519,8 +697,8 @@ export default function CommonQuestionsPage() {
   return (
     <Suspense
       fallback={
-        <main className="page-section">
-          <p className="muted">Loading...</p>
+        <main className="main-content">
+          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading...</p>
         </main>
       }
     >

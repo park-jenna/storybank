@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 
 import { fetchUserQuestions, deleteUserQuestion, UserQuestionItem } from "@/lib/user-questions";
 import { getCommonQuestionIdByContent } from "@/constants/interviewQuestions";
-import { Button, Card, Badge, EmptyState } from "@/components/ui";
 
 export default function SavedQuestionsPage() {
   const router = useRouter();
@@ -84,163 +83,209 @@ export default function SavedQuestionsPage() {
   };
 
   return (
-    <main className="saved-questions-page page-section">
-      <div className="saved-questions-page-header">
-        <h1 className="saved-questions-page-title">Saved Questions</h1>
-        <Link href="/common-questions" className="saved-questions-nav-link">
+    <main className="main-content">
+      <div className="page-header">
+        <div className="page-header-left">
+          <h1 className="page-title">Saved Questions</h1>
+          <p className="page-subtitle">
+            Questions you saved and the stories you linked to answer them.
+          </p>
+        </div>
+        <Link
+          href="/common-questions"
+          className="btn-inline"
+          style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12 }}
+        >
           Browse common questions
-          <span className="saved-questions-nav-link-arrow" aria-hidden>→</span>
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 13,
+              height: 13,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M3 7h8M7 3l4 4-4 4" />
+          </svg>
         </Link>
       </div>
-      <p className="saved-questions-page-desc muted">
-        Questions you saved and the stories you linked to answer them.
-      </p>
 
-      {loading && <p className="muted mt-6">Loading saved questions...</p>}
+      {loading && (
+        <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: "1.5rem" }}>
+          Loading saved questions...
+        </p>
+      )}
 
       {error && (
-        <Card variant="error" className="mt-4">
-          <p className="form-error m-0">Error: {error}</p>
-        </Card>
+        <div className="error-banner show" role="alert" style={{ marginTop: 16 }}>
+          Error: {error}
+        </div>
       )}
 
       {!loading && !error && userQuestions.length === 0 && (
-        <EmptyState
-          icon="📋"
-          title="No saved questions yet"
-          description="Browse the question bank, save the ones you want to practice, and link your STAR stories so you're ready for any interview."
-          action={
-            <Button
-              variant="primary"
-              className="mt-4"
-              onClick={() => router.push("/common-questions")}
-            >
-              Browse common questions
-            </Button>
-          }
-        />
+        <div className="empty-state">
+          <div className="empty-state-icon">📋</div>
+          <h3 className="empty-state-title">No saved questions yet</h3>
+          <p className="empty-state-desc">
+            Browse the question bank, save the ones you want to practice,
+            and link your STAR stories so you&apos;re ready for any interview.
+          </p>
+          <Link href="/common-questions" className="btn-primary">
+            Browse common questions
+          </Link>
+        </div>
       )}
 
       {confirmDeleteId && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          className="modal-overlay show"
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-confirm-title"
         >
-          <div className="bg-[var(--card)] border border-[var(--border)] rounded-[var(--radius-lg)] p-6 shadow-lg max-w-md w-full mx-4">
-            <h2 id="delete-confirm-title" className="text-lg font-semibold mb-2">
-              {confirmStep === 1
-                ? "Remove this question from your list?"
-                : "This cannot be undone. Really delete?"}
-            </h2>
-            <div className="flex gap-3 justify-end mt-4">
-              <Button
-                type="button"
-                variant="default"
-                onClick={closeDeleteConfirm}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                variant={confirmStep === 2 ? "danger" : "primary"}
-                disabled={deletingId === confirmDeleteId}
-                onClick={handleConfirmDelete}
-              >
-                {deletingId === confirmDeleteId
-                  ? "Deleting..."
-                  : confirmStep === 1
-                    ? "Remove"
-                    : "Yes, delete"}
-              </Button>
-            </div>
+          <div className="modal">
+            {confirmStep === 1 && deletingId !== confirmDeleteId && (
+              <>
+                <h3 className="modal-title" id="delete-confirm-title">
+                  Remove this question from your list?
+                </h3>
+                <p className="modal-subtitle">
+                  You can always re-save it from the common questions page.
+                </p>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={closeDeleteConfirm}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-warn"
+                    onClick={handleConfirmDelete}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </>
+            )}
+
+            {confirmStep === 2 && deletingId !== confirmDeleteId && (
+              <>
+                <h3 className="modal-title" id="delete-confirm-title">
+                  This cannot be undone. Really delete?
+                </h3>
+                <p className="modal-subtitle">
+                  Removing this question will also unlink all stories attached to it.
+                </p>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={closeDeleteConfirm}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-danger"
+                    onClick={handleConfirmDelete}
+                  >
+                    Yes, delete
+                  </button>
+                </div>
+              </>
+            )}
+
+            {deletingId === confirmDeleteId && (
+              <p className="modal-deleting">Deleting...</p>
+            )}
           </div>
         </div>
       )}
 
       {!loading && !error && userQuestions.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4 saved-questions-grid">
+        <div className="q-card-grid" style={{ marginTop: 16 }}>
           {userQuestions.map((uq) => {
             const commonId = getCommonQuestionIdByContent(uq.question.content);
             const maxVisible = 3;
             const visibleStories = uq.stories.slice(0, maxVisible);
             const remainingCount = uq.stories.length - maxVisible;
             return (
-              <Card key={uq.id} variant="default" className="saved-questions-card">
-                <div className="saved-questions-card-header">
-                  <span className="saved-questions-card-date muted">{formatDate(uq.createdAt)}</span>
+              <div key={uq.id} className="q-card">
+                <div className="q-card-top">
+                  <span className="q-card-date">{formatDate(uq.createdAt)}</span>
                   <button
                     type="button"
-                    className="saved-questions-card-delete"
+                    className="del-btn"
                     disabled={deletingId === uq.id}
                     onClick={() => openDeleteConfirm(uq.id)}
                     aria-label="Remove this question from saved list"
                     title="Remove from saved"
                   >
-                    {deletingId === uq.id ? (
-                      <span className="saved-questions-card-delete-text">Deleting...</span>
-                    ) : (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                        <path d="M10 11v6M14 11v6" />
-                      </svg>
-                    )}
+                    {deletingId === uq.id ? "Deleting..." : "Remove"}
                   </button>
                 </div>
-                <Link href={`/saved-questions/${uq.id}`} className="saved-questions-card-title-link">
-                  <h3 className="saved-questions-card-title">
-                    {uq.question.content}
-                  </h3>
+
+                <Link href={`/saved-questions/${uq.id}`} style={{ textDecoration: "none" }}>
+                  <div className="q-card-title">{uq.question.content}</div>
                 </Link>
+
                 {uq.question.recommendedCategories?.length > 0 && (
-                  <div className="saved-questions-card-badges">
+                  <div className="chips-row" style={{ marginBottom: 14 }}>
                     {uq.question.recommendedCategories.slice(0, 4).map((cat) => (
-                      <Badge key={cat} category={cat} />
+                      <span key={cat} className="tag">
+                        {cat}
+                      </span>
                     ))}
                   </div>
                 )}
-                <div className="saved-questions-linked">
-                  <div className="saved-questions-linked-head">
-                    <span className="saved-questions-linked-label">
+
+                <div>
+                  <div className="linked-header">
+                    <span className="linked-label">
                       Linked stories
                       {uq.stories.length > 0 && (
-                        <span className="saved-questions-linked-count">{uq.stories.length}</span>
+                        <span className="linked-count">{uq.stories.length}</span>
                       )}
                     </span>
                     {commonId && (
-                      <Link href={`/common-questions?q=${commonId}`} className="saved-questions-linked-cta">
+                      <Link href={`/common-questions?q=${commonId}`} className="btn-inline">
                         {uq.stories.length > 0 ? "Add more" : "Link stories"}
                       </Link>
                     )}
                   </div>
+
                   {uq.stories.length > 0 ? (
                     <>
-                      <ul className="saved-questions-linked-list" role="list">
-                        {visibleStories.map((s) => (
-                          <li key={s.id}>
-                            <Link href={`/stories/${s.id}`} className="saved-questions-linked-link">
-                              {s.title}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                      {visibleStories.map((s) => (
+                        <div key={s.id} className="linked-story-item">
+                          <div className="linked-story-dot" />
+                          <Link href={`/stories/${s.id}`} className="linked-story-name">
+                            {s.title}
+                          </Link>
+                        </div>
+                      ))}
                       {remainingCount > 0 && (
-                        <p className="saved-questions-linked-more muted">
-                          +{remainingCount} more —{" "}
-                          {commonId && (
-                            <Link href={`/common-questions?q=${commonId}`} className="saved-questions-linked-cta-inline">
-                              manage in Common questions
-                            </Link>
-                          )}
-                        </p>
+                        <Link
+                          href={commonId ? `/common-questions?q=${commonId}` : "/common-questions"}
+                          className="linked-more"
+                        >
+                          +{remainingCount} more — manage in Common questions
+                        </Link>
                       )}
                     </>
                   ) : (
-                    <p className="saved-questions-linked-empty muted">No stories linked yet.</p>
+                    <p className="no-stories-text">No stories linked yet.</p>
                   )}
                 </div>
-              </Card>
+              </div>
             );
           })}
         </div>

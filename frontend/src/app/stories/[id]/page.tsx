@@ -8,9 +8,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { fetchStoryById, Story, deleteStoryById } from "@/lib/stories";
-import { getBadgeClass } from "@/constants/categories";
 import { getQuestionsForCategories } from "@/constants/interviewQuestions";
-import { Button, Card } from "@/components/ui";
 import Link from "next/link";
 
 function starStatus(story: Story) {
@@ -20,6 +18,30 @@ function starStatus(story: Story) {
     result: !!story.result?.trim(),
   };
 }
+
+const STAR_BLOCKS = [
+  {
+    label: "Situation & Task",
+    sublabel: "Context & goal",
+    tip: "Keep it to 2–3 sentences about the context and your specific role or goal.",
+    contentKey: "situation" as const,
+    empty: "No situation or task provided.",
+  },
+  {
+    label: "Action",
+    sublabel: "What you did",
+    tip: "Describe 3–5 concrete steps you personally took to move things forward.",
+    contentKey: "action" as const,
+    empty: "No action provided.",
+  },
+  {
+    label: "Result",
+    sublabel: "Impact & learning",
+    tip: "Highlight measurable outcomes, impact on others, and what you learned.",
+    contentKey: "result" as const,
+    empty: "No result provided.",
+  },
+];
 
 export default function StoryDetailPage() {
   const router = useRouter();
@@ -62,34 +84,75 @@ export default function StoryDetailPage() {
 
   if (loading) {
     return (
-      <main className="page-section">
-        <p className="muted">Loading story...</p>
+      <main className="main-content">
+        <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+          Loading story...
+        </p>
       </main>
     );
   }
 
   if (error) {
     return (
-      <main className="page-section">
-        <Card variant="error">
-          <p className="form-error">Error: {error}</p>
-        </Card>
-        <div className="mt-4">
-          <Button onClick={() => router.push("/stories")}>← Back to Stories</Button>
+      <main className="main-content">
+        <div className="error-banner show" role="alert">
+          Error: {error}
         </div>
+        <button
+          type="button"
+          className="back-btn"
+          style={{ marginTop: 12 }}
+          onClick={() => router.push("/stories")}
+        >
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Back to Stories
+        </button>
       </main>
     );
   }
 
   if (!story) {
     return (
-      <main className="page-section">
-        <Card className="p-6">
-          <p className="m-0">Story not found.</p>
-        </Card>
-        <div className="mt-4">
-          <Button onClick={() => router.push("/stories")}>← Back to Stories</Button>
+      <main className="main-content">
+        <div className="card" style={{ marginBottom: 12 }}>
+          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
+            Story not found.
+          </p>
         </div>
+        <button
+          type="button"
+          className="back-btn"
+          onClick={() => router.push("/stories")}
+        >
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Back to Stories
+        </button>
       </main>
     );
   }
@@ -102,165 +165,256 @@ export default function StoryDetailPage() {
   ].filter(Boolean) as string[];
 
   return (
-    <main className="page-section">
-      <header className="story-detail-header">
-        <div className="story-detail-header-top">
-          <Button onClick={() => router.push("/stories")}>← Back to Stories</Button>
+    <main className="main-content">
+      <div className="topbar">
+        <button
+          type="button"
+          className="back-btn"
+          onClick={() => router.push("/stories")}
+        >
+          <svg
+            viewBox="0 0 14 14"
+            style={{
+              width: 14,
+              height: 14,
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 2,
+              strokeLinecap: "round",
+            }}
+            aria-hidden
+          >
+            <path d="M9 2L4 7l5 5" />
+          </svg>
+          Back to Stories
+        </button>
+        <div className="btn-group">
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => router.push(`/stories/${story.id}/edit`)}
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            className="btn-warn"
+            onClick={async () => {
+              const ok = confirm("Are you sure you want to delete this story?");
+              if (!ok) return;
 
-          <div className="story-detail-actions">
-            <Button onClick={() => router.push(`/stories/${story.id}/edit`)}>Edit</Button>
+              try {
+                const token = localStorage.getItem("token");
+                if (!token) throw new Error("No token found. Please log in again.");
 
-            <Button
-              variant="danger"
-              onClick={async () => {
-                const ok = confirm("Are you sure you want to delete this story?");
-                if (!ok) return;
-
-                try {
-                  const token = localStorage.getItem("token");
-                  if (!token) throw new Error("No token found. Please log in again.");
-
-                  await deleteStoryById(token, story.id);
-                  router.push("/stories");
-                } catch (err) {
-                  alert(err instanceof Error ? err.message : "Failed to delete story.");
-                }
-              }}
-            >
-              Delete
-            </Button>
-          </div>
+                await deleteStoryById(token, story.id);
+                router.push("/stories");
+              } catch (err) {
+                alert(err instanceof Error ? err.message : "Failed to delete story.");
+              }
+            }}
+          >
+            Delete
+          </button>
         </div>
+      </div>
 
-        <h1 className="story-detail-title">{story.title}</h1>
-
-        <div className="story-detail-meta">
-          <p className="muted story-detail-date">
+      <div className="card" style={{ marginBottom: 12 }}>
+        <h1
+          style={{
+            fontSize: 20,
+            fontWeight: 500,
+            color: "var(--text-primary)",
+            marginBottom: 8,
+            lineHeight: 1.3,
+          }}
+        >
+          {story.title}
+        </h1>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            flexWrap: "wrap",
+            marginBottom: 12,
+          }}
+        >
+          <span style={{ fontSize: 12, color: "var(--text-hint)" }}>
             Created: {new Date(story.createdAt).toLocaleDateString()}
-          </p>
-          <p
-            className={`story-detail-star-status ${missingSections.length > 0 ? "story-detail-star-status--missing" : ""}`}
+          </span>
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              fontSize: 12,
+              fontWeight: 500,
+              color:
+                missingSections.length === 0
+                  ? "var(--success-text)"
+                  : "var(--warn-text)",
+            }}
             aria-label="STAR sections status"
           >
+            <div
+              className={`dot ${missingSections.length === 0 ? "dot-done" : "dot-partial"}`}
+              aria-hidden
+            />
             {missingSections.length === 0
               ? "STAR complete"
               : `Missing: ${missingSections.join(", ")}`}
-          </p>
-
-          <div className="story-detail-categories">
-            {story.categories.map((c) => (
-              <span key={c} className={`badge ${getBadgeClass(c)}`}>
-                {c}
-              </span>
-            ))}
-          </div>
+          </span>
         </div>
-      </header>
-
-      <h2 className="page-section-title story-detail-star-heading">
-        STAR breakdown
-      </h2>
-
-      <section className="story-detail-star">
-        <div className="story-detail-star-grid">
-          {/* Situation & Task */}
-          <div
-            className={`story-detail-star-card ${!status.situation ? "story-detail-star-card--missing" : ""}`}
-            aria-invalid={!status.situation}
-          >
-            <div className="story-detail-star-label-row">
-              <div className="story-detail-star-label">1. Situation &amp; Task</div>
-              <span className="story-detail-step">Context &amp; goal</span>
-            </div>
-            <div className="story-detail-tip">
-              <div className="story-detail-tip-icon">💡</div>
-              <p className="story-detail-tip-text">
-                Keep it to 2–3 sentences about the context and your specific role or goal.
-              </p>
-            </div>
-            <p className="muted story-detail-star-text">
-              {story.situation || "No situation or task provided."}
-            </p>
-          </div>
-
-          {/* Action */}
-          <div
-            className={`story-detail-star-card ${!status.action ? "story-detail-star-card--missing" : ""}`}
-            aria-invalid={!status.action}
-          >
-            <div className="story-detail-star-label-row">
-              <div className="story-detail-star-label">2. Action</div>
-              <span className="story-detail-step">What you did</span>
-            </div>
-            <div className="story-detail-tip">
-              <div className="story-detail-tip-icon">💡</div>
-              <p className="story-detail-tip-text">
-                Describe 3–5 concrete steps you personally took to move things forward.
-              </p>
-            </div>
-            <p className="muted story-detail-star-text">
-              {story.action || "No action provided."}
-            </p>
-          </div>
-
-          {/* Result */}
-          <div
-            className={`story-detail-star-card ${!status.result ? "story-detail-star-card--missing" : ""}`}
-            aria-invalid={!status.result}
-          >
-            <div className="story-detail-star-label-row">
-              <div className="story-detail-star-label">3. Result</div>
-              <span className="story-detail-step">Impact &amp; learning</span>
-            </div>
-            <div className="story-detail-tip">
-              <div className="story-detail-tip-icon">💡</div>
-              <p className="story-detail-tip-text">
-                Highlight measurable outcomes, impact on others, and what you learned.
-              </p>
-            </div>
-            <p className="muted story-detail-star-text">
-              {story.result || "No result provided."}
-            </p>
-          </div>
+        <div className="chips-row">
+          {story.categories.map((c) => (
+            <span key={c} className="tag">
+              {c}
+            </span>
+          ))}
         </div>
-      </section>
+      </div>
 
-      <section className="story-detail-questions-section" aria-label="Questions this story can answer">
-        <h2 className="page-section-title story-detail-star-heading">
-          Questions this story can answer
-        </h2>
-        {(() => {
-          const questions = getQuestionsForCategories(story.categories);
-          if (questions.length === 0) {
+      <div className="detail-grid">
+        {/* Left: STAR breakdown */}
+        <div className="card">
+          <h3
+            className="card-title"
+            style={{
+              marginBottom: 14,
+              paddingBottom: 10,
+              borderBottom: "0.5px solid var(--border-card)",
+            }}
+          >
+            STAR breakdown
+          </h3>
+          {STAR_BLOCKS.map((block) => {
+            const filled = status[block.contentKey];
+            const content = story[block.contentKey];
             return (
-              <p className="muted">
-                No interview questions are mapped to this story&apos;s categories yet. Add categories like Leadership or Conflict Resolution to see matching questions.
-              </p>
+              <div
+                key={block.label}
+                className="star-block"
+                aria-invalid={!filled}
+              >
+                <div className="star-block-header">
+                  <span className="star-block-label">{block.label}</span>
+                  <span className="star-block-sublabel">{block.sublabel}</span>
+                </div>
+                <div className="star-tip">{block.tip}</div>
+                {filled ? (
+                  <div className="star-block-text">{content}</div>
+                ) : (
+                  <div className="star-block-empty">{block.empty}</div>
+                )}
+              </div>
             );
-          }
-          return (
-            <ul className="story-detail-questions-list">
-              {questions.map((q) => (
-                <li key={q.id}>
+          })}
+        </div>
+
+        {/* Right: Questions */}
+        <div className="card" aria-label="Questions this story can answer">
+          <h3
+            className="card-title"
+            style={{
+              marginBottom: 14,
+              paddingBottom: 10,
+              borderBottom: "0.5px solid var(--border-card)",
+            }}
+          >
+            Questions this story can answer
+          </h3>
+          {(() => {
+            const questions = getQuestionsForCategories(story.categories);
+            if (questions.length === 0) {
+              return (
+                <p
+                  style={{
+                    fontSize: 12,
+                    color: "var(--text-muted)",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  No interview questions are mapped to this story&apos;s categories
+                  yet. Add categories like Leadership or Conflict Resolution to see
+                  matching questions.
+                </p>
+              );
+            }
+            return questions.map((q) => (
+              <div
+                key={q.id}
+                className="q-item"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 10,
+                  padding: "9px 0",
+                  borderBottom: "0.5px solid var(--border-card)",
+                }}
+              >
+                <div
+                  style={{
+                    width: 16,
+                    height: 16,
+                    minWidth: 16,
+                    borderRadius: 4,
+                    background: "var(--bg-chip)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    marginTop: 1,
+                  }}
+                  aria-hidden
+                >
+                  <svg
+                    viewBox="0 0 10 10"
+                    style={{
+                      width: 10,
+                      height: 10,
+                      stroke: "var(--text-secondary)",
+                      fill: "none",
+                      strokeWidth: 2,
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                    }}
+                    aria-hidden
+                  >
+                    <path d="M3 2l4 3-4 3" />
+                  </svg>
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <Link
                     href={`/questions?q=${encodeURIComponent(q.id)}`}
-                    className="story-detail-question-link"
+                    style={{ textDecoration: "none" }}
                   >
-                    <span className="story-detail-question-text">{q.text}</span>
-                    <span className="story-detail-question-badges">
-                      {q.categories.map((cat) => (
-                        <span key={cat} className={`badge ${getBadgeClass(cat)}`}>
-                          {cat}
-                        </span>
-                      ))}
-                    </span>
+                    <div
+                      className="q-text-link"
+                      style={{
+                        fontSize: 12,
+                        color: "var(--text-primary)",
+                        lineHeight: 1.4,
+                        marginBottom: 4,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {q.text}
+                    </div>
                   </Link>
-                </li>
-              ))}
-            </ul>
-          );
-        })()}
-      </section>
+                  <div className="chips-row">
+                    {q.categories.map((cat) => (
+                      <span key={cat} className="tag">
+                        {cat}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ));
+          })()}
+        </div>
+      </div>
     </main>
   );
 }
