@@ -20,9 +20,6 @@ const PREPARE_ITEMS = [
   { href: "/common-questions", label: "Common Questions", badgeKey: null },
 ] as const;
 
-const USER_DISPLAY_NAME = "User"; // TODO: from auth when available
-const USER_INITIALS = "U";
-
 type SidebarProps = {
   onClose?: () => void;
 };
@@ -178,16 +175,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
         </nav>
 
         <div className="sidebar-spacer" />
-
-        <div className="sidebar-profile">
-          <div className="sidebar-avatar" aria-hidden>
-            {USER_INITIALS}
-          </div>
-          <div className="sidebar-profile-info">
-            <div className="sidebar-profile-name">{USER_DISPLAY_NAME}</div>
-            <div className="sidebar-profile-sub">Interview prep</div>
-          </div>
-        </div>
 
         <div className="sidebar-bottom-links">
           <button
