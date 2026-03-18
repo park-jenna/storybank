@@ -62,10 +62,6 @@ export default function HomePage() {
           </div>
         ))}
       </div>
-
-      <p className="landing-footer">
-        Demo project built for learning and portfolio purposes
-      </p>
     </main>
   );
 }
