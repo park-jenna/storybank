@@ -125,10 +125,16 @@ export default function DashboardPage() {
     () => Object.values(categoryCounts).filter((n) => n > 0).length,
     [categoryCounts]
   );
-  const missingCategory = useMemo(() => {
-    const zero = CATEGORIES.find((c) => (categoryCounts[c] ?? 0) === 0);
-    return zero ?? null;
+  const missingCategories = useMemo(() => {
+    return CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) === 0);
   }, [categoryCounts]);
+
+  const missingCategorySummary = useMemo(() => {
+    if (missingCategories.length === 0) return null;
+    const first = missingCategories[0];
+    const moreCount = missingCategories.length - 1;
+    return moreCount > 0 ? `Missing: ${first} +${moreCount} more` : `Missing: ${first}`;
+  }, [missingCategories]);
 
   const maxCategoryCount = useMemo(
     () => Math.max(...Object.values(categoryCounts), 1),
@@ -187,15 +193,13 @@ export default function DashboardPage() {
                 <div className="stat-value">{userQuestions.length}</div>
                 <div className="stat-sub">stories linked</div>
               </div>
-              <div className={`stat-card${missingCategory ? " stat-card--warn" : ""}`}>
+              <div className={`stat-card${missingCategorySummary ? " stat-card--warn" : ""}`}>
                 <div className="stat-label">Category coverage</div>
-                <div className={`stat-value ${missingCategory ? "warn" : ""}`}>
+                <div className={`stat-value ${missingCategorySummary ? "warn" : ""}`}>
                   {categoryCoveredCount}/{CATEGORIES.length}
                 </div>
-                <div className={`stat-sub ${missingCategory ? "warn" : ""}`}>
-                  {missingCategory
-                    ? `${missingCategory} missing`
-                    : "All covered"}
+                <div className={`stat-sub ${missingCategorySummary ? "warn" : ""}`}>
+                  {missingCategorySummary ?? "All covered"}
                 </div>
               </div>
             </div>
