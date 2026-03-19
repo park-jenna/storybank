@@ -64,7 +64,6 @@ export default function AboutPage() {
 
         {/* Header */}
         <div className="about-header">
-          <div className="about-tag">Portfolio project · 2025</div>
           <h1 className="about-title">StoryBank</h1>
           <p className="about-sub">
             A full-stack web app for preparing behavioral interviews. Built to
@@ -161,19 +160,14 @@ export default function AboutPage() {
         </div>
 
         {/* Preview */}
-        <div className="about-section">
-          <div className="about-section-label">Preview</div>
-          <BrowserFrame url="storybank-star.vercel.app/dashboard">
-            <DashboardPreview />
-          </BrowserFrame>
-        </div>
+        {/* Preview removed */}
 
         {/* Links */}
         <div className="about-section">
           <div className="about-section-label">Links</div>
           <div className="about-links-row">
             <a
-              href="https://github.com"
+              href="https://github.com/park-jenna/storybank"
               target="_blank"
               rel="noopener noreferrer"
               className="about-link-card"
