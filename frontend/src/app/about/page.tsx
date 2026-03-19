@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import BrowserFrame from "@/components/BrowserFrame";
+import DashboardPreview from "@/components/DashboardPreview";
 
 const STACK = [
   { layer: "Frontend", tech: "Next.js 16, React 19\nTypeScript, Tailwind CSS" },
@@ -156,6 +158,14 @@ export default function AboutPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Preview */}
+        <div className="about-section">
+          <div className="about-section-label">Preview</div>
+          <BrowserFrame url="storybank-star.vercel.app/dashboard">
+            <DashboardPreview />
+          </BrowserFrame>
         </div>
 
         {/* Links */}
