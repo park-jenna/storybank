@@ -21,33 +21,25 @@ export function FormField({
   children,
 }: FormFieldProps) {
   return (
-    <label className={`flex flex-col gap-sm ${className}`}>
-      <span className="font-semibold text-[var(--foreground)]">
-        {label}
-        {required ? " *" : ""}
-      </span>
+    <label className={`field ${className}`}>
+      <div className="field-label">
+        <span>{label}</span>
+        {required ? <span className="field-required"> *</span> : null}
+      </div>
       {children}
-      {hint && (
-        <span className="text-[14px] text-[var(--muted)]">{hint}</span>
-      )}
+      {hint ? <div className="field-hint">{hint}</div> : null}
     </label>
   );
 }
 
-const inputBase =
-  "w-full pl-5 pr-4 py-3 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] outline-none transition-all duration-200 text-base font-[inherit] placeholder:text-[var(--muted-foreground)] focus:ring-[3px] focus:ring-[var(--ring)] focus:border-[var(--primary)]";
-
 export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
-  return <input className={inputBase} {...props} />;
+  return <input className="input" {...props} />;
 }
 
 export function Textarea(
   props: TextareaHTMLAttributes<HTMLTextAreaElement>
 ) {
   return (
-    <textarea
-      className={`${inputBase} min-h-[80px] resize-y`}
-      {...props}
-    />
+    <textarea className="textarea" {...props} />
   );
 }

@@ -124,6 +124,7 @@
   min-width: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 38px;
@@ -137,6 +138,7 @@
   min-height: 60px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -247,315 +249,6 @@
 
 
 /* ------------------------------------------------------------
-   2. FORM ELEMENTS
-   ------------------------------------------------------------ */
-
-/* Field wrapper */
-.field {
-  margin-bottom: 1.25rem;
-}
-
-.field:last-child {
-  margin-bottom: 0;
-}
-
-.field-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-dark);
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.field-required {
-  color: var(--warn-text);
-  font-size: 13px;
-}
-
-.field-hint {
-  font-size: 12px;
-  color: var(--text-hint);
-  margin-bottom: 8px;
-}
-
-.field-error {
-  font-size: 12px;
-  color: var(--warn-text);
-  margin-top: 5px;
-  display: none;
-}
-
-.field-error.show {
-  display: block;
-}
-
-/* Input */
-.input {
-  width: 100%;
-  padding: 9px 12px;
-  border: 0.5px solid var(--border-input);
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  color: var(--text-primary);
-  background: var(--bg-input);
-  outline: none;
-  line-height: 1.5;
-}
-
-.input:focus {
-  border-color: var(--green-dot);
-  box-shadow: 0 0 0 3px var(--green-focus);
-}
-
-.input::placeholder {
-  color: #C0D0C0;
-}
-
-/* Textarea */
-.textarea {
-  width: 100%;
-  padding: 9px 12px;
-  border: 0.5px solid var(--border-input);
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  color: var(--text-primary);
-  background: var(--bg-input);
-  outline: none;
-  resize: vertical;
-  line-height: 1.6;
-  min-height: 80px;
-}
-
-.textarea:focus {
-  border-color: var(--green-dot);
-  box-shadow: 0 0 0 3px var(--green-focus);
-}
-
-.textarea::placeholder {
-  color: #C0D0C0;
-}
-
-/* Inline error banner (form-level) */
-.error-banner {
-  font-size: 13px;
-  color: var(--warn-text);
-  background: var(--warn-bg);
-  border: 0.5px solid var(--warn-border);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  margin-bottom: 1rem;
-  display: none;
-}
-
-.error-banner.show {
-  display: block;
-}
-
-
-/* ------------------------------------------------------------
-   3. CHIPS & TAGS
-   ------------------------------------------------------------ */
-
-/* Chip — selectable (categories form) */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 12px;
-  border-radius: var(--radius-pill);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  border: 0.5px solid var(--border-chip);
-  background: var(--bg-chip);
-  color: var(--text-secondary);
-  user-select: none;
-  transition: background 0.1s, color 0.1s, border-color 0.1s;
-}
-
-.chip:hover {
-  background: var(--bg-chip-hover);
-}
-
-.chip.active {
-  background: var(--green-primary);
-  color: #fff;
-  border-color: var(--green-primary);
-}
-
-/* Tag — read-only label */
-.tag {
-  display: inline-flex;
-  align-items: center;
-  font-size: 12px;
-  padding: 3px 9px;
-  border-radius: var(--radius-pill);
-  background: #EEF0E8;
-  color: var(--text-secondary);
-  border: 0.5px solid #D4DCC8;
-}
-
-/* Tag highlight — question’s “good categories to highlight” and matching categories in story cards */
-.tag.tag-highlight {
-  background: var(--green-light);
-  color: var(--green-primary);
-  border-color: var(--green-primary);
-  font-weight: 500;
-}
-
-/* Tag match — matching category indicator (✓) */
-.tag.tag-match {
-  background: var(--green-light);
-  color: var(--green-primary);
-  border-color: var(--green-primary);
-  font-weight: 500;
-}
-
-.tag.tag-match::before {
-  content: "✓";
-  font-weight: 700;
-  margin-right: 4px;
-}
-
-/* Missing tag (yellow/orange) — single chip e.g. "Missing Action Result" */
-.tag-missing {
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: var(--warn-badge-bg);
-  color: var(--warn-badge-text);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 1px 0;
-}
-
-/* Chips row */
-.chips-row {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-
-/* ------------------------------------------------------------
-   4. BUTTONS
-   ------------------------------------------------------------ */
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--green-primary);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-pill);
-  padding: 9px 20px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.1s;
-  white-space: nowrap;
-}
-
-.btn-primary:hover    { background: var(--green-hover); }
-.btn-primary:disabled { background: #A8C8B0; cursor: not-allowed; }
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-chip);
-  color: var(--text-secondary);
-  border: 0.5px solid var(--border-chip);
-  border-radius: var(--radius-pill);
-  padding: 9px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.1s;
-  white-space: nowrap;
-}
-
-.btn-secondary:hover { background: var(--bg-chip-hover); color: var(--text-dark); }
-
-.btn-danger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--danger-bg);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-pill);
-  padding: 9px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.1s;
-  white-space: nowrap;
-}
-
-.btn-danger:hover    { background: var(--danger-hover); }
-.btn-danger:disabled { background: var(--danger-disabled); cursor: not-allowed; }
-
-/* Ghost — subtle, no fill */
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  color: var(--text-secondary);
-  border: 0.5px solid var(--border-chip);
-  border-radius: var(--radius-pill);
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.btn-ghost:hover { background: var(--bg-chip); color: var(--text-dark); }
-
-/* Warn button (e.g. Remove) */
-.btn-warn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--warn-bg);
-  color: var(--warn-text);
-  border: 0.5px solid var(--warn-border);
-  border-radius: var(--radius-pill);
-  padding: 9px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.btn-warn:hover { background: #FDE8D8; }
-
-/* Inline text action (e.g. "Add more", "View story →") */
-.btn-inline {
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--green-primary);
-  cursor: pointer;
-}
-
-.btn-inline:hover { color: var(--text-dark); }
-
-/* Button group */
-.btn-group {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-
-/* ------------------------------------------------------------
    5. STATUS INDICATORS
    ------------------------------------------------------------ */
 
@@ -617,7 +310,7 @@
 }
 
 .progress-bg {
-  background: #E0ECE0;
+  background: var(--progress-bg);
   border-radius: var(--radius-pill);
   height: 5px;
   overflow: hidden;
@@ -630,7 +323,7 @@
 }
 
 .progress-fill.warn {
-  background: #E89878;
+  background: var(--badge-bg);
 }
 
 .progress-wrap-alert .progress-label-text,
@@ -688,7 +381,7 @@
 .star-tip {
   font-size: 12px;
   color: var(--text-secondary);
-  background: #edf4e7;
+  background: var(--star-tip-bg);
   border-radius: var(--radius-sm);
   padding: 7px 10px;
   margin-bottom: 8px;
@@ -776,13 +469,13 @@
 
 .q-row.active {
   border-color: var(--green-dot);
-  background: #F2FAF4;
+  background: var(--bg-row-active);
 }
 
 .q-row-num {
   font-size: 12px;
   font-weight: 500;
-  color: #B0C8B0;
+  color: var(--q-row-num);
   width: 18px;
   flex-shrink: 0;
 }
@@ -943,7 +636,7 @@
 }
 .rec-item.selected {
   border-color: var(--green-dot);
-  background: #F2FAF4;
+  background: var(--bg-row-active);
 }
 .rc-row {
   display: flex;
@@ -1225,7 +918,7 @@
   background: rgba(255, 255, 255, 0.18);
 }
 
-.toast-action:focus {
+.toast-action:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22);
 }
@@ -1277,9 +970,8 @@
   color: var(--green-primary);
 }
 
-.bookmark-btn--list:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--green-focus);
+.bookmark-btn--list:focus-visible {
+  box-shadow: 0 0 0 3px var(--green-dot);
 }
 
 .bookmark-btn.saved {
@@ -1407,6 +1099,7 @@
 .clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1548,6 +1241,14 @@
   border-radius: 8px;
   border: 0.5px solid var(--warn-border);
   padding: 7px 10px;
+}
+
+/* Inline form field error (signup password confirmation, etc.) */
+.auth-field-error {
+  font-size: 12px;
+  color: var(--warn-text);
+  margin-top: 5px;
+  display: block;
 }
 
 .auth-submit-btn {
@@ -2044,7 +1745,7 @@
 }
 
 .browser-dot-red {
-  background: #E89878;
+  background: var(--badge-bg);
 }
 .browser-dot-yellow {
   background: #E8C87A;
@@ -2401,7 +2102,93 @@
 }
 
 .db-preview-prog-fill--warn {
-  background: #E89878;
+  background: var(--badge-bg);
+}
+
+/* ------------------------------------------------------------
+   Accessibility polish: keyboard focus + pressed states
+   ------------------------------------------------------------ */
+
+/* Consistent focus ring for custom clickable components */
+:is(
+  .story-card,
+  .carousel-card,
+  .q-row,
+  .chip,
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger,
+  .btn-ghost,
+  .btn-warn,
+  .btn-inline,
+  .cta,
+  .del-btn,
+  .bookmark-btn,
+  .bookmark-btn--list,
+  .rec-item,
+  .about-link-card,
+  .linked-story-name,
+  .landing-about-link,
+  .linked-more
+):focus-visible {
+  box-shadow: 0 0 0 3px var(--green-dot);
+}
+
+/* Make card focus match hover affordance */
+.story-card:focus-visible {
+  background: var(--bg-hover);
+  border-color: var(--border-chip);
+  box-shadow:
+    0 0 0 3px var(--green-dot),
+    0 3px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.carousel-card:focus-visible {
+  background: var(--bg-hover);
+  box-shadow:
+    0 0 0 3px var(--green-dot),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+/* Pressed/active feedback (keyboard/mouse) */
+.btn-primary:active:not(:disabled),
+.btn-secondary:active:not(:disabled),
+.btn-danger:active:not(:disabled),
+.btn-ghost:active:not(:disabled),
+.btn-warn:active:not(:disabled),
+.cta:active,
+.chip:active,
+.bookmark-btn:active {
+  transform: translateY(1px);
+}
+
+.story-card:active,
+.carousel-card:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.q-row:active {
+  border-color: var(--border-chip);
+}
+
+/* Respect user motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .story-card,
+  .carousel-card {
+    transform: none !important;
+  }
 }
 
 /* Questions */

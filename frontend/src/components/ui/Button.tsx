@@ -13,20 +13,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  default:
-    "bg-[var(--card)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--background-solid)] hover:border-[var(--primary)] hover:-translate-y-px hover:shadow-[var(--shadow)]",
-  primary:
-    "bg-[var(--primary)] text-white border-transparent hover:bg-[var(--primary-hover)] hover:shadow-[var(--shadow-md)]",
-  danger:
-    "bg-[#ef4444] text-white border-transparent hover:bg-[#dc2626]",
-  menu:
-    "bg-transparent border-none text-[var(--muted)] hover:text-[var(--foreground)] shadow-none hover:shadow-none hover:-translate-y-0",
-};
-
-const sizeClasses: Record<ButtonSize, string> = {
-  sm: "text-[16px]",
-  md: "text-base",
-  lg: "text-lg",
+  default: "btn-secondary",
+  primary: "btn-primary",
+  danger: "btn-danger",
+  menu: "btn-ghost",
 };
 
 const sizePadding: Record<ButtonSize, React.CSSProperties> = {
@@ -34,9 +24,6 @@ const sizePadding: Record<ButtonSize, React.CSSProperties> = {
   md: { padding: "10px 20px" },
   lg: { padding: "12px 24px" },
 };
-
-const base =
-  "inline-flex items-center justify-center gap-2 rounded-[var(--radius)] font-medium cursor-pointer select-none transition-all duration-200 whitespace-nowrap no-underline disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-[0.98]";
 
 export default function Button({
   variant = "default",
@@ -46,14 +33,12 @@ export default function Button({
   style,
   ...props
 }: ButtonProps) {
-  const isMenu = variant === "menu";
-  const border = isMenu ? "" : "border";
-  const paddingStyle = isMenu ? {} : sizePadding[size];
+  const paddingStyle = sizePadding[size];
   return (
     <button
       type={props.type ?? "button"}
       style={{ ...paddingStyle, ...style }}
-      className={`${base} ${border} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`${variantClasses[variant]} ${className}`}
       disabled={disabled}
       {...props}
     />

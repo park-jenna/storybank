@@ -1,0 +1,111 @@
+/* ============================================================
+   StoryBank — Forms
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   2. FORM ELEMENTS
+   ------------------------------------------------------------ */
+
+/* Field wrapper */
+.field {
+  margin-bottom: 1.25rem;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.field-required {
+  color: var(--warn-text);
+  font-size: 13px;
+}
+
+.field-hint {
+  font-size: 12px;
+  color: var(--text-hint);
+  margin-bottom: 8px;
+}
+
+.field-error {
+  font-size: 12px;
+  color: var(--warn-text);
+  margin-top: 5px;
+  display: none;
+}
+
+.field-error.show {
+  display: block;
+}
+
+/* Input */
+.input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 0.5px solid var(--border-input);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  outline: none;
+  line-height: 1.5;
+}
+
+.input:focus {
+  border-color: var(--green-dot);
+  box-shadow: 0 0 0 3px var(--green-focus);
+}
+
+.input::placeholder {
+  color: #C0D0C0;
+}
+
+/* Textarea */
+.textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 0.5px solid var(--border-input);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  outline: none;
+  resize: vertical;
+  line-height: 1.6;
+  min-height: 80px;
+}
+
+.textarea:focus {
+  border-color: var(--green-dot);
+  box-shadow: 0 0 0 3px var(--green-focus);
+}
+
+.textarea::placeholder {
+  color: #C0D0C0;
+}
+
+/* Inline error banner (form-level) */
+.error-banner {
+  font-size: 13px;
+  color: var(--warn-text);
+  background: var(--warn-bg);
+  border: 0.5px solid var(--warn-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+.error-banner.show {
+  display: block;
+}
+

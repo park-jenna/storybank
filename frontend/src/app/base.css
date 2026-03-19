@@ -58,6 +58,22 @@
   /* Nav badge */
   --badge-bg:        #E89878;
 
+  /* Component-specific aliases (reduce hard-coding) */
+  --btn-primary-disabled-bg: #A8C8B0;
+
+  --tag-bg:          var(--border-card); /* used by .tag */
+  --tag-border:     #D4DCC8;
+
+  --warn-hover-bg:  #FDE8D8;
+
+  --progress-bg:    #E0ECE0; /* used by .progress-bg + demo */
+  --bg-row-active:  #F2FAF4; /* used by .q-row.active + .rec-item.selected */
+
+  --star-tip-bg:    #edf4e7;
+  --q-row-num:      #B0C8B0;
+
+  --warn-progress-fill-bg: var(--badge-bg); /* used by warn progress */
+
   /* Border radius */
   --radius-sm:   8px;
   --radius-md:   10px;

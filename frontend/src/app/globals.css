@@ -1,3 +1,6 @@
 @import "./base.css";
 @import "./layout.css";
 @import "./components.css";
+@import "./styles/forms.css";
+@import "./styles/chips-tags.css";
+@import "./styles/buttons.css";

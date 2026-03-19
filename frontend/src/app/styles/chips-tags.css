@@ -1,0 +1,89 @@
+/* ============================================================
+   StoryBank — Chips & Tags
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   3. CHIPS & TAGS
+   ------------------------------------------------------------ */
+
+/* Chip — selectable (categories form) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 0.5px solid var(--border-chip);
+  background: var(--bg-chip);
+  color: var(--text-secondary);
+  user-select: none;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+}
+
+.chip:hover {
+  background: var(--bg-chip-hover);
+}
+
+.chip.active {
+  background: var(--green-primary);
+  color: #fff;
+  border-color: var(--green-primary);
+}
+
+/* Tag — read-only label */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--tag-bg);
+  color: var(--text-secondary);
+  border: 0.5px solid var(--tag-border);
+}
+
+/* Tag highlight — question’s “good categories to highlight” and matching categories in story cards */
+.tag.tag-highlight {
+  background: var(--green-light);
+  color: var(--green-primary);
+  border-color: var(--green-primary);
+  font-weight: 500;
+}
+
+/* Tag match — matching category indicator (✓) */
+.tag.tag-match {
+  background: var(--green-light);
+  color: var(--green-primary);
+  border-color: var(--green-primary);
+  font-weight: 500;
+}
+
+.tag.tag-match::before {
+  content: "✓";
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+/* Missing tag (yellow/orange) — single chip e.g. "Missing Action Result" */
+.tag-missing {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--warn-badge-bg);
+  color: var(--warn-badge-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1px 0;
+}
+
+/* Chips row */
+.chips-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
