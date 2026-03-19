@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function HomePage() {
   const router = useRouter();
@@ -14,40 +15,45 @@ export default function HomePage() {
 
   return (
     <main className="landing-page">
+      {/* Hero */}
       <div className="landing-hero">
-        <h1 className="landing-hero-title">StoryBank</h1>
+        <h1 className="landing-hero-title">
+          Prepare your interview stories,
+          <br />
+          all in one place
+        </h1>
         <p className="landing-hero-subtitle">
-          Save and organize stories for interviews
+          Write your STAR stories, tag them by category, and link them to common
+          interview questions — so you&apos;re never caught off guard.
         </p>
-      </div>
-
-      <div className="landing-cta-row">
-        {hasToken ? (
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={() => router.push("/dashboard")}
-          >
-            Go to Dashboard
-          </button>
-        ) : (
-          <>
+        <div className="landing-cta-row">
+          {hasToken ? (
             <button
               type="button"
               className="btn-primary"
-              onClick={() => router.push("/login")}
+              onClick={() => router.push("/dashboard")}
             >
-              Log In
+              Go to Dashboard
             </button>
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => router.push("/signup")}
-            >
-              Sign Up
-            </button>
-          </>
-        )}
+          ) : (
+            <>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => router.push("/signup")}
+              >
+                Get started
+              </button>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => router.push("/login")}
+              >
+                Log in
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="landing-features">
@@ -61,6 +67,13 @@ export default function HomePage() {
             {item}
           </div>
         ))}
+      </div>
+
+      {/* Footer */}
+      <div className="landing-footer">
+        <Link href="/about" className="landing-footer-about">
+          About this project →
+        </Link>
       </div>
     </main>
   );

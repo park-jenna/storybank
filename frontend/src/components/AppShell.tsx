@@ -4,7 +4,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 
-const PUBLIC_PATHS = ["/", "/login", "/signup"];
+const PUBLIC_PATHS = ["/", "/login", "/signup", "/about"];
 
 export default function AppShell({
   children,
@@ -16,7 +16,7 @@ export default function AppShell({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (isPublicPage) {
-    return <main className="main-content">{children}</main>;
+    return <>{children}</>;
   }
 
   return (
