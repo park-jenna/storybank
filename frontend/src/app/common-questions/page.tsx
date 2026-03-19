@@ -824,7 +824,7 @@ function CommonQuestionsContent() {
                             >
                               {selectedQuestion.alreadySaved
                                 ? "Change linked stories"
-                                : "Save to my questions"}
+                                : "Link stories"}
                             </button>
                           ) : (
                             <div className="btn-group">
@@ -832,7 +832,7 @@ function CommonQuestionsContent() {
                                 type="button"
                                 className="btn-primary"
                                 disabled={saving}
-                                onClick={handleSaveToMyQuestions}
+                                onClick={() => handleSaveToMyQuestions()}
                               >
                                 {saving
                                   ? "Saving..."
