@@ -1598,6 +1598,27 @@
   margin-bottom: 0.75rem;
 }
 
+/* Slim browser chrome on landing */
+.landing-preview .browser-frame-bar {
+  padding: 7px 12px;
+}
+
+.landing-preview .browser-frame-dots {
+  gap: 5px;
+  width: 44px;
+}
+
+.landing-preview .browser-dot {
+  width: 8px;
+  height: 8px;
+}
+
+.landing-preview .browser-frame-url {
+  font-size: 10px;
+  padding: 2px 12px;
+  max-width: 240px;
+}
+
 /* ── Landing footer update ───────────────────── */
 .landing-footer {
   display: flex;
