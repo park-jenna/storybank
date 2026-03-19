@@ -236,6 +236,15 @@
   margin-top: 1px;
 }
 
+/* Story row action button: keep size consistent (Start vs Edit) */
+.story-row-action {
+  height: 34px;
+  padding: 0 16px;
+  min-width: 72px;
+  line-height: 1;
+  justify-content: center;
+}
+
 
 /* ------------------------------------------------------------
    2. FORM ELEMENTS

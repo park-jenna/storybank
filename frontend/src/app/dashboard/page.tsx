@@ -237,7 +237,7 @@ export default function DashboardPage() {
                         </div>
                         <Link
                           href={`/stories/${s.id}/edit`}
-                          className={isNotStarted ? "btn-primary" : "btn-secondary"}
+                          className="btn-secondary story-row-action"
                         >
                           {isNotStarted ? "Start" : "Edit"}
                         </Link>
