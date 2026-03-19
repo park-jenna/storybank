@@ -410,11 +410,6 @@ function CommonQuestionsContent() {
                                   <div className="story-card-top">
                                     <div className="story-card-title">{s.title}</div>
                                   </div>
-                                  {matchingCategories.length > 0 && (
-                                    <p className="story-card-matches">
-                                      Matches: {matchingCategories.join(", ")}
-                                    </p>
-                                  )}
                                   <div className="story-card-situation">
                                     {s.result || s.situation || "No summary"}
                                   </div>
@@ -423,7 +418,7 @@ function CommonQuestionsContent() {
                                     {s.categories.slice(0, 3).map((c) => (
                                       <span
                                         key={c}
-                                        className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-highlight" : ""}`}
+                                        className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-match" : ""}`}
                                       >
                                         {c}
                                       </span>
@@ -590,17 +585,7 @@ function CommonQuestionsContent() {
                                             {expandedStoryIds.has(s.id) ? "▼" : "▶"}
                                           </button>
                                         </div>
-                                        {matchingCategories.length > 0 && (
-                                          <p
-                                            style={{
-                                              fontSize: 12,
-                                              color: "var(--green-primary)",
-                                              marginTop: 3,
-                                            }}
-                                          >
-                                            Matches: {matchingCategories.join(", ")}
-                                          </p>
-                                        )}
+                                        {/* Matches text removed; tags below show ✓ for matches */}
                                         {expandedStoryIds.has(s.id) && (
                                           <div style={{ marginTop: 8 }}>
                                             <p className="rc-sit">
@@ -610,7 +595,7 @@ function CommonQuestionsContent() {
                                               {s.categories.slice(0, 3).map((c) => (
                                                 <span
                                                   key={c}
-                                                  className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-highlight" : ""}`}
+                                                  className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-match" : ""}`}
                                                 >
                                                   {c}
                                                 </span>
@@ -638,11 +623,6 @@ function CommonQuestionsContent() {
                                       <div className="story-card-top">
                                         <div className="story-card-title">{s.title}</div>
                                       </div>
-                                      {matchingCategories.length > 0 && (
-                                        <p className="story-card-matches">
-                                          Matches: {matchingCategories.join(", ")}
-                                        </p>
-                                      )}
                                       <div className="story-card-situation">
                                         {s.result || s.situation || "No summary"}
                                       </div>
@@ -651,7 +631,7 @@ function CommonQuestionsContent() {
                                         {s.categories.slice(0, 3).map((c) => (
                                           <span
                                             key={c}
-                                            className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-highlight" : ""}`}
+                                            className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-match" : ""}`}
                                           >
                                             {c}
                                           </span>

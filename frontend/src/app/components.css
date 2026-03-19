@@ -404,6 +404,20 @@
   font-weight: 500;
 }
 
+/* Tag match — matching category indicator (✓) */
+.tag.tag-match {
+  background: var(--green-light);
+  color: var(--green-primary);
+  border-color: var(--green-primary);
+  font-weight: 500;
+}
+
+.tag.tag-match::before {
+  content: "✓";
+  font-weight: 700;
+  margin-right: 4px;
+}
+
 /* Missing tag (yellow/orange) — single chip e.g. "Missing Action Result" */
 .tag-missing {
   font-size: 11px;
