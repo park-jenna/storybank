@@ -83,9 +83,9 @@ export default function DashboardPreview() {
 
         <div className="db-preview-sidebar-spacer" />
         <div className="db-preview-profile">
-          <div className="db-preview-avatar">AJ</div>
+          <div className="db-preview-avatar">JN</div>
           <div>
-            <div className="db-preview-profile-name">Alex Johnson</div>
+            <div className="db-preview-profile-name">Jack Niu</div>
             <div className="db-preview-profile-sub">Interview prep</div>
           </div>
         </div>
@@ -96,7 +96,7 @@ export default function DashboardPreview() {
         {/* Header */}
         <div className="db-preview-header">
           <div>
-            <div className="db-preview-title">Welcome back, Alex</div>
+            <div className="db-preview-title">Welcome back, Jack</div>
             <div className="db-preview-subtitle">3 stories in progress · 2 questions unlinked</div>
           </div>
           <button className="db-preview-new-btn" tabIndex={-1} type="button">
