@@ -1199,11 +1199,137 @@
   transform: translateY(8px);
   transition: opacity 0.2s, transform 0.2s;
   pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .toast.show {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
+}
+
+.toast-action {
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.toast-action:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.toast-action:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22);
+}
+
+/* Bookmark (save) toggle */
+.bookmark-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 0.5px solid var(--border-chip);
+  background: var(--bg-card);
+  color: var(--text-hint);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.bookmark-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+.bookmark-btn--list {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border-color: transparent;
+  background: transparent;
+  color: rgba(85, 110, 95, 0.55);
+}
+
+.bookmark-btn--list:hover {
+  color: var(--text-secondary);
+}
+
+.bookmark-btn--list.saved {
+  background: transparent;
+  border-color: transparent;
+  color: rgba(55, 116, 70, 0.8);
+}
+
+.bookmark-btn--list.saved:hover {
+  background: transparent;
+  border-color: transparent;
+  color: var(--green-primary);
+}
+
+.bookmark-btn--list:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--green-focus);
+}
+
+.bookmark-btn.saved {
+  background: var(--green-light);
+  border-color: rgba(55, 116, 70, 0.25);
+  color: var(--green-primary);
+}
+
+.bookmark-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.bookmark-btn.bookmark-btn--list.saved,
+.bookmark-btn.bookmark-btn--list.saved:hover {
+  background: transparent;
+  border-color: transparent;
+}
+
+.bookmark-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.bookmark-icon path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linejoin: round;
+}
+
+.bookmark-btn.saved .bookmark-icon path {
+  fill: currentColor;
+  stroke: none;
+}
+
+.bookmark-btn--list .bookmark-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.bookmark-btn--header {
+  width: auto;
+  padding: 0 10px;
+}
+
+.bookmark-label {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
 }
 
 /* Skeleton loader */

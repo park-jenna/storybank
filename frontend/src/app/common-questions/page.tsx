@@ -9,6 +9,7 @@ import {
   fetchQuestionRecommendations,
   fetchUserQuestions,
   createUserQuestion,
+  deleteUserQuestion,
   type Question,
   type Story,
   type UserQuestionItem,
@@ -33,6 +34,22 @@ function CommonQuestionsContent() {
   const [showSavePanel, setShowSavePanel] = useState(false);
   const [expandedStoryIds, setExpandedStoryIds] = useState<Set<string>>(new Set());
   const [selectedCategory, setSelectedCategory] = useState<string>(ALL);
+  const [toast, setToast] = useState<{
+    open: boolean;
+    message: string;
+    action?: {
+      label: string;
+      kind: "undo-save" | "undo-unsave";
+      questionId: string;
+      userQuestionId?: string;
+      storyIds?: string[];
+    };
+  }>({ open: false, message: "" });
+  const [showEmptySaveConfirm, setShowEmptySaveConfirm] = useState(false);
+  const [emptySaveConfirmTarget, setEmptySaveConfirmTarget] = useState<{
+    kind: "bookmark" | "panel";
+    question: Question;
+  } | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -107,13 +124,151 @@ function CommonQuestionsContent() {
     [recommendedStories, linkedStoryIds]
   );
 
-  const handleSaveToMyQuestions = async () => {
+  const showToast = (next: typeof toast) => {
+    setToast(next);
+    if (!next.open) return;
+    window.setTimeout(() => {
+      setToast((prev) => (prev.open ? { ...prev, open: false } : prev));
+    }, 3500);
+  };
+
+  const refreshUserQuestions = async (token: string) => {
+    const refreshed = await fetchUserQuestions(token);
+    setUserQuestions(refreshed.userQuestions ?? []);
+  };
+
+  const openEmptySaveConfirm = (target: { kind: "bookmark" | "panel"; question: Question }) => {
+    setEmptySaveConfirmTarget(target);
+    setShowEmptySaveConfirm(true);
+  };
+
+  const performSaveWithoutStories = async (q: Question) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await createUserQuestion(token, { commonQuestionId: q.id, storyIds: [] });
+      setQuestions((prev) => prev.map((x) => (x.id === q.id ? { ...x, alreadySaved: true } : x)));
+      if (selectedQuestion?.id === q.id) {
+        setSelectedQuestion((prev) => (prev ? { ...prev, alreadySaved: true } : prev));
+      }
+      await refreshUserQuestions(token);
+      showToast({
+        open: true,
+        message: "Saved",
+        action: { label: "Undo", kind: "undo-save", questionId: q.id, userQuestionId: res.userQuestion.id },
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update saved state.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleToggleSaved = async (q: Question) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+
+    const uq = userQuestions.find((x) => x.question.content === q.content) ?? null;
+    const isSaved = !!q.alreadySaved && !!uq;
+
+    if (!isSaved) {
+      openEmptySaveConfirm({ kind: "bookmark", question: q });
+      return;
+    }
+
+    setSaving(true);
+    setError(null);
+    try {
+      await deleteUserQuestion(token, uq.id);
+      setQuestions((prev) => prev.map((x) => (x.id === q.id ? { ...x, alreadySaved: false } : x)));
+      if (selectedQuestion?.id === q.id) {
+        setSelectedQuestion((prev) => (prev ? { ...prev, alreadySaved: false } : prev));
+        setShowSavePanel(false);
+        setSelectedStoryIds(new Set());
+      }
+      const prevStoryIds = uq.stories.map((s) => s.id);
+      await refreshUserQuestions(token);
+      showToast({
+        open: true,
+        message: "Removed from saved",
+        action: { label: "Undo", kind: "undo-unsave", questionId: q.id, storyIds: prevStoryIds },
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update saved state.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleToastAction = async () => {
+    const action = toast.action;
+    if (!action) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    try {
+      if (action.kind === "undo-save" && action.userQuestionId) {
+        await deleteUserQuestion(token, action.userQuestionId);
+        setQuestions((prev) =>
+          prev.map((x) => (x.id === action.questionId ? { ...x, alreadySaved: false } : x))
+        );
+        if (selectedQuestion?.id === action.questionId) {
+          setSelectedQuestion((prev) => (prev ? { ...prev, alreadySaved: false } : prev));
+        }
+        await refreshUserQuestions(token);
+        setToast({ open: false, message: "" });
+      }
+      if (action.kind === "undo-unsave") {
+        const res = await createUserQuestion(token, {
+          commonQuestionId: action.questionId,
+          storyIds: action.storyIds ?? [],
+        });
+        setQuestions((prev) =>
+          prev.map((x) => (x.id === action.questionId ? { ...x, alreadySaved: true } : x))
+        );
+        if (selectedQuestion?.id === action.questionId) {
+          setSelectedQuestion((prev) => (prev ? { ...prev, alreadySaved: true } : prev));
+        }
+        await refreshUserQuestions(token);
+        showToast({
+          open: true,
+          message: "Restored",
+          action: { label: "Undo", kind: "undo-save", questionId: action.questionId, userQuestionId: res.userQuestion.id },
+        });
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to undo.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveToMyQuestions = async (opts?: { skipEmptyConfirm?: boolean }) => {
     const token = localStorage.getItem("token");
     if (!token) {
       router.replace("/login");
       return;
     }
     if (!selectedQuestion) return;
+    if (selectedStoryIds.size === 0) {
+      if (!opts?.skipEmptyConfirm) {
+        openEmptySaveConfirm({ kind: "panel", question: selectedQuestion });
+        return;
+      }
+    }
     setSaving(true);
     setSaveSuccess(false);
     setSaveMessage("");
@@ -128,8 +283,7 @@ function CommonQuestionsContent() {
       setQuestions((prev) =>
         prev.map((q) => (q.id === selectedQuestion.id ? { ...q, alreadySaved: true } : q))
       );
-      const refreshed = await fetchUserQuestions(token);
-      setUserQuestions(refreshed.userQuestions ?? []);
+      await refreshUserQuestions(token);
       setTimeout(() => {
         setSaveSuccess(false);
         setSaveMessage("");
@@ -157,17 +311,6 @@ function CommonQuestionsContent() {
       else next.add(storyId);
       return next;
     });
-  };
-
-  const formatDate = (dateString: string) => {
-    const d = new Date(dateString);
-    const now = new Date();
-    const diffDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    return d.toLocaleDateString();
   };
 
   const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token");
@@ -289,11 +432,23 @@ function CommonQuestionsContent() {
                     <span className="q-row-num">{String(i + 1).padStart(2, "0")}</span>
                     <span className="q-row-text">{q.content}</span>
                   </div>
-                  {q.alreadySaved && (
-                    <span className="badge badge-saved" aria-label="Saved to your list">
-                      Saved
-                    </span>
-                  )}
+                  <button
+                    type="button"
+                    className={`bookmark-btn bookmark-btn--list${q.alreadySaved ? " saved" : ""}`}
+                    aria-pressed={!!q.alreadySaved}
+                    aria-label={q.alreadySaved ? "Remove from saved" : "Save to your list"}
+                    disabled={saving}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleSaved(q);
+                    }}
+                  >
+                    <svg viewBox="0 0 20 20" aria-hidden className="bookmark-icon">
+                      <path
+                        d="M6.5 3.5h7a2 2 0 0 1 2 2V17l-5.5-3-5.5 3V5.5a2 2 0 0 1 2-2z"
+                      />
+                    </svg>
+                  </button>
                 </div>
               ))}
             </div>
@@ -313,11 +468,21 @@ function CommonQuestionsContent() {
                 <h2 className="common-questions-detail-title">
                   {selectedQuestion.content}
                 </h2>
-                {selectedQuestion.alreadySaved && (
-                  <span className="badge badge-saved" role="status">
-                    Saved to your list
-                  </span>
-                )}
+                <button
+                  type="button"
+                  className={`bookmark-btn bookmark-btn--header${selectedQuestion.alreadySaved ? " saved" : ""}`}
+                  aria-pressed={!!selectedQuestion.alreadySaved}
+                  aria-label={selectedQuestion.alreadySaved ? "Remove from saved" : "Save to your list"}
+                  disabled={saving}
+                  onClick={() => handleToggleSaved(selectedQuestion)}
+                >
+                  <svg viewBox="0 0 20 20" aria-hidden className="bookmark-icon">
+                    <path
+                      d="M6.5 3.5h7a2 2 0 0 1 2 2V17l-5.5-3-5.5 3V5.5a2 2 0 0 1 2-2z"
+                    />
+                  </svg>
+                  <span className="bookmark-label">{selectedQuestion.alreadySaved ? "Saved" : "Save"}</span>
+                </button>
               </div>
 
               <div className="common-questions-categories">
@@ -397,9 +562,6 @@ function CommonQuestionsContent() {
                           }}
                         >
                           {linkedStories.map((s) => {
-                            const matchingCategories = (
-                              selectedQuestion?.recommendedCategories ?? []
-                            ).filter((c) => s.categories.includes(c));
                             return (
                               <Link
                                 key={s.id}
@@ -527,9 +689,6 @@ function CommonQuestionsContent() {
                             ? [...linkedStories, ...recommendedStoriesFiltered]
                             : recommendedStoriesFiltered
                           ).map((s) => {
-                            const matchingCategories = (
-                              selectedQuestion?.recommendedCategories ?? []
-                            ).filter((c) => s.categories.includes(c));
                             return (
                               <div key={s.id}>
                                 {showSavePanel ? (
@@ -710,6 +869,62 @@ function CommonQuestionsContent() {
               )}
             </div>
             )}
+          </div>
+        </div>
+      )}
+
+      <div className={`toast${toast.open ? " show" : ""}`} role="status" aria-live="polite">
+        <span>{toast.message}</span>
+        {toast.action && (
+          <button type="button" className="toast-action" onClick={handleToastAction}>
+            {toast.action.label}
+          </button>
+        )}
+      </div>
+
+      {showEmptySaveConfirm && emptySaveConfirmTarget && (
+        <div
+          className="modal-overlay show"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="empty-save-confirm-title"
+        >
+          <div className="modal">
+            <h3 className="modal-title" id="empty-save-confirm-title">
+              Save without linking stories?
+            </h3>
+            <p className="modal-subtitle">
+              You can link stories later, but saving without any stories may make it harder to use this question in interviews.
+            </p>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => {
+                  setShowEmptySaveConfirm(false);
+                  setEmptySaveConfirmTarget(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={async () => {
+                  const target = emptySaveConfirmTarget;
+                  setShowEmptySaveConfirm(false);
+                  setEmptySaveConfirmTarget(null);
+                  if (!target) return;
+                  if (target.kind === "bookmark") {
+                    await performSaveWithoutStories(target.question);
+                    return;
+                  }
+                  await handleSaveToMyQuestions({ skipEmptyConfirm: true });
+                }}
+              >
+                Save anyway
+              </button>
+            </div>
           </div>
         </div>
       )}
