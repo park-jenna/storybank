@@ -144,7 +144,7 @@
 }
 
 .story-card-situation.empty {
-  color: #C8B890;
+  color: var(--text-hint);
   font-style: italic;
 }
 

@@ -167,7 +167,7 @@ function StoriesPageContent() {
                           }}
                         >
                           {s.situation || (
-                            <span style={{ color: "#C8B890", fontStyle: "italic" }}>
+                            <span style={{ color: "var(--text-hint)", fontStyle: "italic" }}>
                               No situation written yet.
                             </span>
                           )}
