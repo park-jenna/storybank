@@ -486,7 +486,7 @@ function CommonQuestionsContent() {
               </div>
 
               <div className="common-questions-categories">
-                <span className="common-questions-categories-label">Good categories to highlight:</span>
+                <span className="section-label">Good categories to highlight:</span>
                 {(selectedQuestion.recommendedCategories ?? []).map((cat) => (
                   <span key={cat} className="tag tag-highlight">
                     {cat}

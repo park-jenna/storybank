@@ -192,18 +192,8 @@ function QuestionsPageContent() {
             </h2>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              flexWrap: "wrap",
-              marginBottom: "1.5rem",
-            }}
-          >
-            <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
-              Good categories to highlight:
-            </span>
+          <div className="common-questions-categories">
+            <span className="section-label">Good categories to highlight:</span>
             {selectedQuestion.categories.map((cat) => (
               <span key={cat} className="tag">
                 {cat}

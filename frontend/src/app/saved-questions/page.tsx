@@ -506,7 +506,7 @@ export default function SavedQuestionsPage() {
                 </h2>
               </div>
               <div className="common-questions-categories">
-                <span className="common-questions-categories-label">Good categories to highlight:</span>
+                <span className="section-label">Good categories to highlight:</span>
                 {(linkingUserQuestion.question.recommendedCategories ?? []).map((cat) => (
                   <span key={cat} className="tag">
                     {cat}
