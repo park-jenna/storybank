@@ -38,7 +38,7 @@
   align-items: center;
   font-size: 12px;
   padding: 3px 9px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   background: var(--tag-bg);
   color: var(--text-secondary);
   border: 0.5px solid var(--tag-border);
