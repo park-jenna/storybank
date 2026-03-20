@@ -1,17 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { fetchUserQuestionById, updateUserQuestion } from "@/lib/user-questions";
 import { fetchStories, Story } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
 
-export default function EditSavedQuestionPage() {
+type EditSavedQuestionPageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default function EditSavedQuestionPage({
+  params,
+}: EditSavedQuestionPageProps) {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const questionId = params?.id;
+  const { id: questionId } = use(params);
 
   const [content, setContent] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);

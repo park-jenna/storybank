@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { fetchStoryById, Story, updateStoryById } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
 
@@ -20,10 +20,13 @@ const STAR_TIPS = [
   },
 ];
 
-export default function EditStoryPage() {
+type EditStoryPageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default function EditStoryPage({ params }: EditStoryPageProps) {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const storyId = params?.id;
+  const { id: storyId } = use(params);
 
   const [story, setStory] = useState<Story | null>(null);
   const [title, setTitle] = useState("");

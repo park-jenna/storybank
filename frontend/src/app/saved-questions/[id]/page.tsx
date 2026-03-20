@@ -1,15 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { fetchUserQuestionById, deleteUserQuestion, UserQuestionItem } from "@/lib/user-questions";
 
-export default function SavedQuestionDetailPage() {
+type SavedQuestionDetailPageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default function SavedQuestionDetailPage({
+  params,
+}: SavedQuestionDetailPageProps) {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const questionId = params?.id;
+  const { id: questionId } = use(params);
 
   const [userQuestion, setUserQuestion] = useState<UserQuestionItem | null>(null);
   const [loading, setLoading] = useState(true);

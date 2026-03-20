@@ -5,8 +5,8 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { fetchStoryById, Story, deleteStoryById } from "@/lib/stories";
 import { getQuestionsForCategories } from "@/constants/interviewQuestions";
 import Link from "next/link";
@@ -43,10 +43,13 @@ const STAR_BLOCKS = [
   },
 ];
 
-export default function StoryDetailPage() {
+type StoryDetailPageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default function StoryDetailPage({ params }: StoryDetailPageProps) {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const storyId = params?.id;
+  const { id: storyId } = use(params);
 
   const [story, setStory] = useState<Story | null>(null);
   const [loading, setLoading] = useState(true);

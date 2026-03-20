@@ -10,10 +10,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  color: var(--text-primary);
-  border: 0.9px solid currentColor;
-  border-radius: 12px;
+  background: var(--green-primary);
+  color: #fff;
+  border: 0.5px solid var(--border-chip);
+  border-radius: 8px;
   padding: 9px 15px;
   font-size: 14px;
   font-weight: 600;
@@ -23,12 +23,12 @@
 }
 
 .btn-primary:hover {
-  background: var(--bg-chip-hover);
+  background: var(--green-hover);
 }
 
 .btn-primary:disabled {
-  background: transparent;
-  color: var(--text-hint);
+  background: var(--btn-primary-disabled-bg);
+  color: #fff;
   cursor: not-allowed;
   opacity: 0.55;
 }
@@ -39,9 +39,9 @@
   justify-content: center;
   background: transparent;
   color: var(--text-primary);
-  border: 0.5px solid var(--border-chip);
-  border-radius: 9999px;
-  padding: 9px 20px;
+  border: 0.9px solid currentColor;
+  border-radius: 8px;
+  padding: 9px 15px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -51,6 +51,37 @@
 
 .btn-secondary:hover {
   background: var(--bg-chip-hover);
+}
+
+/* Row action (dashboard list): tertiary button variant */
+.btn-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 0.7px solid var(--border-chip);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+  white-space: nowrap;
+}
+
+.btn-row:hover {
+  background: var(--bg-chip-hover);
+  color: var(--text-dark);
+  border-color: var(--text-hint);
+}
+
+/* Small row button (used in compact cards) */
+.btn-row-sm {
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 8px;
+  border: 0.9px solid currentColor;
 }
 
 .btn-danger {
@@ -107,12 +138,13 @@
   justify-content: center;
   background: transparent;
   color: var(--warn-text);
-  border: 0.5px solid var(--warn-border);
-  border-radius: var(--radius-pill);
-  padding: 9px 16px;
+  border: 0.9px solid currentColor;
+  border-radius: 8px;
+  padding: 9px 15px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
+  transition: background 0.1s;
 }
 
 .btn-warn:hover {

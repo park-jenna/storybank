@@ -209,8 +209,7 @@ function StoriesPageContent() {
                       >
                         <button
                           type="button"
-                          className="btn-warn"
-                          style={{ fontSize: 12, padding: "3px 9px" }}
+                          className="btn-row btn-row-sm"
                           onClick={(e) => {
                             e.stopPropagation();
                             router.push(`/stories/${s.id}/edit`);
