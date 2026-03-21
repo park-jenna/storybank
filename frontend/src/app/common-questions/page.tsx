@@ -18,6 +18,10 @@ import { CATEGORIES } from "@/constants/categories";
 
 const ALL = "All" as const;
 
+function storyDetailHref(storyId: string) {
+  return `/stories/${storyId}?returnTo=${encodeURIComponent("/common-questions")}`;
+}
+
 function CommonQuestionsContent() {
   const router = useRouter();
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -565,7 +569,7 @@ function CommonQuestionsContent() {
                             return (
                               <Link
                                 key={s.id}
-                                href={`/stories/${s.id}`}
+                                href={storyDetailHref(s.id)}
                                 style={{ textDecoration: "none" }}
                               >
                                 <div className="story-card">
@@ -761,7 +765,7 @@ function CommonQuestionsContent() {
                                               ))}
                                             </div>
                                             <Link
-                                              href={`/stories/${s.id}`}
+                                              href={storyDetailHref(s.id)}
                                               className="btn-inline"
                                               style={{ fontSize: 12 }}
                                               onClick={(e) => e.stopPropagation()}
@@ -775,7 +779,7 @@ function CommonQuestionsContent() {
                                   </div>
                                 ) : (
                                   <Link
-                                    href={`/stories/${s.id}`}
+                                    href={storyDetailHref(s.id)}
                                     style={{ textDecoration: "none" }}
                                   >
                                     <div className="story-card">

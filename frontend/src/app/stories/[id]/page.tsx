@@ -6,8 +6,9 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { fetchStoryById, Story, deleteStoryById } from "@/lib/stories";
+import { safeInternalReturnPath } from "@/lib/navigation";
 import { getQuestionsForCategories } from "@/constants/interviewQuestions";
 import Link from "next/link";
 
@@ -49,7 +50,21 @@ type StoryDetailPageProps = {
 
 export default function StoryDetailPage({ params }: StoryDetailPageProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { id: storyId } = use(params);
+
+  const navigateBackFromStoryDetail = () => {
+    const dest = safeInternalReturnPath(searchParams.get("returnTo"));
+    if (dest) {
+      router.push(dest);
+    } else {
+      router.push("/stories");
+    }
+  };
+
+  const backFromStoryLabel = safeInternalReturnPath(searchParams.get("returnTo"))
+    ? "Back"
+    : "Back to Stories";
 
   const [story, setStory] = useState<Story | null>(null);
   const [loading, setLoading] = useState(true);
@@ -108,7 +123,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
           type="button"
           className="back-btn"
           style={{ marginTop: 12 }}
-          onClick={() => router.push("/stories")}
+          onClick={navigateBackFromStoryDetail}
         >
           <svg
             viewBox="0 0 14 14"
@@ -124,7 +139,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
           >
             <path d="M9 2L4 7l5 5" />
           </svg>
-          Back to Stories
+          {backFromStoryLabel}
         </button>
       </main>
     );
@@ -141,7 +156,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
         <button
           type="button"
           className="back-btn"
-          onClick={() => router.push("/stories")}
+          onClick={navigateBackFromStoryDetail}
         >
           <svg
             viewBox="0 0 14 14"
@@ -157,7 +172,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
           >
             <path d="M9 2L4 7l5 5" />
           </svg>
-          Back to Stories
+          {backFromStoryLabel}
         </button>
       </main>
     );
@@ -176,7 +191,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
         <button
           type="button"
           className="back-btn"
-          onClick={() => router.push("/stories")}
+          onClick={navigateBackFromStoryDetail}
         >
           <svg
             viewBox="0 0 14 14"
@@ -192,7 +207,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
           >
             <path d="M9 2L4 7l5 5" />
           </svg>
-          Back to Stories
+          {backFromStoryLabel}
         </button>
         <div className="btn-group">
           <button
