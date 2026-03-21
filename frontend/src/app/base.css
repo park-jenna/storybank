@@ -27,9 +27,9 @@
   --text-primary:   #102818;
   --text-dark:      #1E3C28;
   --text-secondary: #486d57;
-  --text-muted:     #5d7b67;
-  --text-hint:      #6f8a79;
-  --text-faint:     #8aa094;
+  --text-muted:     #5a6e62;
+  --text-hint:      #5c7064;
+  --text-faint:     #5f7368;
   --input-placeholder: #62776b; /* ~4.8:1 on --bg-input */
 
   /* Brand */
@@ -40,7 +40,7 @@
   --green-focus:    rgba(90, 170, 120, 0.1);
 
   /* Warning */
-  --warn-text:       #b25c3a;
+  --warn-text:       #8b4528;
   --warn-bg:         #fbe8d8;
   --warn-border:     #e6b18f;
   --warn-dot:        #E8B850;
@@ -71,7 +71,8 @@
   --bg-row-active:  #F2FAF4; /* used by .q-row.active + .rec-item.selected */
 
   --star-tip-bg:    #edf4e7;
-  --q-row-num:      #B0C8B0;
+  --q-row-num:      var(--text-hint);
+  --dot-empty:      #7a9185;
 
   --warn-progress-fill-bg: var(--badge-bg); /* used by warn progress */
 

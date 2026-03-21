@@ -257,7 +257,7 @@
 
 .dot-done    { background: var(--green-dot); }
 .dot-partial { background: var(--warn-dot); }
-.dot-empty   { background: #C8D0C0; }
+.dot-empty   { background: var(--dot-empty); }
 
 /* Badge (pill) */
 .badge {

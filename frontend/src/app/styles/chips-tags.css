@@ -55,7 +55,7 @@
 /* Tag highlight — question’s “good categories to highlight” and matching categories in story cards */
 .tag.tag-highlight {
   background: var(--green-light);
-  color: var(--green-primary);
+  color: var(--success-text);
   border-color: var(--green-primary);
   font-weight: 500;
 }
@@ -63,7 +63,7 @@
 /* Tag match — matching category indicator (✓) */
 .tag.tag-match {
   background: var(--green-light);
-  color: var(--green-primary);
+  color: var(--success-text);
   border-color: var(--green-primary);
   font-weight: 500;
 }

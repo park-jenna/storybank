@@ -105,9 +105,9 @@
 
 .btn-danger:disabled {
   background: transparent;
-  color: var(--text-hint);
+  color: var(--text-muted);
+  border-color: var(--border-chip);
   cursor: not-allowed;
-  opacity: 0.55;
 }
 
 /* Ghost — subtle, no fill */
