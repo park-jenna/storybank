@@ -1,8 +1,8 @@
 "use client";
 
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import BrowserFrame from "@/components/BrowserFrame";
-import DashboardPreview from "@/components/DashboardPreview";
 
 const STACK = [
   { layer: "Frontend", tech: "Next.js 16, React 19\nTypeScript, Tailwind CSS" },
@@ -13,29 +13,76 @@ const STACK = [
 
 const FEATURES = [
   {
+    id: "auth",
     title: "JWT-based authentication with signup and login",
     sub: "Passwords hashed with bcrypt · token stored in localStorage",
+    screenshot: "/img/about/auth.png",
+    frameUrl: "storybank-star.vercel.app",
   },
   {
+    id: "stories",
     title: "Full CRUD for STAR-format stories",
     sub: "Title, categories, situation, action, result · per-user data isolation",
+    screenshot: "/img/about/stories.png",
+    frameUrl: "storybank-star.vercel.app/stories",
   },
   {
+    id: "questions",
     title: "Question bank with story linking",
     sub: "Save questions from a curated list · link one or more stories as answers",
+    screenshot: "/img/about/questions.png",
+    frameUrl: "storybank-star.vercel.app/questions",
   },
   {
+    id: "dashboard",
     title: "Dashboard with category coverage tracking",
     sub: "Progress overview, in-progress stories, unlinked questions at a glance",
+    screenshot: "/img/dashboard.png",
+    frameUrl: "storybank-star.vercel.app/dashboard",
   },
   {
+    id: "api",
     title: "REST API with input validation",
     sub: "Express routes · Zod schemas · Prisma for type-safe DB queries",
   },
 ];
 
+function FeatureScreenshot({
+  src,
+  alt,
+  placeholderHint,
+}: {
+  src: string;
+  alt: string;
+  placeholderHint: string;
+}) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return (
+      <div className="about-feature-shot-placeholder">
+        <span className="about-feature-shot-placeholder-text">
+          {placeholderHint}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- optional local assets; graceful fallback on error
+    <img
+      src={src}
+      alt={alt}
+      className="about-feature-shot-img"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 export default function AboutPage() {
   const router = useRouter();
+  const baseId = useId();
+  const [openId, setOpenId] = useState<string | null>(null);
 
   return (
     <main className="about-page">
@@ -116,46 +163,96 @@ export default function AboutPage() {
         {/* Features */}
         <div className="about-section">
           <div className="about-section-label">What I built</div>
-          <div className="card" style={{ padding: "1.125rem 1.5rem" }}>
-            {FEATURES.map(({ title, sub }, i) => (
-              <div
-                key={title}
-                className="about-feature-item"
-                style={{
-                  borderBottom:
-                    i < FEATURES.length - 1
-                      ? "0.5px solid var(--border-card)"
-                      : "none",
-                }}
-              >
+          <div className="card about-feature-card">
+            {FEATURES.map(({ id, title, sub, screenshot, frameUrl }, i) => {
+              const isOpen = openId === id;
+              const panelId = `${baseId}-panel-${id}`;
+              const hint = screenshot
+                ? `Add ${screenshot.replace(/^\/img\//, "public/img/")} to show a preview.`
+                : "";
+              return (
                 <div
-                  className="dot dot-done"
-                  style={{ marginTop: 4, flexShrink: 0 }}
-                  aria-hidden
-                />
-                <div>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      color: "var(--text-primary)",
-                      lineHeight: 1.5,
-                      fontWeight: 500,
-                    }}
+                  key={id}
+                  className="about-feature-block"
+                  style={{
+                    borderBottom:
+                      i < FEATURES.length - 1
+                        ? "0.5px solid var(--border-card)"
+                        : "none",
+                  }}
+                >
+                  <button
+                    type="button"
+                    className="about-feature-trigger"
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
+                    id={`${baseId}-trigger-${id}`}
+                    onClick={() => setOpenId(isOpen ? null : id)}
                   >
-                    {title}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: "var(--text-hint)",
-                      marginTop: 2,
-                    }}
-                  >
-                    {sub}
-                  </div>
+                    <span
+                      className="dot dot-done about-feature-dot"
+                      aria-hidden
+                    />
+                    <span className="about-feature-trigger-text">
+                      <span className="about-feature-title">{title}</span>
+                      <span className="about-feature-sub">{sub}</span>
+                    </span>
+                    <span
+                      className={`about-feature-chevron${isOpen ? " about-feature-chevron-open" : ""}`}
+                      aria-hidden
+                    >
+                      <svg viewBox="0 0 12 12" width={12} height={12}>
+                        <path
+                          d="M3 4.5L6 7.5L9 4.5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div
+                      className="about-feature-panel"
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={`${baseId}-trigger-${id}`}
+                    >
+                      {screenshot ? (
+                        <BrowserFrame
+                          url={frameUrl}
+                          className="about-feature-frame"
+                        >
+                          <FeatureScreenshot
+                            src={screenshot}
+                            alt={`Screenshot: ${title}`}
+                            placeholderHint={hint}
+                          />
+                        </BrowserFrame>
+                      ) : (
+                        <div className="about-feature-api-note">
+                          <p className="about-feature-api-note-text">
+                            This layer is server-side only—no UI to capture. See
+                            the Express app in the repo for routes and Zod
+                            validation.
+                          </p>
+                          <a
+                            href="https://github.com/park-jenna/storybank"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="about-feature-api-note-link"
+                          >
+                            View on GitHub →
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
