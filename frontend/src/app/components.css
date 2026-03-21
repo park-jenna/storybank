@@ -22,10 +22,14 @@
   margin-bottom: 14px;
 }
 
+/* Heading + .card-title uses h1–h6 from base.css; compact size only for non-headings */
 .card-title {
+  color: var(--text-primary);
+}
+
+.card-title:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
   font-size: 14px;
   font-weight: 500;
-  color: var(--text-primary);
 }
 
 .card-link {
@@ -171,20 +175,24 @@
   display: block;
 }
 
-/* Carousel card (in-progress) */
+/* Carousel card (in-progress) — ~2/3 width of a .story-grid-3 cell.
+   Base cell = (100% + 52px) / 3 (see .carousel horizontal padding vs grid). */
 .carousel-card {
+  --carousel-card-width: calc((100% + 52px) * 2 / 9);
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   padding: 1rem 1.125rem;
-  min-width: 210px;
-  max-width: 210px;
+  width: var(--carousel-card-width);
+  min-width: var(--carousel-card-width);
+  max-width: var(--carousel-card-width);
   flex-shrink: 0;
+  box-sizing: border-box;
   cursor: pointer;
   border: 0.5px solid var(--border-card);
   transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
   display: flex;
   flex-direction: column;
-  min-height: 200px;
+  min-height: 140px;
 }
 
 .carousel-card:hover {
@@ -591,21 +599,21 @@
 }
 
 .linked-story-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--green-primary);
-  text-decoration: none;
+  color: var(--text-dark);
   cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   flex: 1;
   min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 14px;
+  font-weight: 500;
   line-height: 1.4;
+  text-decoration: none;
+  overflow: hidden;
 }
 
 .linked-story-name:hover {
-  color: var(--green-hover);
+  color: var(--text-primary);
   text-decoration: underline;
 }
 

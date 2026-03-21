@@ -327,9 +327,9 @@ function StoriesPageContent() {
                         >
                           <span
                             style={{
-                              fontSize: 12,
+                              fontSize: 14,
                               color: "var(--success-text)",
-                              fontWeight: 500,
+                              fontWeight: 700,
                             }}
                           >
                             STAR complete

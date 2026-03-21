@@ -48,23 +48,14 @@
   padding: 3px 9px;
   border-radius: var(--radius-sm);
   background: var(--tag-bg);
-  color: var(--text-secondary);
-  border: 0.5px solid var(--tag-border);
+  color: var(--text-faint);
 }
 
 /* Tag highlight — question’s “good categories to highlight” and matching categories in story cards */
-.tag.tag-highlight {
-  background: var(--green-light);
-  color: var(--success-text);
-  border-color: var(--green-primary);
-  font-weight: 500;
-}
-
-/* Tag match — matching category indicator (✓) */
+.tag.tag-highlight,
 .tag.tag-match {
-  background: var(--green-light);
-  color: var(--success-text);
-  border-color: var(--green-primary);
+  background: var(--warn-bg);
+  color: var(--text-dark);
   font-weight: 500;
 }
 
@@ -74,18 +65,26 @@
   margin-right: 4px;
 }
 
-/* Missing tag (yellow/orange) — single chip e.g. "Missing Action Result" */
+/* Missing tag — single chip e.g. "Missing Action Result" */
 .tag-missing {
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: var(--warn-badge-bg);
-  color: var(--warn-badge-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin: 1px 0;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 4px;
+  background: var(--warn-bg);
+  color: var(--text-primary);
+}
+
+.tag-missing::before {
+  content: "!";
+  font-weight: 700;
+  margin-right: 4px;
+  color: var(--warn-text);
+  line-height: 1;
 }
 
 /* Chips row */

@@ -814,7 +814,7 @@ function CommonQuestionsContent() {
                           {!showSavePanel ? (
                             <button
                               type="button"
-                              className="btn-secondary"
+                              className="btn-primary"
                               onClick={() => {
                                 setShowSavePanel(true);
                                 if (selectedQuestion.alreadySaved) {
