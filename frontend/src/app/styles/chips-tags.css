@@ -22,14 +22,22 @@
   transition: background 0.1s, color 0.1s, border-color 0.1s;
 }
 
-.chip:hover {
-  background: var(--bg-chip-hover);
-}
-
 .chip.active {
   background: var(--green-primary);
   color: #fff;
   border-color: var(--green-primary);
+}
+
+.chip:hover:not(.active) {
+  background: color-mix(in srgb, var(--green-light) 72%, var(--bg-chip));
+  border-color: color-mix(in srgb, var(--green-primary) 32%, var(--border-chip));
+  color: var(--text-dark);
+}
+
+.chip.active:hover {
+  background: var(--green-hover);
+  border-color: var(--green-hover);
+  color: #fff;
 }
 
 /* Tag — read-only label */

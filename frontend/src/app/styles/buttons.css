@@ -28,9 +28,8 @@
 
 .btn-primary:disabled {
   background: var(--btn-primary-disabled-bg);
-  color: #fff;
+  color: var(--text-primary);
   cursor: not-allowed;
-  opacity: 0.55;
 }
 
 .btn-secondary {

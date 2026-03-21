@@ -193,12 +193,12 @@ export default function DashboardPage() {
                 <div className="stat-value">{userQuestions.length}</div>
                 <div className="stat-sub">stories linked</div>
               </div>
-              <div className={`stat-card${missingCategorySummary ? " stat-card--warn" : ""}`}>
+              <div className="stat-card">
                 <div className="stat-label">Category coverage</div>
-                <div className={`stat-value ${missingCategorySummary ? "warn" : ""}`}>
+                <div className={`stat-value${missingCategorySummary ? " warn" : ""}`}>
                   {categoryCoveredCount}/{CATEGORIES.length}
                 </div>
-                <div className={`stat-sub ${missingCategorySummary ? "warn" : ""}`}>
+                <div className={`stat-sub${missingCategorySummary ? " warn" : ""}`}>
                   {missingCategorySummary ?? "All covered"}
                 </div>
               </div>
