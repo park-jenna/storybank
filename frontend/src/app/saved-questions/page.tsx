@@ -392,7 +392,7 @@ export default function SavedQuestionsPage() {
                     {commonId && (
                       <button
                         type="button"
-                        className="btn-inline"
+                        className="btn-row btn-row-sm"
                         onClick={() => setLinkingUserQuestion(uq)}
                       >
                         {uq.stories.length > 0 ? "Add more" : "Link stories"}
