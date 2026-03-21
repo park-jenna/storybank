@@ -550,8 +550,8 @@ function CommonQuestionsContent() {
                       </p>
 
                       {linkedStories.length === 0 ? (
-                        <p className="no-stories-text">
-                          No stories linked yet. Use &quot;Change linked stories&quot; below to link stories.
+                        <p className="no-stories-callout">
+                          No stories linked yet. Select stories below to link them to this question.
                         </p>
                       ) : (
                         <div

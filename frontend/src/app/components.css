@@ -769,6 +769,30 @@
   font-style: italic;
 }
 
+/* Common questions: empty linked-stories hint */
+.no-stories-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.5;
+  color: var(--badge-bg);
+  background: #fff8f1eb;
+  border: 0.5px solid var(--badge-bg);
+  border-radius: var(--radius-md);
+}
+
+.no-stories-callout::before {
+  content: "!";
+  font-weight: 700;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+
 
 /* ------------------------------------------------------------
    8. MODAL
