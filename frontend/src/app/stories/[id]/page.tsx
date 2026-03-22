@@ -5,7 +5,15 @@
 
 "use client";
 
-import { use, useEffect, useState } from "react";
+import {
+  use,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchStoryById, Story, deleteStoryById } from "@/lib/stories";
 import { safeInternalReturnPath } from "@/lib/navigation";
@@ -43,6 +51,124 @@ const STAR_BLOCKS = [
     empty: "No result provided.",
   },
 ];
+
+function StoryDetailQuestionsList({
+  categories,
+  storyId,
+}: {
+  categories: string[];
+  storyId: string;
+}) {
+  const questions = getQuestionsForCategories(categories);
+  const categoriesKey = useMemo(
+    () => [...categories].sort().join("\0"),
+    [categories],
+  );
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [overflow, setOverflow] = useState(false);
+  const [atBottom, setAtBottom] = useState(true);
+
+  const updateScrollHint = useCallback(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    const hasOverflow = el.scrollHeight > el.clientHeight + 2;
+    const isAtBottom =
+      !hasOverflow ||
+      el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
+    setOverflow(hasOverflow);
+    setAtBottom(isAtBottom);
+  }, []);
+
+  useLayoutEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    updateScrollHint();
+    const ro = new ResizeObserver(() => updateScrollHint());
+    ro.observe(el);
+    el.addEventListener("scroll", updateScrollHint, { passive: true });
+    return () => {
+      ro.disconnect();
+      el.removeEventListener("scroll", updateScrollHint);
+    };
+  }, [categoriesKey, updateScrollHint]);
+
+  if (questions.length === 0) {
+    return (
+      <p
+        style={{
+          fontSize: 14,
+          color: "var(--text-muted)",
+          lineHeight: 1.6,
+        }}
+      >
+        No interview questions are mapped to this story&apos;s categories yet.
+        Add categories like Leadership or Conflict Resolution to see matching
+        questions.
+      </p>
+    );
+  }
+
+  const showEdgeHint = overflow && !atBottom;
+
+  return (
+    <div
+      className={
+        showEdgeHint
+          ? "story-detail-questions-wrap story-detail-questions-wrap--more"
+          : "story-detail-questions-wrap"
+      }
+    >
+      <div
+        ref={bodyRef}
+        className="story-detail-questions-body"
+        role="region"
+        aria-label={
+          showEdgeHint
+            ? "Matching interview questions; more below — scroll the list to view."
+            : "Matching interview questions"
+        }
+      >
+        {questions.map((q) => (
+          <div
+            key={q.id}
+            className="q-item"
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 10,
+              padding: "9px 0",
+              borderBottom: "0.5px solid var(--border-card)",
+            }}
+          >
+            <span className="story-detail-q-bullet" aria-hidden />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <Link
+                className="story-detail-q-link"
+                href={`/common-questions?q=${encodeURIComponent(q.id)}&returnTo=${encodeURIComponent(`/stories/${storyId}`)}`}
+              >
+                <span className="story-detail-q-text">{q.text}</span>
+              </Link>
+              <div className="chips-row">
+                {q.categories.map((cat) => (
+                  <span key={cat} className="tag">
+                    {cat}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {showEdgeHint && (
+        <div className="story-detail-questions-edge" aria-hidden>
+          <span className="story-detail-questions-edge-hint">
+            Scroll for more
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
 
 type StoryDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -332,54 +458,10 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
           >
             Questions this story can answer
           </h3>
-          {(() => {
-            const questions = getQuestionsForCategories(story.categories);
-            if (questions.length === 0) {
-              return (
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: "var(--text-muted)",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  No interview questions are mapped to this story&apos;s categories
-                  yet. Add categories like Leadership or Conflict Resolution to see
-                  matching questions.
-                </p>
-              );
-            }
-            return questions.map((q) => (
-              <div
-                key={q.id}
-                className="q-item"
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: 10,
-                  padding: "9px 0",
-                  borderBottom: "0.5px solid var(--border-card)",
-                }}
-              >
-                <span className="story-detail-q-bullet" aria-hidden />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <Link
-                    className="story-detail-q-link"
-                    href={`/common-questions?q=${encodeURIComponent(q.id)}&returnTo=${encodeURIComponent(`/stories/${storyId}`)}`}
-                  >
-                    <span className="story-detail-q-text">{q.text}</span>
-                  </Link>
-                  <div className="chips-row">
-                    {q.categories.map((cat) => (
-                      <span key={cat} className="tag">
-                        {cat}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ));
-          })()}
+          <StoryDetailQuestionsList
+            categories={story.categories}
+            storyId={storyId}
+          />
         </div>
       </div>
 

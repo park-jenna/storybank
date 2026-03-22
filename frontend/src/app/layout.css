@@ -406,6 +406,78 @@
   align-items: start;
 }
 
+/* Story detail: questions list scrolls; card title stays fixed */
+.story-detail-questions-wrap {
+  position: relative;
+}
+
+.story-detail-questions-wrap--more .story-detail-questions-body {
+  /* Reserve space so last item isn’t hidden under the fade + hint */
+  padding-bottom: 28px;
+}
+
+.story-detail-questions-body {
+  min-width: 0;
+  min-height: 0;
+  max-height: min(55vh, 480px);
+  overflow-y: auto;
+  padding-right: 6px;
+  margin-right: -2px;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-muted) 65%, transparent)
+    color-mix(in srgb, var(--border-card) 80%, transparent);
+}
+
+.story-detail-questions-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.story-detail-questions-body::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--text-muted) 55%, transparent);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.story-detail-questions-body::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--text-muted) 75%, transparent);
+  background-clip: padding-box;
+}
+
+.story-detail-questions-body::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--border-card) 50%, transparent);
+  border-radius: 4px;
+}
+
+/* Bottom fade + label when more content exists below */
+.story-detail-questions-edge {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 6px;
+  height: 52px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--bg-card) 88%, transparent) 35%,
+    var(--bg-card)
+  );
+}
+
+.story-detail-questions-edge-hint {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+}
+
 /* Common questions: two-column layout (list | detail) */
 .common-questions-layout {
   display: grid;
