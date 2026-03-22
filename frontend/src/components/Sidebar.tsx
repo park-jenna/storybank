@@ -118,6 +118,18 @@ export default function Sidebar({ onClose }: SidebarProps) {
           </Link>
 
           <div className="sidebar-menu-label">PREPARE</div>
+          <Link
+            href="/stories/new"
+            className={`sidebar-link ${pathname === "/stories/new" ? "sidebar-link-active" : ""}`}
+            onClick={onClose}
+          >
+            <span className="sidebar-link-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </span>
+            New story
+          </Link>
           {PREPARE_ITEMS.map(({ href, label, badgeKey }) => {
             const isStories = href === "/stories";
             const isSavedQuestions = href === "/saved-questions";
