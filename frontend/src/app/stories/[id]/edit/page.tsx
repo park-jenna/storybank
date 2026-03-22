@@ -4,21 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fetchStoryById, Story, updateStoryById } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
-
-const STAR_TIPS = [
-  {
-    label: "Situation & Task",
-    text: "Describe the context and your goal in 2–3 sentences. Be clear about your role and what needed to be achieved.",
-  },
-  {
-    label: "Action",
-    text: "Outline 3–5 concrete steps you took. Focus on what you said and did, not the team.",
-  },
-  {
-    label: "Result",
-    text: 'Keep it short: outcomes, numbers, and what you learned. e.g. "Improved X by 20% and learned Y."',
-  },
-];
+import { StarWritingTips } from "@/components/StarWritingTips";
 
 type EditStoryPageProps = {
   params: Promise<{ id: string }>;
@@ -311,52 +297,7 @@ export default function EditStoryPage({ params }: EditStoryPageProps) {
           </div>
         </form>
 
-        <div className="card" aria-label="STAR method tips">
-          <h3
-            className="card-title"
-            style={{
-              marginBottom: 14,
-              paddingBottom: 10,
-              borderBottom: "0.5px solid var(--border-card)",
-            }}
-          >
-            STAR writing tips
-          </h3>
-          {STAR_TIPS.map((tip, i) => (
-            <div
-              key={tip.label}
-              style={{
-                marginBottom: i < 2 ? 12 : 8,
-                paddingBottom: i < 2 ? 12 : 8,
-                borderBottom:
-                  i < 2 ? "0.5px solid var(--border-card)" : "none",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "var(--green-primary)",
-                  marginBottom: 4,
-                }}
-              >
-                {tip.label}
-              </div>
-              <p
-                style={{
-                  fontSize: 13,
-                  color: "var(--text-secondary)",
-                  lineHeight: 1.6,
-                }}
-              >
-                {tip.text}
-              </p>
-            </div>
-          ))}
-          <p className="field-hint" style={{ fontStyle: "italic" }}>
-            Summarize so you can tell this story in 1–2 minutes in an interview.
-          </p>
-        </div>
+        <StarWritingTips />
       </div>
     </main>
   );
