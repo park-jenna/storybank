@@ -261,7 +261,7 @@ export default function DashboardPage() {
                       <Link
                         key={s.id}
                         href={`/stories/${s.id}`}
-                        className="story-row"
+                        className="story-row story-row--dashboard"
                         style={{ textDecoration: "none" }}
                       >
                         <div className="dot dot-done" aria-hidden />
