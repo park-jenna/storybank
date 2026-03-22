@@ -41,6 +41,8 @@
 
   /* Warning */
   --warn-text:       #c74e31;
+  /* Progress / labels: hover step in the red family (parallels text-secondary → text-dark) */
+  --warn-label-hover: color-mix(in srgb, var(--warn-text) 48%, black);
   --warn-bg:         #fbe8d8;
   --warn-border:     #e6b18f;
   --warn-dot:        #E8B850;

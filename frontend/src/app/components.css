@@ -349,6 +349,17 @@ a.story-row.story-row--dashboard:hover {
   color: var(--warn-text);
 }
 
+/* Category coverage: same interaction for both rows — link color deepens on hover/focus; count unchanged */
+.progress-wrap:not(.progress-wrap-alert) a.progress-label-text:hover,
+.progress-wrap:not(.progress-wrap-alert) a.progress-label-text:focus-visible {
+  color: var(--text-dark);
+}
+
+.progress-wrap-alert a.progress-label-text:hover,
+.progress-wrap-alert a.progress-label-text:focus-visible {
+  color: var(--warn-label-hover);
+}
+
 
 /* ------------------------------------------------------------
    6. STAR COMPONENTS
