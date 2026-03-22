@@ -2,8 +2,9 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
+import { safeInternalReturnPath } from "@/lib/navigation";
 import {
   fetchCommonQuestions,
   fetchQuestionRecommendations,
@@ -24,6 +25,10 @@ function storyDetailHref(storyId: string) {
 
 function CommonQuestionsContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const questionIdFromUrl = searchParams.get("q");
+  const returnToPath = safeInternalReturnPath(searchParams.get("returnTo"));
+
   const [questions, setQuestions] = useState<Question[]>([]);
   const [userQuestions, setUserQuestions] = useState<UserQuestionItem[]>([]);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
@@ -70,11 +75,6 @@ function CommonQuestionsContent() {
         ]);
         setQuestions(commonData.questions);
         setUserQuestions(userData.userQuestions ?? []);
-        if (commonData.questions.length > 0 && !selectedQuestion) {
-          const first = commonData.questions[0];
-          setSelectedQuestion(first);
-          // 카테고리 필터 기본값은 All 유지
-        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load questions.");
       } finally {
@@ -83,6 +83,16 @@ function CommonQuestionsContent() {
     }
     load();
   }, [router]);
+
+  useEffect(() => {
+    if (questions.length === 0) return;
+    if (questionIdFromUrl) {
+      const fromUrl = questions.find((qu) => qu.id === questionIdFromUrl);
+      setSelectedQuestion(fromUrl ?? questions[0]);
+      return;
+    }
+    setSelectedQuestion((prev) => prev ?? questions[0]);
+  }, [questions, questionIdFromUrl]);
 
   useEffect(() => {
     if (!selectedQuestion) {
@@ -373,12 +383,38 @@ function CommonQuestionsContent() {
 
   return (
     <main className="main-content">
+      {returnToPath && (
+        <div className="topbar">
+          <button
+            type="button"
+            className="back-btn"
+            onClick={() => router.push(returnToPath)}
+          >
+            <svg
+              viewBox="0 0 14 14"
+              style={{
+                width: 14,
+                height: 14,
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: 2,
+                strokeLinecap: "round",
+              }}
+              aria-hidden
+            >
+              <path d="M9 2L4 7l5 5" />
+            </svg>
+            Back
+          </button>
+        </div>
+      )}
       <div className="page-header">
         <div className="page-header-left">
           <h1 className="page-title">Common interview questions</h1>
           <p className="page-subtitle">
-            Choose a question to see recommended categories and your matching stories.
-            Save to your list and link stories.
+            A built-in list of typical behavioral interview prompts. Pick one to see which
+            story categories fit and which of your saved stories might answer it—then bookmark
+            the question or link specific stories for practice.
           </p>
         </div>
       </div>

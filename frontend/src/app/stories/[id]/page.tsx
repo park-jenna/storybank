@@ -394,7 +394,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <Link
-                    href={`/questions?q=${encodeURIComponent(q.id)}`}
+                    href={`/common-questions?q=${encodeURIComponent(q.id)}&returnTo=${encodeURIComponent(`/stories/${storyId}`)}`}
                     style={{ textDecoration: "none" }}
                   >
                     <div
