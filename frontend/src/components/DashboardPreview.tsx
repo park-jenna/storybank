@@ -68,17 +68,34 @@ export default function DashboardPreview() {
         </div>
         <div className="db-preview-nav-item">
           <svg viewBox="0 0 16 16" className="db-preview-nav-icon" aria-hidden>
-            <circle cx="8" cy="8" r="6" />
-            <path d="M8 5.5a1.5 1.5 0 011.5 1.5c0 1-1.5 1.5-1.5 2.5M8 11.5v.5" />
+            <path d="M4 2h8a1 1 0 011 1v11l-5-3-5 3V3a1 1 0 011-1z" />
+          </svg>
+          Saved Questions
+          <span className="db-preview-badge">2</span>
+        </div>
+
+        <div className="db-preview-nav-label" style={{ marginTop: 10 }}>
+          Resources
+        </div>
+        <div className="db-preview-nav-item">
+          <svg viewBox="0 0 16 16" className="db-preview-nav-icon" aria-hidden>
+            <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
+            <path d="M10.5 10.5L13 13" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
           </svg>
           Common Questions
         </div>
         <div className="db-preview-nav-item">
           <svg viewBox="0 0 16 16" className="db-preview-nav-icon" aria-hidden>
-            <path d="M4 2h8a1 1 0 011 1v11l-5-3-5 3V3a1 1 0 011-1z" />
+            <path
+              d="M8 1.5v2.5M8 12v2.5M2.8 2.8l1.8 1.8M11.4 11.4l1.8 1.8M1.5 8h2.5M12 8h2.5M2.8 13.2l1.8-1.8M11.4 4.6l1.8-1.8"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+            />
+            <circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" strokeWidth="1.2" />
           </svg>
-          Saved Questions
-          <span className="db-preview-badge">2</span>
+          STAR method
         </div>
 
         <div className="db-preview-sidebar-spacer" />

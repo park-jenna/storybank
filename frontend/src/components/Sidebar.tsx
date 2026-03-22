@@ -17,7 +17,11 @@ function storyProgress(s: { situation?: string | null; action?: string | null; r
 const PREPARE_ITEMS = [
   { href: "/stories", label: "My Stories", badgeKey: "stories" as const },
   { href: "/saved-questions", label: "Saved Questions", badgeKey: "questions" as const },
-  { href: "/common-questions", label: "Common Questions", badgeKey: null },
+] as const;
+
+const RESOURCE_ITEMS = [
+  { href: "/common-questions", label: "Common Questions" },
+  { href: "/interview-tips", label: "STAR method" },
 ] as const;
 
 type SidebarProps = {
@@ -141,6 +145,35 @@ export default function Sidebar({ onClose }: SidebarProps) {
                       <path d="M10 9H8" />
                     </svg>
                   )}
+                  {href === "/saved-questions" && (
+                    <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
+                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                    </svg>
+                  )}
+                </span>
+                {label}
+                {badge != null && badge > 0 && (
+                  <span className="sidebar-badge" aria-label={`${badge}`}>
+                    {badge}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+
+          <div className="sidebar-menu-label">RESOURCES</div>
+          {RESOURCE_ITEMS.map(({ href, label }) => {
+            const isActive =
+              pathname === href ||
+              (href === "/interview-tips" && pathname?.startsWith("/interview-tips"));
+            return (
+              <Link
+                key={href + label}
+                href={href}
+                className={`sidebar-link ${isActive ? "sidebar-link-active" : ""}`}
+                onClick={onClose}
+              >
+                <span className="sidebar-link-icon" aria-hidden>
                   {href === "/common-questions" && (
                     <svg
                       viewBox="0 0 24 24"
@@ -157,18 +190,24 @@ export default function Sidebar({ onClose }: SidebarProps) {
                       <line x1="16" y1="16" x2="20" y2="20" />
                     </svg>
                   )}
-                  {href === "/saved-questions" && (
-                    <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
-                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                  {href === "/interview-tips" && (
+                    <svg
+                      viewBox="0 0 24 24"
+                      width={18}
+                      height={18}
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden
+                    >
+                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                      <circle cx="12" cy="12" r="3" />
                     </svg>
                   )}
                 </span>
                 {label}
-                {badge != null && badge > 0 && (
-                  <span className="sidebar-badge" aria-label={`${badge}`}>
-                    {badge}
-                  </span>
-                )}
               </Link>
             );
           })}
