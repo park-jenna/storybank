@@ -52,6 +52,9 @@ export default function SignupPage() {
     return (
         <main className="auth-page">
             <div className="auth-form-wrap">
+                <Link href="/" className="sidebar-logo">
+                    StoryBank
+                </Link>
                 <h1 className="auth-title">Sign up</h1>
                 <p className="auth-subtitle">
                     Create an account to access your dashboard and manage STAR stories.

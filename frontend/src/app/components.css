@@ -1154,6 +1154,16 @@
   background: radial-gradient(circle at top left, #F5FAF2, #E8F0E4);
 }
 
+
+/* Narrow signup (single column) — stack logo + heading + form */
+.auth-form-wrap {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .auth-shell {
   width: 100%;
   max-width: 880px;
@@ -1173,19 +1183,10 @@
   gap: 1rem;
 }
 
-.auth-logo {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  background: rgba(232, 240, 228, 0.9);
-  border: 0.5px solid #D6E4D0;
+/* Same wordmark as sidebar .sidebar-logo; strip nav-only padding */
+.auth-hero .sidebar-logo,
+.auth-form-wrap .sidebar-logo {
+  padding: 0;
   width: fit-content;
 }
 

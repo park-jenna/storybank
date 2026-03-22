@@ -40,7 +40,9 @@ export default function LoginPage() {
     <main className="auth-page">
       <div className="auth-shell">
         <section className="auth-hero">
-          <div className="auth-logo">StoryBank</div>
+          <Link href="/" className="sidebar-logo">
+            StoryBank
+          </Link>
           <h1 className="auth-title">Welcome back</h1>
           <p className="auth-subtitle">
             Log in to continue crafting clear, memorable STAR stories for your next interview.
