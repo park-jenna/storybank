@@ -758,8 +758,61 @@
   color: var(--warn-text);
 }
 
-.q-text-link:hover {
+/* Story detail — question row: plain text until hover / focus (then reads as link) */
+.story-detail-q-link {
+  text-decoration: none;
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 4px;
+  border-radius: 2px;
+  cursor: default;
+}
+
+.story-detail-q-link:hover {
+  cursor: pointer;
+}
+
+.story-detail-q-link:focus {
+  outline: none;
+}
+
+.story-detail-q-link:focus-visible {
+  box-shadow: 0 0 0 2px var(--green-focus);
+  cursor: pointer;
+}
+
+.story-detail-q-text {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text-primary);
+  text-decoration: none;
+  text-underline-offset: 3px;
+  transition:
+    color var(--transition-fast),
+    text-decoration-color var(--transition-fast);
+  text-decoration-color: transparent;
+}
+
+.story-detail-q-link:hover .story-detail-q-text {
   color: var(--green-primary);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--green-primary) 70%, transparent);
+}
+
+.story-detail-q-link:focus-visible .story-detail-q-text {
+  color: var(--green-primary);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--green-primary) 70%, transparent);
+}
+
+/* Story detail — “Questions this story can answer” (bullet, not chevron: avoids accordion affordance) */
+.story-detail-q-bullet {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: var(--green-dot);
 }
 
 .q-item:last-child {

@@ -361,54 +361,13 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
                   borderBottom: "0.5px solid var(--border-card)",
                 }}
               >
-                <div
-                  style={{
-                    width: 16,
-                    height: 16,
-                    minWidth: 16,
-                    borderRadius: 4,
-                    background: "var(--bg-chip)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    marginTop: 1,
-                  }}
-                  aria-hidden
-                >
-                  <svg
-                    viewBox="0 0 10 10"
-                    style={{
-                      width: 10,
-                      height: 10,
-                      stroke: "var(--text-secondary)",
-                      fill: "none",
-                      strokeWidth: 2,
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                    }}
-                    aria-hidden
-                  >
-                    <path d="M3 2l4 3-4 3" />
-                  </svg>
-                </div>
+                <span className="story-detail-q-bullet" aria-hidden />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <Link
+                    className="story-detail-q-link"
                     href={`/common-questions?q=${encodeURIComponent(q.id)}&returnTo=${encodeURIComponent(`/stories/${storyId}`)}`}
-                    style={{ textDecoration: "none" }}
                   >
-                    <div
-                      className="q-text-link"
-                      style={{
-                        fontSize: 14,
-                        color: "var(--text-primary)",
-                        lineHeight: 1.4,
-                        marginBottom: 4,
-                        cursor: "pointer",
-                      }}
-                    >
-                      {q.text}
-                    </div>
+                    <span className="story-detail-q-text">{q.text}</span>
                   </Link>
                   <div className="chips-row">
                     {q.categories.map((cat) => (
