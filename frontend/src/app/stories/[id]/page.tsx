@@ -19,6 +19,7 @@ import { fetchStoryById, Story, deleteStoryById } from "@/lib/stories";
 import { safeInternalReturnPath } from "@/lib/navigation";
 import { getQuestionsForCategories } from "@/constants/interviewQuestions";
 import Link from "next/link";
+import { StarCompletionVisual } from "@/components/StarCompletionVisual";
 
 function starStatus(story: Story) {
   return {
@@ -305,12 +306,6 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
   }
 
   const status = starStatus(story);
-  const missingSections = [
-    !status.situation && "Situation & Task",
-    !status.action && "Action",
-    !status.result && "Result",
-  ].filter(Boolean) as string[];
-
   return (
     <main className="main-content">
       <div className="topbar">
@@ -377,28 +372,12 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
           <span style={{ fontSize: 14, color: "var(--text-hint)" }}>
             Created: {new Date(story.createdAt).toLocaleDateString()}
           </span>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-              fontSize: 14,
-              fontWeight: 500,
-              color:
-                missingSections.length === 0
-                  ? "var(--success-text)"
-                  : "var(--warn-text)",
-            }}
-            aria-label="STAR sections status"
-          >
-            <div
-              className={`dot ${missingSections.length === 0 ? "dot-done" : "dot-partial"}`}
-              aria-hidden
-            />
-            {missingSections.length === 0
-              ? "STAR complete"
-              : `Missing: ${missingSections.join(", ")}`}
-          </span>
+          <StarCompletionVisual
+            variant="inline"
+            situation={status.situation}
+            action={status.action}
+            result={status.result}
+          />
         </div>
         <div className="chips-row">
           {story.categories.map((c) => (

@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { fetchStories, Story } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
+import { StarCompletionVisual } from "@/components/StarCompletionVisual";
 
 const ALL = "All" as const;
 
@@ -295,11 +296,9 @@ function StoriesPageContent() {
           {hasFilteredStories && (
             <div className="story-grid-3">
               {filteredStories.map((s) => {
-                const isComplete = storyProgress(s) === 100;
-                const missing: string[] = [];
-                if (!s.situation?.trim()) missing.push("Situation/Task");
-                if (!s.action?.trim()) missing.push("Action");
-                if (!s.result?.trim()) missing.push("Result");
+                const situation = !!s.situation?.trim();
+                const action = !!s.action?.trim();
+                const result = !!s.result?.trim();
                 return (
                   <Link
                     key={s.id}
@@ -315,54 +314,12 @@ function StoriesPageContent() {
                       >
                         {s.situation || "No situation written yet."}
                       </div>
-                      {isComplete ? (
-                        <div
-                          className="story-card-missing"
-                          style={{
-                            alignItems: "center",
-                            justifyContent: "flex-start",
-                            gap: 6,
-                            flexWrap: "wrap",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontSize: 14,
-                              color: "var(--success-text)",
-                              fontWeight: 700,
-                            }}
-                          >
-                            STAR complete
-                          </span>
-                        </div>
-                      ) : (
-                        missing.length > 0 && (
-                          <div
-                            className="story-card-missing"
-                            style={{
-                              alignItems: "center",
-                              justifyContent: "flex-start",
-                              gap: 6,
-                              flexWrap: "wrap",
-                            }}
-                          >
-                            <span
-                              style={{
-                                fontSize: 12,
-                                color: "var(--warn-text)",
-                                fontWeight: 500,
-                              }}
-                            >
-                              Missing:
-                            </span>
-                            {missing.map((m) => (
-                              <span key={m} className="tag-missing">
-                                {m}
-                              </span>
-                            ))}
-                          </div>
-                        )
-                      )}
+                      <StarCompletionVisual
+                        variant="card"
+                        situation={situation}
+                        action={action}
+                        result={result}
+                      />
                       <div className="story-card-cats">
                         {s.categories.slice(0, 2).map((c) => (
                           <span key={c} className="tag">
