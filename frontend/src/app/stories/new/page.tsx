@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createStory } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
@@ -17,6 +17,71 @@ export default function NewStoryPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [leaveConfirmHref, setLeaveConfirmHref] = useState<string | null>(null);
+
+  const skipLeaveGuardRef = useRef(false);
+
+  const isDirty = useMemo(
+    () =>
+      title.trim().length > 0 ||
+      selectedCategories.length > 0 ||
+      situation.trim().length > 0 ||
+      action.trim().length > 0 ||
+      result.trim().length > 0,
+    [title, selectedCategories, situation, action, result]
+  );
+
+  const requestNavigate = useCallback(
+    (href: string) => {
+      if (!isDirty || skipLeaveGuardRef.current) {
+        router.push(href);
+        return;
+      }
+      setLeaveConfirmHref(href);
+    },
+    [isDirty, router]
+  );
+
+  useEffect(() => {
+    if (!isDirty || skipLeaveGuardRef.current) return;
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [isDirty]);
+
+  useEffect(() => {
+    const onClickCapture = (e: MouseEvent) => {
+      if (!isDirty || skipLeaveGuardRef.current) return;
+      if (e.defaultPrevented) return;
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+        return;
+      }
+      const target = e.target as HTMLElement | null;
+      const a = target?.closest("a[href]");
+      if (!a) return;
+      if (a.target === "_blank" || a.hasAttribute("download")) return;
+      const rawHref = a.getAttribute("href");
+      if (!rawHref || rawHref.startsWith("#")) return;
+      let url: URL;
+      try {
+        url = new URL(rawHref, window.location.origin);
+      } catch {
+        return;
+      }
+      if (url.origin !== window.location.origin) return;
+      const next = `${url.pathname}${url.search}`;
+      const current = `${window.location.pathname}${window.location.search}`;
+      if (next === current) return;
+      e.preventDefault();
+      e.stopPropagation();
+      setLeaveConfirmHref(next);
+    };
+    document.addEventListener("click", onClickCapture, true);
+    return () => document.removeEventListener("click", onClickCapture, true);
+  }, [isDirty]);
 
   function toggleCategory(category: string, checked: boolean) {
     setSelectedCategories((prev) =>
@@ -48,6 +113,7 @@ export default function NewStoryPage() {
         action: action.trim(),
         result: result.trim(),
       });
+      skipLeaveGuardRef.current = true;
       router.push("/dashboard");
     } catch (err) {
       const msg =
@@ -64,7 +130,7 @@ export default function NewStoryPage() {
         <button
           type="button"
           className="back-btn"
-          onClick={() => router.push("/stories")}
+          onClick={() => requestNavigate("/stories")}
         >
           <svg
             viewBox="0 0 14 14"
@@ -204,7 +270,7 @@ export default function NewStoryPage() {
                 <button
                   type="button"
                   className="btn-secondary"
-                  onClick={() => router.push("/stories")}
+                  onClick={() => requestNavigate("/stories")}
                   disabled={loading}
                 >
                   Cancel
@@ -219,6 +285,47 @@ export default function NewStoryPage() {
 
         <StarWritingTips />
       </div>
+
+      {leaveConfirmHref && (
+        <div
+          className="modal-overlay show"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="leave-new-story-title"
+        >
+          <div className="modal">
+            <h3 className="modal-title" id="leave-new-story-title">
+              Leave without saving?
+            </h3>
+            <p className="modal-subtitle">
+              You have started this story. If you leave now, your draft will be
+              lost.
+            </p>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => setLeaveConfirmHref(null)}
+              >
+                Keep editing
+              </button>
+              <button
+                type="button"
+                className="btn-warn"
+                onClick={() => {
+                  if (!leaveConfirmHref) return;
+                  skipLeaveGuardRef.current = true;
+                  const href = leaveConfirmHref;
+                  setLeaveConfirmHref(null);
+                  router.push(href);
+                }}
+              >
+                Leave
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
