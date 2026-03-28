@@ -170,5 +170,22 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .btn-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-group .btn-primary,
+  .btn-group .btn-secondary,
+  .btn-group .btn-danger,
+  .btn-group .btn-warn,
+  .btn-group .btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
 }
 

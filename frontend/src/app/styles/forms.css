@@ -69,6 +69,15 @@
   color: var(--input-placeholder);
 }
 
+/* iOS: font-size < 16px on focused inputs triggers page zoom; keep taps readable without zoom. */
+@media (max-width: 768px) {
+  .input,
+  .textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
 /* Textarea */
 .textarea {
   width: 100%;

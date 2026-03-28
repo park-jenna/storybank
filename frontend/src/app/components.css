@@ -257,6 +257,16 @@
   transform: translateY(-1px);
 }
 
+/* In-progress carousel: desktop width matches 3-col grid; on narrow screens use a readable min width */
+@media (max-width: 900px) {
+  .carousel-card {
+    --carousel-card-width: min(280px, calc(100vw - 5.5rem));
+    width: var(--carousel-card-width);
+    min-width: var(--carousel-card-width);
+    max-width: var(--carousel-card-width);
+  }
+}
+
 /* Carousel scroll container */
 .carousel {
   display: flex;
@@ -1596,6 +1606,8 @@ a.story-row.story-row--dashboard:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
@@ -1659,6 +1671,11 @@ a.story-row.story-row--dashboard:hover {
   z-index: 100;
   align-items: center;
   justify-content: center;
+  padding: max(1rem, env(safe-area-inset-top, 0px))
+    max(1rem, env(safe-area-inset-right, 0px))
+    max(1rem, env(safe-area-inset-bottom, 0px))
+    max(1rem, env(safe-area-inset-left, 0px));
+  box-sizing: border-box;
 }
 
 .modal-overlay.show {
@@ -1669,8 +1686,10 @@ a.story-row.story-row--dashboard:hover {
   background: var(--bg-card);
   border-radius: var(--radius-xl);
   padding: 1.5rem;
-  width: 320px;
+  width: min(320px, calc(100vw - 2rem));
+  max-width: 100%;
   box-shadow: 0 8px 32px rgba(16, 40, 24, 0.12);
+  box-sizing: border-box;
 }
 
 .modal-title {
@@ -1690,6 +1709,20 @@ a.story-row.story-row--dashboard:hover {
 .modal-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 400px) {
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-actions .btn-secondary,
+  .modal-actions .btn-warn,
+  .modal-actions .btn-danger {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .modal-deleting {
@@ -1758,8 +1791,10 @@ a.story-row.story-row--dashboard:hover {
 /* Toast (fixed bottom-right) */
 .toast {
   position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
+  bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));
+  right: max(1.5rem, env(safe-area-inset-right, 0px));
+  left: auto;
+  max-width: min(360px, calc(100vw - 2rem));
   background: var(--text-dark);
   color: #fff;
   font-size: 14px;
@@ -1773,12 +1808,22 @@ a.story-row.story-row--dashboard:hover {
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  box-sizing: border-box;
 }
 
 .toast.show {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+@media (max-width: 420px) {
+  .toast {
+    left: max(1rem, env(safe-area-inset-left, 0px));
+    right: max(1rem, env(safe-area-inset-right, 0px));
+    max-width: none;
+    width: auto;
+  }
 }
 
 .toast-action {

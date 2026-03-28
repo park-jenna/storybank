@@ -545,14 +545,7 @@ export default function SavedQuestionsPage() {
                 </p>
 
                 {loadingRecommendations && (
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                      gap: 10,
-                    }}
-                    aria-hidden
-                  >
+                  <div className="rec-stories-grid" aria-hidden>
                     {[1, 2, 3, 4].map((i) => (
                       <div key={i} className="skeleton-card">
                         <div className="skeleton skeleton-line" style={{ width: "80%" }} />
@@ -578,14 +571,7 @@ export default function SavedQuestionsPage() {
 
                 {!loadingRecommendations && storiesToShow.length > 0 && (
                   <>
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                        gap: 10,
-                        marginTop: 8,
-                      }}
-                    >
+                    <div className="rec-stories-grid rec-stories-grid--mt">
                       {storiesToShow.map((s) => {
                         const matchingCategories = (
                           linkingUserQuestion?.question.recommendedCategories ?? []

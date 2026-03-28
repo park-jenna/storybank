@@ -153,6 +153,8 @@ body {
   background: var(--bg-page);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Avoid accidental horizontal scroll from wide children (common on narrow viewports). */
+  overflow-x: hidden;
 }
 
 img,

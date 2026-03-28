@@ -11,6 +11,7 @@
   display: grid;
   grid-template-columns: var(--sidebar-width) minmax(320px, 1fr);
   min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
 }
 
@@ -44,8 +45,8 @@
   align-items: center;
   justify-content: center;
   position: fixed;
-  top: 0.75rem;
-  left: 0.75rem;
+  top: max(0.75rem, env(safe-area-inset-top, 0px));
+  left: max(0.75rem, env(safe-area-inset-left, 0px));
   z-index: 55;
   width: 40px;
   height: 40px;
@@ -69,6 +70,9 @@
   }
   .main-content {
     padding-top: 3.5rem;
+    padding-bottom: max(1.75rem, env(safe-area-inset-bottom, 0px));
+    padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
   }
   .sidebar {
     position: fixed;
@@ -77,9 +81,11 @@
     bottom: 0;
     z-index: 60;
     width: var(--sidebar-width);
+    max-width: min(var(--sidebar-width), calc(100vw - 2.5rem));
     transform: translateX(-100%);
     transition: transform 0.2s ease;
     box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
   }
   .app-layout.sidebar-is-open .sidebar {
     transform: translateX(0);
@@ -110,6 +116,13 @@
   top: 0;
   height: 100vh;
   overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    padding-top: max(1.25rem, env(safe-area-inset-top, 0px));
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+  }
 }
 
 .sidebar-brand {
@@ -209,8 +222,33 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .page-header-actions {
+    width: 100%;
+  }
+
+  .page-header-actions .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .page-header-actions .btn-inline {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
 }
 
 .page-header-left {
@@ -295,7 +333,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 320px;
+  max-width: min(320px, 100%);
 }
 
 /* Back button (appears above page header) */
@@ -377,11 +415,46 @@
   gap: 10px;
 }
 
+@media (max-width: 900px) {
+  .story-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .story-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Saved questions: 2-col card grid */
 .q-card-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+@media (max-width: 520px) {
+  .q-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Recommended stories picker (common questions) — 2 cols on tablet, 1 on narrow phones */
+.rec-stories-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.rec-stories-grid--mt {
+  margin-top: 8px;
+}
+
+@media (max-width: 520px) {
+  .rec-stories-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* New / Edit story: form (left) + tips (right) */
@@ -404,6 +477,12 @@
   grid-template-columns: minmax(0, 1fr) 280px;
   gap: 12px;
   align-items: start;
+}
+
+@media (max-width: 768px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Story detail: questions list scrolls; card title stays fixed */
@@ -571,6 +650,9 @@
 @media (max-width: 768px) {
   .common-questions-layout {
     grid-template-columns: 1fr;
+    gap: 1rem;
+    padding-left: 0;
+    padding-right: 0;
   }
   .common-questions-list {
     position: static;
@@ -578,6 +660,7 @@
   }
   .common-questions-detail {
     min-height: 200px;
+    padding: 1rem 1.125rem;
   }
 }
 
@@ -597,12 +680,30 @@
   align-items: start;
 }
 
+@media (max-width: 768px) {
+  .q-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Stat cards row */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .stats-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 400px) {
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 
@@ -619,6 +720,18 @@
   gap: 10px;
   overflow-x: auto;
   padding: 0 36px 6px;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .carousel-wrap .carousel {
+    padding: 0 12px 6px;
+  }
+
+  .carousel-wrap::before,
+  .carousel-wrap::after {
+    width: 14px;
+  }
 }
 
 .carousel-wrap::before,
