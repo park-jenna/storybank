@@ -172,6 +172,72 @@ export default function DashboardPage() {
               </Link>
             </header>
 
+            {!hasAnyStories && (
+              <section
+                className="dashboard-onboarding card"
+                aria-labelledby="dashboard-onboarding-title"
+              >
+                <div className="dashboard-onboarding-head">
+                  <h2
+                    id="dashboard-onboarding-title"
+                    className="dashboard-onboarding-title"
+                  >
+                    Quick tips
+                  </h2>
+                  <p className="dashboard-onboarding-lead">
+                    Follow these three steps to prep stories and link them to
+                    interview questions.
+                  </p>
+                </div>
+                <ol className="dashboard-onboarding-list">
+                  <li className="dashboard-onboarding-item">
+                    <span className="dashboard-onboarding-num" aria-hidden>
+                      1
+                    </span>
+                    <div className="dashboard-onboarding-item-body">
+                      <p className="dashboard-onboarding-item-title">
+                        Write your first STAR story
+                      </p>
+                      <p className="dashboard-onboarding-item-text">
+                        Tap <strong>+ New story</strong> in the header or sidebar.
+                        Complete <strong>Situation</strong>,{" "}
+                        <strong>Action</strong>, and <strong>Result</strong>.
+                      </p>
+                    </div>
+                  </li>
+                  <li className="dashboard-onboarding-item">
+                    <span className="dashboard-onboarding-num" aria-hidden>
+                      2
+                    </span>
+                    <div className="dashboard-onboarding-item-body">
+                      <p className="dashboard-onboarding-item-title">
+                        Save questions and link them
+                      </p>
+                      <p className="dashboard-onboarding-item-text">
+                        Open <strong>Common Questions</strong> in the sidebar to
+                        save prompts. Link them to stories from{" "}
+                        <strong>Saved Questions</strong>.
+                      </p>
+                    </div>
+                  </li>
+                  <li className="dashboard-onboarding-item">
+                    <span className="dashboard-onboarding-num" aria-hidden>
+                      3
+                    </span>
+                    <div className="dashboard-onboarding-item-body">
+                      <p className="dashboard-onboarding-item-title">
+                        Tag categories for coverage
+                      </p>
+                      <p className="dashboard-onboarding-item-text">
+                        Add <strong>categories</strong> to each story. Your
+                        category coverage chart below stays easy to scan.
+                      </p>
+                    </div>
+                  </li>
+                </ol>
+              </section>
+            )}
+
             {/* Stat cards row */}
             <div className="stats-row">
               <div className="stat-card">

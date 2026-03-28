@@ -61,7 +61,7 @@ export default function NewStoryPage() {
       }
       const target = e.target as HTMLElement | null;
       const a = target?.closest("a[href]");
-      if (!a) return;
+      if (!a || !(a instanceof HTMLAnchorElement)) return;
       if (a.target === "_blank" || a.hasAttribute("download")) return;
       const rawHref = a.getAttribute("href");
       if (!rawHref || rawHref.startsWith("#")) return;
