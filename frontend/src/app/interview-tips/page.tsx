@@ -70,7 +70,7 @@ const SIDEBAR_NAV = [
   { href: "#star-four", label: "The four parts" },
   { href: "#star-tips", label: "Before you dive in" },
   { href: "#star-prep", label: "Preparing your stories" },
-  { href: "#star-storybank", label: "StoryBank fields" },
+  { href: "#star-storybank", label: "Using StoryBank" },
   { href: "#star-practice", label: "Practice" },
 ] as const;
 
@@ -123,16 +123,22 @@ function StarResourceSidebar() {
         <h2 className="star-resource-aside-card__title">In StoryBank</h2>
         <ul className="star-resource-aside-fields">
           <li>
-            <span className="star-resource-aside-fields__k">Situation</span>
-            <span className="star-resource-aside-fields__v">Covers STAR Situation and Task</span>
+            <span className="star-resource-aside-fields__k">Library</span>
+            <span className="star-resource-aside-fields__v">
+              Keep a small set of real stories you can polish—not one-off notes you lose.
+            </span>
           </li>
           <li>
-            <span className="star-resource-aside-fields__k">Action</span>
-            <span className="star-resource-aside-fields__v">STAR Action—this is where to go deep</span>
+            <span className="star-resource-aside-fields__k">Reuse</span>
+            <span className="star-resource-aside-fields__v">
+              The same story can fit many prompts; categories help you grab the right one fast.
+            </span>
           </li>
           <li>
-            <span className="star-resource-aside-fields__k">Result</span>
-            <span className="star-resource-aside-fields__v">STAR Result</span>
+            <span className="star-resource-aside-fields__k">Practice</span>
+            <span className="star-resource-aside-fields__v">
+              Save questions you expect and rehearse against the stories you already wrote.
+            </span>
           </li>
         </ul>
       </div>
@@ -289,14 +295,19 @@ export default function InterviewTipsPage() {
 
           <section className="star-resource-block" aria-labelledby="star-storybank">
             <h2 className="section-label" id="star-storybank">
-              How this maps to StoryBank
+              Using StoryBank
             </h2>
             <div className="card star-resource-prose-card">
               <p className="star-resource-card-p">
-                StoryBank uses three fields: <strong>Situation</strong>, <strong>Action</strong>, and{" "}
-                <strong>Result</strong>. Put both <strong>Situation</strong> and <strong>Task</strong>{" "}
-                together in the Situation box (context plus what you needed to accomplish). Action and
-                Result line up with STAR the same way—keep Action detailed and Result specific.
+                StoryBank is for keeping a <strong>small library</strong> of behavioral examples you
+                actually lived—so prep is reuse and refinement, not reinventing answers from scratch
+                every time. Tag stories with categories that show up in job posts (leadership,
+                conflict, deadlines) so when a question lands, you can pull the right example quickly.
+              </p>
+              <p className="star-resource-card-p">
+                Save <strong>common questions</strong> you expect or collect from postings, and practice
+                by connecting them to the stories you already drafted. The STAR structure above is the
+                shape to aim for in how you tell each one.
               </p>
             </div>
           </section>
