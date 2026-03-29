@@ -25,7 +25,8 @@ function CheckGlyph() {
 
 const TIPS = [
   {
-    letter: "S",
+    segmentKey: "st",
+    step: 1,
     label: "Situation & Task",
     tagline: "Context and your responsibility",
     intro:
@@ -40,7 +41,8 @@ const TIPS = [
     pitfall: "Long backstory with no clear goal or your specific stake in it.",
   },
   {
-    letter: "A",
+    segmentKey: "a",
+    step: 2,
     label: "Action",
     tagline: "What you said and did",
     intro:
@@ -55,7 +57,8 @@ const TIPS = [
     pitfall: "Passive voice or “the team decided” with no line to your actions.",
   },
   {
-    letter: "R",
+    segmentKey: "r",
+    step: 3,
     label: "Result",
     tagline: "Outcomes and learning",
     intro:
@@ -76,8 +79,8 @@ const STORAGE_CHECKS = "storybank-star-tips-checks";
 
 type ViewMode = "full" | "checklist";
 
-function itemId(letter: string, index: number) {
-  return `${letter}:${index}`;
+function itemId(segmentKey: string, index: number) {
+  return `${segmentKey}:${index}`;
 }
 
 export function StarWritingTips() {
@@ -183,10 +186,11 @@ export function StarWritingTips() {
             </>
           ) : (
             <>
-              Draft with Situation → Action → Result in mind. Expand the
-              sections below when you want sample wording or a quick sanity
-              check. Use <strong>Checklist</strong> for a compact pass while
-              you write.
+              STAR names four parts (Situation, Task, Action, Result); this
+              form matches them in <strong>three</strong> boxes—Situation
+              &amp; Task share the first. Expand the sections below for sample
+              wording or a quick sanity check. Use{" "}
+              <strong>Checklist</strong> for a compact pass while you write.
             </>
           )}
         </p>
@@ -195,11 +199,11 @@ export function StarWritingTips() {
       <div className="star-guide__track">
         {TIPS.map((tip, i) => (
           <article
-            key={tip.letter}
+            key={tip.segmentKey}
             className={`star-guide__step${i === TIPS.length - 1 ? " star-guide__step--last" : ""}`}
           >
             <span className="star-guide__marker" aria-hidden>
-              {tip.letter}
+              {tip.step}
             </span>
             <div className="star-guide__content">
               <div className="star-guide__step-head">
@@ -213,7 +217,7 @@ export function StarWritingTips() {
                 className={`star-guide__list${isChecklist ? " star-guide__list--interactive" : ""}`}
               >
                 {tip.checklist.map((item, idx) => {
-                  const id = itemId(tip.letter, idx);
+                  const id = itemId(tip.segmentKey, idx);
                   const inputId = `${checkIdPrefix}-${id}`;
                   if (isChecklist) {
                     return (
