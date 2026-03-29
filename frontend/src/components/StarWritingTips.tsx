@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useId, useState } from "react";
+
 function CheckGlyph() {
   return (
     <svg
@@ -67,17 +71,124 @@ const TIPS = [
   },
 ] as const;
 
+const STORAGE_VIEW = "storybank-star-tips-view";
+const STORAGE_CHECKS = "storybank-star-tips-checks";
+
+type ViewMode = "full" | "checklist";
+
+function itemId(letter: string, index: number) {
+  return `${letter}:${index}`;
+}
+
 export function StarWritingTips() {
+  const checkIdPrefix = useId();
+  const [viewMode, setViewMode] = useState<ViewMode>("full");
+  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      try {
+        const v = sessionStorage.getItem(STORAGE_VIEW);
+        if (v === "checklist" || v === "full") setViewMode(v);
+        const raw = sessionStorage.getItem(STORAGE_CHECKS);
+        if (raw) {
+          const parsed: unknown = JSON.parse(raw);
+          if (
+            parsed &&
+            typeof parsed === "object" &&
+            !Array.isArray(parsed)
+          ) {
+            setChecked(parsed as Record<string, boolean>);
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+      setHydrated(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      sessionStorage.setItem(STORAGE_VIEW, viewMode);
+    } catch {
+      /* ignore */
+    }
+  }, [viewMode, hydrated]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      sessionStorage.setItem(STORAGE_CHECKS, JSON.stringify(checked));
+    } catch {
+      /* ignore */
+    }
+  }, [checked, hydrated]);
+
+  const setItemChecked = (id: string, next: boolean) => {
+    setChecked((prev) => {
+      const copy = { ...prev };
+      if (next) copy[id] = true;
+      else delete copy[id];
+      return copy;
+    });
+  };
+
+  const isChecklist = viewMode === "checklist";
+
   return (
     <aside
-      className="card star-guide"
+      className={`card star-guide${isChecklist ? " star-guide--checklist-mode" : ""}`}
       aria-label="STAR method writing guide"
     >
       <header className="star-guide__head">
         <h3 className="star-guide__title">STAR writing tips</h3>
+
+        <fieldset className="star-guide__mode">
+          <legend className="visually-hidden">Guide display mode</legend>
+          <div className="star-guide__mode-inner">
+            <label className="star-guide__mode-option">
+              <input
+                type="radio"
+                className="visually-hidden"
+                name="star-guide-view"
+                value="full"
+                checked={viewMode === "full"}
+                onChange={() => setViewMode("full")}
+              />
+              <span className="star-guide__mode-label">Full guide</span>
+            </label>
+            <label className="star-guide__mode-option">
+              <input
+                type="radio"
+                className="visually-hidden"
+                name="star-guide-view"
+                value="checklist"
+                checked={viewMode === "checklist"}
+                onChange={() => setViewMode("checklist")}
+              />
+              <span className="star-guide__mode-label">Checklist</span>
+            </label>
+          </div>
+        </fieldset>
+
         <p className="star-guide__lede">
-          Draft with Situation → Action → Result in mind. Expand the sections
-          below when you want sample wording or a quick sanity check.
+          {isChecklist ? (
+            <>
+              Tick items as you draft. Switch to{" "}
+              <strong>Full guide</strong> for sample wording and common
+              pitfalls.
+            </>
+          ) : (
+            <>
+              Draft with Situation → Action → Result in mind. Expand the
+              sections below when you want sample wording or a quick sanity
+              check. Use <strong>Checklist</strong> for a compact pass while
+              you write.
+            </>
+          )}
         </p>
       </header>
 
@@ -95,27 +206,66 @@ export function StarWritingTips() {
                 <h4 className="star-guide__label">{tip.label}</h4>
                 <p className="star-guide__tag">{tip.tagline}</p>
               </div>
-              <p className="star-guide__intro">{tip.intro}</p>
-              <ul className="star-guide__list">
-                {tip.checklist.map((item) => (
-                  <li key={item}>
-                    <CheckGlyph />
-                    <span>{item}</span>
-                  </li>
-                ))}
+              {!isChecklist && (
+                <p className="star-guide__intro">{tip.intro}</p>
+              )}
+              <ul
+                className={`star-guide__list${isChecklist ? " star-guide__list--interactive" : ""}`}
+              >
+                {tip.checklist.map((item, idx) => {
+                  const id = itemId(tip.letter, idx);
+                  const inputId = `${checkIdPrefix}-${id}`;
+                  if (isChecklist) {
+                    return (
+                      <li key={item}>
+                        <label
+                          className={`star-guide__check-toggle${checked[id] ? " star-guide__check-toggle--done" : ""}`}
+                          htmlFor={inputId}
+                        >
+                          <input
+                            id={inputId}
+                            type="checkbox"
+                            className="visually-hidden star-guide__check-toggle-input"
+                            checked={!!checked[id]}
+                            onChange={(e) =>
+                              setItemChecked(id, e.target.checked)
+                            }
+                          />
+                          <span
+                            className="star-guide__check-toggle-box"
+                            aria-hidden
+                          >
+                            {checked[id] ? <CheckGlyph /> : null}
+                          </span>
+                          <span className="star-guide__check-toggle-text">
+                            {item}
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  }
+                  return (
+                    <li key={item}>
+                      <CheckGlyph />
+                      <span>{item}</span>
+                    </li>
+                  );
+                })}
               </ul>
-              <details className="star-guide__details">
-                <summary className="star-guide__summary">
-                  Example &amp; what to avoid
-                </summary>
-                <div className="star-guide__details-inner">
-                  <p className="star-guide__sample">{tip.example}</p>
-                  <p className="star-guide__avoid">
-                    <span className="star-guide__avoid-label">Avoid</span>
-                    {tip.pitfall}
-                  </p>
-                </div>
-              </details>
+              {!isChecklist && (
+                <details className="star-guide__details">
+                  <summary className="star-guide__summary">
+                    Example &amp; what to avoid
+                  </summary>
+                  <div className="star-guide__details-inner">
+                    <p className="star-guide__sample">{tip.example}</p>
+                    <p className="star-guide__avoid">
+                      <span className="star-guide__avoid-label">Avoid</span>
+                      {tip.pitfall}
+                    </p>
+                  </div>
+                </details>
+              )}
             </div>
           </article>
         ))}

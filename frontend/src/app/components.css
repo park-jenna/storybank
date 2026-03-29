@@ -549,6 +549,115 @@ a.story-row.story-row--dashboard:hover {
   color: var(--text-secondary);
 }
 
+.star-guide__mode {
+  margin: 0 0 10px;
+  padding: 0;
+  border: none;
+  min-width: 0;
+}
+
+.star-guide__mode-inner {
+  display: flex;
+  border-radius: var(--radius-sm);
+  border: 0.5px solid var(--border-card);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--bg-chip) 55%, var(--bg-card));
+}
+
+.star-guide__mode-option {
+  flex: 1;
+  margin: 0;
+  min-width: 0;
+}
+
+.star-guide__mode-label {
+  display: block;
+  padding: 7px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.star-guide__mode-option:hover .star-guide__mode-label {
+  color: var(--text-dark);
+}
+
+.star-guide__mode-option:has(:checked) .star-guide__mode-label {
+  background: var(--bg-card);
+  color: var(--text-dark);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 0.5px var(--border-chip);
+}
+
+.star-guide__mode-option:focus-within .star-guide__mode-label {
+  outline: 2px solid color-mix(in srgb, var(--green-dot) 55%, transparent);
+  outline-offset: 1px;
+}
+
+.star-guide__mode-option + .star-guide__mode-option .star-guide__mode-label {
+  box-shadow: -0.5px 0 0 var(--border-card);
+}
+
+.star-guide__list--interactive {
+  gap: 2px;
+}
+
+.star-guide__list--interactive li {
+  display: block;
+}
+
+.star-guide__check-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 5px 4px 5px 2px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-dark);
+  border-radius: var(--radius-sm);
+}
+
+.star-guide__check-toggle-box {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border: 1.5px solid var(--border-chip);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.star-guide__check-toggle--done .star-guide__check-toggle-box {
+  border-color: var(--green-dot);
+  background: color-mix(in srgb, var(--green-dot) 14%, var(--bg-card));
+}
+
+.star-guide__check-toggle--done .star-guide__check-icon {
+  color: var(--green-primary);
+}
+
+.star-guide__check-toggle--done .star-guide__check-toggle-text {
+  color: var(--text-muted);
+}
+
+.star-guide--checklist-mode .star-guide__step {
+  padding-bottom: 1.1rem;
+}
+
 /* Vertical rail + circular markers */
 .star-guide__track {
   position: relative;
