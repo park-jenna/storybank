@@ -27,28 +27,28 @@ const STAR_PARTS = [
     title: "Situation",
     pct: "~20%",
     body:
-      "A sentence or two of context: your role, the team or project, and what was going on. Give enough for someone outside the room to follow—skip deep backstory.",
+      "Open with one or two sentences of context: where you were, your role, and what was going on. Share only what someone new to the story needs—skip the long backstory.",
   },
   {
     letter: "T",
     title: "Task",
     pct: "~10%",
     body:
-      "What you were responsible for or what had to get done—the goal or expectation. This makes it clear what “success” meant in that moment.",
+      "Name the challenge or goal: what had to get done and what you were responsible for. That shows what a good outcome would have looked like.",
   },
   {
     letter: "A",
     title: "Action",
     pct: "~60%",
     body:
-      "What you personally did, in order: choices you made, how you worked with others, tools or steps you took. This should be most of your answer.",
+      "Explain what you did, in order—decisions you made, who you worked with, and the concrete steps you took. Plan for this to be the longest part of your answer.",
   },
   {
     letter: "R",
     title: "Result",
     pct: "~10%",
     body:
-      "What changed because of your actions—metrics, feedback, or a clear outcome. If it was messy, say what you learned or what you’d do next time.",
+      "Close with what happened next: numbers if you have them, feedback you heard, or a clear takeaway. If it didn’t go smoothly, add what you learned or what you’d do differently now.",
   },
 ] as const;
 
@@ -75,10 +75,10 @@ const SIDEBAR_NAV = [
 ] as const;
 
 const STAR_AT_A_GLANCE = [
-  { letter: "S", label: "Situation", hint: "Brief context: who, what, where." },
-  { letter: "T", label: "Task", hint: "Your goal or responsibility." },
-  { letter: "A", label: "Action", hint: "What you did—most of the answer." },
-  { letter: "R", label: "Result", hint: "Outcome, numbers, or what you learned." },
+  { letter: "S", label: "Situation", hint: "Set the scene: who you were and what was happening." },
+  { letter: "T", label: "Task", hint: "The problem or goal—and your part in fixing it." },
+  { letter: "A", label: "Action", hint: "What you did, step by step (most of your time)." },
+  { letter: "R", label: "Result", hint: "How it turned out; numbers or lessons if helpful." },
 ] as const;
 
 function StarResourceSidebar() {
@@ -102,7 +102,7 @@ function StarResourceSidebar() {
       <div className="card star-resource-aside-card">
         <h2 className="star-resource-aside-card__title">STAR at a glance</h2>
         <p className="star-resource-aside-lede">
-          Spend roughly <strong>60%</strong> on <strong>Action</strong>; keep Situation and Task short.
+          Aim for about <strong>60%</strong> on <strong>Action</strong>; keep Situation and Task brief.
         </p>
         <dl className="star-resource-glance">
           {STAR_AT_A_GLANCE.map(({ letter, label, hint }) => (
@@ -124,11 +124,11 @@ function StarResourceSidebar() {
         <ul className="star-resource-aside-fields">
           <li>
             <span className="star-resource-aside-fields__k">Situation</span>
-            <span className="star-resource-aside-fields__v">STAR Situation + Task</span>
+            <span className="star-resource-aside-fields__v">Covers STAR Situation and Task</span>
           </li>
           <li>
             <span className="star-resource-aside-fields__k">Action</span>
-            <span className="star-resource-aside-fields__v">STAR Action (go deep)</span>
+            <span className="star-resource-aside-fields__v">STAR Action—this is where to go deep</span>
           </li>
           <li>
             <span className="star-resource-aside-fields__k">Result</span>
@@ -187,8 +187,8 @@ export default function InterviewTipsPage() {
             </p>
             <p className="star-resource-lede">
               <abbr title="Situation, Task, Action, Result">STAR</abbr> is a common way to keep those
-              answers clear and complete, with most of the airtime on what <em>you</em> did (especially
-              Action).
+              answers clear and complete, with most of your talking time on what <em>you</em> did
+              (especially Action).
             </p>
           </div>
 
@@ -211,8 +211,9 @@ export default function InterviewTipsPage() {
               The four parts
             </h2>
             <p className="star-resource-intro">
-              Rough time split (a guide, not a rule): most of your airtime should be{" "}
-              <strong>Action</strong>. The percentages below are a common coaching shorthand (
+              The bar below is a <strong>rough guide</strong>, not a timer:{" "}
+              <strong>Action</strong> should get most of your talking time; Situation and Task stay
+              short. The split is a common rule of thumb used in career resources such as{" "}
               <a
                 href="https://capd.mit.edu/resources/the-star-method-for-behavioral-interviews/"
                 target="_blank"
@@ -220,7 +221,7 @@ export default function InterviewTipsPage() {
               >
                 MIT CAPD
               </a>
-              ).
+              .
             </p>
             <div
               className="star-resource-timebar"
