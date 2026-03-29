@@ -180,12 +180,17 @@ export default function InterviewTipsPage() {
 
       <div className="star-resource-layout">
         <div className="star-resource-main">
-          <p className="star-resource-lede">
-            In a behavioral interview, the interviewer is trying to learn how you act at work by hearing
-            real examples from your past—not hypotheticals. STAR (Situation, Task, Action, Result) is a
-            widely used way to keep those answers clear and complete, with most of the time spent on what{" "}
-            <em>you</em> did.
-          </p>
+          <div className="star-resource-lede-block">
+            <p className="star-resource-lede">
+              In a behavioral interview, the interviewer learns how you act at work from{" "}
+              <strong>real examples</strong> from your past—not hypotheticals.
+            </p>
+            <p className="star-resource-lede">
+              <abbr title="Situation, Task, Action, Result">STAR</abbr> is a common way to keep those
+              answers clear and complete, with most of the airtime on what <em>you</em> did (especially
+              Action).
+            </p>
+          </div>
 
           <section className="star-resource-block" aria-labelledby="star-why">
             <h2 className="section-label" id="star-why">
