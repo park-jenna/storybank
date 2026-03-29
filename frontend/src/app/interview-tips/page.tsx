@@ -198,10 +198,10 @@ export default function InterviewTipsPage() {
             </h2>
             <div className="card star-resource-prose-card">
               <p className="star-resource-card-p">
-                Some questions sound like yes/no (“Do you have experience with…?”). In an interview,
-                treat them as “yes, and here’s an example”: a short story that shows depth. STAR gives
-                that story a beginning, middle, and end so the listener can follow without getting lost
-                in details.
+                Some questions are framed as a simple yes or no (“Do you have experience with…?”).
+                Answer with a clear yes—then back it up with a short story that shows what that
+                experience actually looked like. STAR gives that story a beginning, middle, and end, so
+                the interviewer can follow you without wading through extra detail.
               </p>
             </div>
           </section>
