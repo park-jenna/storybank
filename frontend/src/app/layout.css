@@ -407,18 +407,27 @@
 }
 
 .dashboard-onboarding-head {
-  margin-bottom: 14px;
-  padding-bottom: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
   border-bottom: 0.5px solid var(--border-card);
 }
 
+.dashboard-onboarding-eyebrow {
+  margin: 0 0 6px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green-primary);
+}
+
 .dashboard-onboarding-title {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 6px 0;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  margin: 0 0 8px 0;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 .dashboard-onboarding-lead {
@@ -426,54 +435,87 @@
   font-size: 14px;
   font-weight: 400;
   color: var(--text-secondary);
-  line-height: 1.5;
-  max-width: 42rem;
+  line-height: 1.55;
+  max-width: 40rem;
 }
 
 .dashboard-onboarding-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .dashboard-onboarding-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 .dashboard-onboarding-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
   margin: 0;
-  padding: 12px 14px;
+  padding: 0;
+  display: flex;
+  min-height: 0;
+}
+
+.dashboard-onboarding-item-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
   background: var(--bg-input);
   border: 0.5px solid var(--border-input);
   border-radius: var(--radius-md);
-  box-shadow: 0 1px 2px rgba(16, 40, 24, 0.04);
+  box-shadow: 0 1px 3px rgba(16, 40, 24, 0.05);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
-.dashboard-onboarding-num {
+.dashboard-onboarding-item-inner:hover {
+  border-color: color-mix(in srgb, var(--green-primary) 22%, var(--border-input));
+  box-shadow: 0 4px 14px rgba(16, 40, 24, 0.07);
+}
+
+.dashboard-onboarding-item-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2px;
+}
+
+.dashboard-onboarding-icon-wrap {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--success-text);
-  background: var(--success-bg);
-  border: 0.5px solid color-mix(in srgb, var(--green-primary) 28%, transparent);
-  line-height: 1;
+  border-radius: 12px;
+  color: var(--green-primary);
+  background: color-mix(in srgb, var(--green-light) 55%, var(--bg-card));
+  border: 0.5px solid color-mix(in srgb, var(--green-primary) 18%, transparent);
 }
 
-.dashboard-onboarding-item-body {
-  min-width: 0;
-  flex: 1;
+.dashboard-onboarding-icon-svg {
+  width: 22px;
+  height: 22px;
+}
+
+.dashboard-onboarding-step-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-hint);
+  letter-spacing: 0.02em;
 }
 
 .dashboard-onboarding-item-title {
-  margin: 0 0 4px 0;
+  margin: 0;
   font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
@@ -483,15 +525,50 @@
 
 .dashboard-onboarding-item-text {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
   color: var(--text-secondary);
   line-height: 1.55;
+  flex: 1;
 }
 
 .dashboard-onboarding-item-text strong {
   color: var(--text-dark);
   font-weight: 600;
+}
+
+.dashboard-onboarding-cta {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 0.5px solid var(--border-card);
+}
+
+.dashboard-onboarding-cta--split {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+
+.dashboard-onboarding-cta-sep {
+  color: var(--text-hint);
+  font-size: 13px;
+  user-select: none;
+}
+
+.dashboard-onboarding-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--transition-fast);
+}
+
+.dashboard-onboarding-link:hover {
+  color: color-mix(in srgb, var(--green-primary) 78%, var(--text-primary));
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* Dashboard: stories (left) + coverage/questions (right) */

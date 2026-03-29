@@ -48,6 +48,75 @@ function SeeAllLink({ href, label }: { href: string; label: string }) {
   );
 }
 
+function OnboardingDocIcon() {
+  return (
+    <svg
+      className="dashboard-onboarding-icon-svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden
+    >
+      <path
+        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14 2v6h6M9 13h6M9 17h4"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function OnboardingLinkIcon() {
+  return (
+    <svg
+      className="dashboard-onboarding-icon-svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden
+    >
+      <path
+        d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function OnboardingTagIcon() {
+  return (
+    <svg
+      className="dashboard-onboarding-icon-svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden
+    >
+      <path
+        d="M12 2H2v10l9.29 9.29a2 2 0 0 0 2.83 0l6.58-6.58a2 2 0 0 0 0-2.83L12 2Z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinejoin="round"
+      />
+      <circle cx="7" cy="7" r="1.25" fill="currentColor" />
+    </svg>
+  );
+}
+
 const USER_NAME = "User"; // TODO: from auth when available
 const CATEGORY_GOAL = 3;
 
@@ -178,6 +247,7 @@ export default function DashboardPage() {
                 aria-labelledby="dashboard-onboarding-title"
               >
                 <div className="dashboard-onboarding-head">
+                  <p className="dashboard-onboarding-eyebrow">Getting started</p>
                   <h2
                     id="dashboard-onboarding-title"
                     className="dashboard-onboarding-title"
@@ -185,53 +255,104 @@ export default function DashboardPage() {
                     Quick tips
                   </h2>
                   <p className="dashboard-onboarding-lead">
-                    Follow these three steps to prep stories and link them to
-                    interview questions.
+                    Draft a STAR story, connect it to interview questions, then
+                    tag categories so your coverage chart stays honest.
                   </p>
                 </div>
                 <ol className="dashboard-onboarding-list">
                   <li className="dashboard-onboarding-item">
-                    <span className="dashboard-onboarding-num" aria-hidden>
-                      1
-                    </span>
-                    <div className="dashboard-onboarding-item-body">
+                    <div className="dashboard-onboarding-item-inner">
+                      <div className="dashboard-onboarding-item-top">
+                        <span className="dashboard-onboarding-icon-wrap">
+                          <OnboardingDocIcon />
+                        </span>
+                        <span className="dashboard-onboarding-step-label">
+                          Step 1
+                        </span>
+                      </div>
                       <p className="dashboard-onboarding-item-title">
                         Write your first STAR story
                       </p>
                       <p className="dashboard-onboarding-item-text">
-                        Tap <strong>+ New story</strong> in the header or sidebar.
-                        Complete <strong>Situation</strong>,{" "}
-                        <strong>Action</strong>, and <strong>Result</strong>.
+                        Use <strong>+ New story</strong> in the header or sidebar.
+                        Fill <strong>Situation</strong>, <strong>Action</strong>,
+                        and <strong>Result</strong>.
                       </p>
+                      <div className="dashboard-onboarding-cta">
+                        <Link
+                          href="/stories/new"
+                          className="dashboard-onboarding-link"
+                        >
+                          Start a story
+                          <span aria-hidden> →</span>
+                        </Link>
+                      </div>
                     </div>
                   </li>
                   <li className="dashboard-onboarding-item">
-                    <span className="dashboard-onboarding-num" aria-hidden>
-                      2
-                    </span>
-                    <div className="dashboard-onboarding-item-body">
+                    <div className="dashboard-onboarding-item-inner">
+                      <div className="dashboard-onboarding-item-top">
+                        <span className="dashboard-onboarding-icon-wrap">
+                          <OnboardingLinkIcon />
+                        </span>
+                        <span className="dashboard-onboarding-step-label">
+                          Step 2
+                        </span>
+                      </div>
                       <p className="dashboard-onboarding-item-title">
                         Save questions and link them
                       </p>
                       <p className="dashboard-onboarding-item-text">
-                        Open <strong>Common Questions</strong> in the sidebar to
-                        save prompts. Link them to stories from{" "}
-                        <strong>Saved Questions</strong>.
+                        Save prompts from <strong>Common Questions</strong>. Tie
+                        each one to a story in <strong>Saved Questions</strong>.
                       </p>
+                      <div className="dashboard-onboarding-cta dashboard-onboarding-cta--split">
+                        <Link
+                          href="/common-questions"
+                          className="dashboard-onboarding-link"
+                        >
+                          Common Questions
+                          <span aria-hidden> →</span>
+                        </Link>
+                        <span
+                          className="dashboard-onboarding-cta-sep"
+                          aria-hidden
+                        >
+                          ·
+                        </span>
+                        <Link
+                          href="/saved-questions"
+                          className="dashboard-onboarding-link"
+                        >
+                          Saved Questions
+                          <span aria-hidden> →</span>
+                        </Link>
+                      </div>
                     </div>
                   </li>
                   <li className="dashboard-onboarding-item">
-                    <span className="dashboard-onboarding-num" aria-hidden>
-                      3
-                    </span>
-                    <div className="dashboard-onboarding-item-body">
+                    <div className="dashboard-onboarding-item-inner">
+                      <div className="dashboard-onboarding-item-top">
+                        <span className="dashboard-onboarding-icon-wrap">
+                          <OnboardingTagIcon />
+                        </span>
+                        <span className="dashboard-onboarding-step-label">
+                          Step 3
+                        </span>
+                      </div>
                       <p className="dashboard-onboarding-item-title">
                         Tag categories for coverage
                       </p>
                       <p className="dashboard-onboarding-item-text">
-                        Add <strong>categories</strong> to each story. Your
-                        category coverage chart below stays easy to scan.
+                        Add <strong>categories</strong> while you edit a story.
+                        The chart below highlights gaps at a glance.
                       </p>
+                      <div className="dashboard-onboarding-cta">
+                        <Link href="/stories" className="dashboard-onboarding-link">
+                          Open My Stories
+                          <span aria-hidden> →</span>
+                        </Link>
+                      </div>
                     </div>
                   </li>
                 </ol>
