@@ -558,16 +558,18 @@ a.story-row.story-row--dashboard:hover {
 
 .star-guide__mode-inner {
   display: flex;
+  gap: 3px;
+  padding: 3px;
   border-radius: var(--radius-sm);
-  border: 0.5px solid var(--border-card);
-  overflow: hidden;
-  background: color-mix(in srgb, var(--bg-chip) 55%, var(--bg-card));
+  border: 0.5px solid var(--border-chip);
+  background: var(--bg-chip);
 }
 
 .star-guide__mode-option {
   flex: 1;
   margin: 0;
   min-width: 0;
+  border-radius: calc(var(--radius-sm) - 2px);
 }
 
 .star-guide__mode-label {
@@ -576,31 +578,31 @@ a.story-row.story-row--dashboard:hover {
   font-size: 11px;
   font-weight: 500;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   cursor: pointer;
+  border-radius: inherit;
   transition:
     background var(--transition-fast),
-    color var(--transition-fast);
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .star-guide__mode-option:hover .star-guide__mode-label {
-  color: var(--text-dark);
+  color: var(--text-secondary);
 }
 
 .star-guide__mode-option:has(:checked) .star-guide__mode-label {
   background: var(--bg-card);
-  color: var(--text-dark);
+  color: var(--green-primary);
   font-weight: 600;
-  box-shadow: inset 0 0 0 0.5px var(--border-chip);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--green-primary) 38%, transparent),
+    0 1px 2px rgba(30, 60, 40, 0.1);
 }
 
 .star-guide__mode-option:focus-within .star-guide__mode-label {
   outline: 2px solid color-mix(in srgb, var(--green-dot) 55%, transparent);
   outline-offset: 1px;
-}
-
-.star-guide__mode-option + .star-guide__mode-option .star-guide__mode-label {
-  box-shadow: -0.5px 0 0 var(--border-card);
 }
 
 .star-guide__list--interactive {
