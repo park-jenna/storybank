@@ -255,8 +255,9 @@ export default function DashboardPage() {
                     Quick tips
                   </h2>
                   <p className="dashboard-onboarding-lead">
-                    Draft a STAR story, connect it to interview questions, then
-                    tag categories so your coverage chart stays honest.
+                    Create a story with categories and STAR fields, then save
+                    interview questions and link them to that story. This page
+                    shows where you still have gaps.
                   </p>
                 </div>
                 <ol className="dashboard-onboarding-list">
@@ -271,12 +272,13 @@ export default function DashboardPage() {
                         </span>
                       </div>
                       <p className="dashboard-onboarding-item-title">
-                        Write your first STAR story
+                        Create your first story
                       </p>
                       <p className="dashboard-onboarding-item-text">
-                        Use <strong>+ New story</strong> in the header or sidebar.
-                        Fill <strong>Situation</strong>, <strong>Action</strong>,
-                        and <strong>Result</strong>.
+                        Use <strong>+ New story</strong>. On one screen you pick{" "}
+                        <strong>categories</strong> (they power the coverage chart
+                        below), then fill <strong>Situation</strong>,{" "}
+                        <strong>Action</strong>, and <strong>Result</strong>.
                       </p>
                       <div className="dashboard-onboarding-cta">
                         <Link
@@ -300,11 +302,12 @@ export default function DashboardPage() {
                         </span>
                       </div>
                       <p className="dashboard-onboarding-item-title">
-                        Save questions and link them
+                        Save questions and link stories
                       </p>
                       <p className="dashboard-onboarding-item-text">
-                        Save prompts from <strong>Common Questions</strong>. Tie
-                        each one to a story in <strong>Saved Questions</strong>.
+                        In <strong>Common Questions</strong>, save prompts you want
+                        to practice. Open <strong>Saved Questions</strong> and
+                        link each prompt to the stories that answer it.
                       </p>
                       <div className="dashboard-onboarding-cta dashboard-onboarding-cta--split">
                         <Link
@@ -341,11 +344,13 @@ export default function DashboardPage() {
                         </span>
                       </div>
                       <p className="dashboard-onboarding-item-title">
-                        Tag categories for coverage
+                        Track prep on the dashboard
                       </p>
                       <p className="dashboard-onboarding-item-text">
-                        Add <strong>categories</strong> while you edit a story.
-                        The chart below highlights gaps at a glance.
+                        See <strong>STAR</strong> completion, how many questions
+                        are linked to stories, and <strong>category</strong> gaps
+                        below. Refine stories or links anytime from{" "}
+                        <strong>My Stories</strong> or <strong>Saved Questions</strong>.
                       </p>
                       <div className="dashboard-onboarding-cta">
                         <Link href="/stories" className="dashboard-onboarding-link">
