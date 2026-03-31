@@ -181,77 +181,95 @@ export default function SavedQuestionDetailPage({
         </div>
       </div>
 
-      <div className="card mb-3">
-        <h1>{userQuestion.question.content}</h1>
-        <p className="text-hint text-13 mb-3">
-          Saved: {new Date(userQuestion.createdAt).toLocaleDateString()}
-        </p>
-        {userQuestion.question.recommendedCategories?.length > 0 && (
-          <div className="chips-row">
-            {userQuestion.question.recommendedCategories.map((c) => (
-              <span key={c} className="tag">
-                {c}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="card" aria-label="Linked stories">
-        <div className="card-head">
-          <h2 className="card-title">Linked stories</h2>
-        </div>
-
-        {userQuestion.stories.length === 0 ? (
-          <p className="no-stories-text">
-            No stories linked yet. Edit this question to add story links.
-          </p>
-        ) : (
-          userQuestion.stories.map((s) => (
-            <div key={s.id} className="story-row" style={{ cursor: "default" }}>
-              <div className="dot dot-done" aria-hidden />
-              <div className="story-row-info">
-                <Link
-                  href={`/stories/${s.id}`}
-                  className="story-row-title"
-                >
-                  {s.title}
-                </Link>
-                <div className="chips-row" style={{ marginTop: 4 }}>
-                  {s.categories.slice(0, 3).map((cat) => (
-                    <span key={cat} className="tag">
-                      {cat}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <Link
-                href={`/stories/${s.id}`}
-                className="btn-inline text-12 flex-shrink-0"
-              >
-                View →
-              </Link>
-            </div>
-          ))
-        )}
-
-        <div
-          style={{
-            marginTop: 14,
-            paddingTop: 14,
-            borderTop: "0.5px solid var(--border-card)",
-          }}
-        >
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={() => router.push(`/saved-questions/${userQuestion.id}/edit`)}
+      {/* Single card: question + divider + linked stories (one surface, like one detail view) */}
+      <div className="card saved-question-detail">
+        <header>
+          <h1
+            style={{
+              fontSize: 21,
+              fontWeight: 500,
+              color: "var(--text-primary)",
+              marginBottom: 8,
+              lineHeight: 1.3,
+            }}
           >
-            {userQuestion.stories.length === 0
-              ? "Link stories"
-              : "Edit / Add or remove stories"}
-          </button>
-        </div>
+            {userQuestion.question.content}
+          </h1>
+          <p style={{ fontSize: 14, color: "var(--text-hint)", margin: "0 0 12px" }}>
+            Saved:{" "}
+            <time dateTime={userQuestion.createdAt}>
+              {new Date(userQuestion.createdAt).toLocaleDateString()}
+            </time>
+          </p>
+          {userQuestion.question.recommendedCategories &&
+            userQuestion.question.recommendedCategories.length > 0 && (
+              <div className="chips-row">
+                {userQuestion.question.recommendedCategories.map((c) => (
+                  <span key={c} className="tag">
+                    {c}
+                  </span>
+                ))}
+              </div>
+            )}
+        </header>
+
+        <hr className="divider" />
+
+        <section
+          className="saved-question-detail__linked"
+          aria-labelledby="saved-question-stories-heading"
+        >
+          <div className="card-head saved-question-detail__linked-head">
+            <h2 className="card-title" id="saved-question-stories-heading">
+              Linked stories
+            </h2>
+            <button
+              type="button"
+              className="btn-secondary btn-size-sm"
+              onClick={() => router.push(`/saved-questions/${userQuestion.id}/edit`)}
+            >
+              Manage links
+            </button>
+          </div>
+
+          {userQuestion.stories.length > 0 && (
+            <p className="saved-question-detail__linked-hint text-muted text-14">
+              Stories you practice with for this question. Open one to review your answer.
+            </p>
+          )}
+
+          {userQuestion.stories.length === 0 ? (
+            <p className="card-empty-hint">
+              No stories linked yet. Use <strong>Manage links</strong> to choose which stories
+              you want here.
+            </p>
+          ) : (
+            <div className="saved-question-detail__story-list">
+              {userQuestion.stories.map((s) => (
+                <Link
+                  key={s.id}
+                  href={`/stories/${s.id}`}
+                  className="saved-question-detail__story"
+                  aria-label={`Open story: ${s.title}`}
+                >
+                  <div className="saved-question-detail__story-main">
+                    <span className="saved-question-detail__story-title">{s.title}</span>
+                    {s.categories.length > 0 && (
+                      <div className="chips-row">
+                        {s.categories.slice(0, 3).map((cat) => (
+                          <span key={cat} className="tag">
+                            {cat}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <span className="saved-question-detail__story-cta">View →</span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
 
       {showDeleteConfirm && (
