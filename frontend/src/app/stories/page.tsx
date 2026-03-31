@@ -129,13 +129,19 @@ function StoriesPageContent() {
                     <div
                       key={s.id}
                       className="carousel-card"
-                      onClick={() => router.push(`/stories/${s.id}/edit`)}
+                      onClick={() =>
+                        router.push(
+                          `/stories/${s.id}/edit?from=${encodeURIComponent("/stories")}`
+                        )
+                      }
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault();
-                          router.push(`/stories/${s.id}/edit`);
+                          router.push(
+                            `/stories/${s.id}/edit?from=${encodeURIComponent("/stories")}`
+                          );
                         }
                       }}
                     >
@@ -163,7 +169,11 @@ function StoriesPageContent() {
                           className="btn-row btn-row-sm"
                           onClick={(e) => {
                             e.stopPropagation();
-                            router.push(`/stories/${s.id}/edit`);
+                            router.push(
+                              `/stories/${s.id}/edit?from=${encodeURIComponent(
+                                "/stories"
+                              )}`
+                            );
                           }}
                         >
                           {!s.situation && !s.action && !s.result ? "Start" : "Edit"}

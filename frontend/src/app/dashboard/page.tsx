@@ -432,7 +432,7 @@ export default function DashboardPage() {
                           </div>
                         </div>
                         <Link
-                          href={`/stories/${s.id}/edit`}
+                          href={`/stories/${s.id}/edit?from=${encodeURIComponent("/dashboard")}`}
                           className="btn-row story-row-action"
                         >
                           {isNotStarted ? "Start" : "Edit"}

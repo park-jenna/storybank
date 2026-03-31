@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { fetchStoryById, Story, updateStoryById } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
 import { StarWritingTips } from "@/components/StarWritingTips";
@@ -12,6 +12,7 @@ type EditStoryPageProps = {
 
 export default function EditStoryPage({ params }: EditStoryPageProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { id: storyId } = use(params);
 
   const [story, setStory] = useState<Story | null>(null);
@@ -24,6 +25,26 @@ export default function EditStoryPage({ params }: EditStoryPageProps) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const fromParam = searchParams.get("from");
+  const safeFrom =
+    fromParam && fromParam.startsWith("/") && !fromParam.startsWith("//")
+      ? fromParam
+      : null;
+
+  function handleBack() {
+    if (safeFrom) {
+      router.push(safeFrom);
+      return;
+    }
+    // Prefer real history when available (feels natural from dashboard/list).
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+      return;
+    }
+    // Fallback when the user landed here directly.
+    router.push("/dashboard");
+  }
 
   useEffect(() => {
     async function load() {
@@ -116,7 +137,7 @@ export default function EditStoryPage({ params }: EditStoryPageProps) {
           type="button"
           className="back-btn"
           style={{ marginTop: 12 }}
-          onClick={() => router.push("/stories")}
+          onClick={handleBack}
         >
           <svg
             viewBox="0 0 14 14"
@@ -144,7 +165,7 @@ export default function EditStoryPage({ params }: EditStoryPageProps) {
         <button
           type="button"
           className="back-btn"
-          onClick={() => router.push(`/stories/${storyId}`)}
+          onClick={handleBack}
         >
           <svg
             viewBox="0 0 14 14"
@@ -287,7 +308,7 @@ export default function EditStoryPage({ params }: EditStoryPageProps) {
                 <button
                   type="button"
                   className="btn-secondary"
-                  onClick={() => router.push(`/stories/${storyId}`)}
+                  onClick={handleBack}
                   disabled={saving}
                 >
                   Cancel
