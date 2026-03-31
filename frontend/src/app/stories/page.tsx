@@ -131,7 +131,7 @@ function StoriesPageContent() {
                       className="carousel-card"
                       onClick={() =>
                         router.push(
-                          `/stories/${s.id}/edit?from=${encodeURIComponent("/stories")}`
+                          `/stories/${s.id}?returnTo=${encodeURIComponent("/stories")}`
                         )
                       }
                       role="button"
@@ -140,7 +140,7 @@ function StoriesPageContent() {
                         if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault();
                           router.push(
-                            `/stories/${s.id}/edit?from=${encodeURIComponent("/stories")}`
+                            `/stories/${s.id}?returnTo=${encodeURIComponent("/stories")}`
                           );
                         }
                       }}
