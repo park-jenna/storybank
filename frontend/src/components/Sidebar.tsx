@@ -140,12 +140,27 @@ export default function Sidebar({ onClose }: SidebarProps) {
             const badge =
               badgeKey === "stories" ? inProgressCount :
               badgeKey === "questions" ? unlinkedCount : null;
+            const badgeTitle =
+              badgeKey === "stories" && badge != null && badge > 0
+                ? `${badge} stories still in progress`
+                : badgeKey === "questions" && badge != null && badge > 0
+                  ? `${badge} saved questions without linked stories`
+                  : undefined;
+            const badgeAriaLabel =
+              badgeKey === "stories" && badge != null && badge > 0
+                ? `${badge} stories in progress`
+                : badgeKey === "questions" && badge != null && badge > 0
+                  ? `${badge} saved questions without linked stories`
+                  : badge != null
+                    ? String(badge)
+                    : undefined;
             return (
               <Link
                 key={href + label}
                 href={href}
                 className={`sidebar-link ${isActive ? "sidebar-link-active" : ""}`}
                 onClick={onClose}
+                title={badgeTitle}
               >
                 <span className="sidebar-link-icon" aria-hidden>
                   {href === "/stories" && (
@@ -165,7 +180,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
                 </span>
                 {label}
                 {badge != null && badge > 0 && (
-                  <span className="sidebar-badge" aria-label={`${badge}`}>
+                  <span className="sidebar-badge" aria-label={badgeAriaLabel}>
                     {badge}
                   </span>
                 )}

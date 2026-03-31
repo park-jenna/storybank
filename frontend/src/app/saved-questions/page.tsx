@@ -345,25 +345,47 @@ export default function SavedQuestionsPage() {
       )}
 
       {!loading && !error && filteredUserQuestions.length > 0 && !linkingUserQuestion && (
-        <div className="q-card-grid mt-4">
+        <div className="card saved-questions-list mt-4" role="list">
           {filteredUserQuestions.map((uq) => {
             const commonId = getCommonQuestionIdByContent(uq.question.content);
-            const maxVisible = 3;
-            const visibleStories = uq.stories.slice(0, maxVisible);
-            const remainingCount = uq.stories.length - maxVisible;
+            const n = uq.stories.length;
             return (
-              <div key={uq.id} className="q-card">
-                <div className="q-card-top">
-                  <span className="q-card-date">{formatDate(uq.createdAt)}</span>
+              <div key={uq.id} className="saved-q-row" role="listitem">
+                <div className="saved-q-row-main">
+                  <Link
+                    href={`/saved-questions/${uq.id}`}
+                    className="link-unstyled saved-q-row-link"
+                  >
+                    <span className="saved-q-row-title">{uq.question.content}</span>
+                  </Link>
+                  <span className="saved-q-row-date">{formatDate(uq.createdAt)}</span>
+                </div>
+                <div className="saved-q-row-side">
+                  <span
+                    className={`saved-q-count${n === 0 ? " saved-q-count--empty" : ""}`}
+                    aria-label={
+                      n === 0
+                        ? "0 stories linked"
+                        : `${n} ${n === 1 ? "story" : "stories"} linked`
+                    }
+                  >
+                    {n === 0 ? "0 linked" : `${n} linked`}
+                  </span>
+                  {commonId && (
+                    <button
+                      type="button"
+                      className="btn-row btn-row-sm"
+                      onClick={() => setLinkingUserQuestion(uq)}
+                    >
+                      Manage links
+                    </button>
+                  )}
                   <details className="q-card-menu">
                     <summary
                       className="q-card-menu-trigger"
                       aria-label="More actions"
                       title="More"
-                      onClick={(e) => {
-                        // Avoid toggling other click handlers in the card.
-                        e.stopPropagation();
-                      }}
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <span aria-hidden>⋯</span>
                     </summary>
@@ -383,73 +405,6 @@ export default function SavedQuestionsPage() {
                       </button>
                     </div>
                   </details>
-                </div>
-
-                <Link href={`/saved-questions/${uq.id}`} className="link-unstyled">
-                  <div className="q-card-title">{uq.question.content}</div>
-                </Link>
-
-                {uq.question.recommendedCategories?.length > 0 && (
-                  <div className="chips-row mb-4">
-                    {uq.question.recommendedCategories.slice(0, 4).map((cat) => (
-                      <span key={cat} className="tag">
-                        {cat}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                <div>
-                  <div className="linked-header">
-                    <span className="linked-label">
-                      Linked stories
-                      {uq.stories.length > 0 && (
-                        <span className="linked-count">{uq.stories.length}</span>
-                      )}
-                    </span>
-                    {commonId && (
-                      <button
-                        type="button"
-                        className="btn-row btn-row-sm"
-                        onClick={() => setLinkingUserQuestion(uq)}
-                      >
-                        {uq.stories.length > 0 ? "Add more" : "Link stories"}
-                      </button>
-                    )}
-                  </div>
-
-                  {uq.stories.length > 0 ? (
-                    <>
-                      {visibleStories.map((s) => (
-                        <div key={s.id} className="linked-story-item">
-                          <div className="linked-story-dot" />
-                          <Link href={`/stories/${s.id}`} className="linked-story-name">
-                            {s.title}
-                          </Link>
-                        </div>
-                      ))}
-                      {remainingCount > 0 && (
-                        <button
-                          type="button"
-                          className="linked-more"
-                          style={{
-                            background: "none",
-                            border: "none",
-                            padding: 0,
-                            font: "inherit",
-                            color: "inherit",
-                            cursor: "pointer",
-                            textAlign: "left",
-                          }}
-                          onClick={() => setLinkingUserQuestion(uq)}
-                        >
-                          +{remainingCount} more — link or change stories here
-                        </button>
-                      )}
-                    </>
-                  ) : (
-                    <p className="no-stories-text">No stories linked yet.</p>
-                  )}
                 </div>
               </div>
             );
