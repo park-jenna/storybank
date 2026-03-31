@@ -140,60 +140,16 @@ function StoriesPageContent() {
                       }}
                     >
                       <div style={{ minHeight: 70 }}>
-                        <div
-                          style={{
-                            fontSize: 14,
-                            fontWeight: 500,
-                            color: "var(--text-primary)",
-                            marginBottom: 5,
-                            lineHeight: 1.35,
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {s.title}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: 12,
-                            color: "var(--text-muted)",
-                            marginBottom: 8,
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            lineHeight: 1.4,
-                          }}
-                        >
-                          {s.situation || (
-                            <span style={{ color: "var(--text-hint)", fontStyle: "italic" }}>
-                              No situation written yet.
-                            </span>
-                          )}
+                        <div className="story-card-title">{s.title}</div>
+                        <div className={`story-card-situation${s.situation ? "" : " empty"}`}>
+                          {s.situation || "No situation written yet."}
                         </div>
                       </div>
                       {missing.length > 0 && (
                         <div
                           className="story-card-missing"
-                          style={{
-                            alignItems: "center",
-                            justifyContent: "flex-start",
-                            gap: 6,
-                            marginBottom: 8,
-                            flexWrap: "wrap",
-                          }}
                         >
-                          <span
-                            style={{
-                              fontSize: 12,
-                              color: "var(--warn-text)",
-                              fontWeight: 500,
-                            }}
-                          >
-                            Missing:
-                          </span>
+                          <span className="text-warn text-12">Missing:</span>
                           {missing.map((m) => (
                             <span key={m} className="tag-missing">
                               {m}
@@ -201,13 +157,7 @@ function StoriesPageContent() {
                           ))}
                         </div>
                       )}
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          marginTop: "auto",
-                        }}
-                      >
+                      <div className="flex justify-end mt-auto">
                         <button
                           type="button"
                           className="btn-row btn-row-sm"
@@ -227,7 +177,7 @@ function StoriesPageContent() {
             </div>
           )}
 
-          <div className="chips-row" style={{ marginBottom: "0.5rem" }}>
+          <div className="chips-row mb-2">
             {[ALL, ...CATEGORIES].map((cat) => (
               <div
                 key={cat}
@@ -248,13 +198,7 @@ function StoriesPageContent() {
           </div>
           {hasAnyStories && (
             <p
-              className="filter-result-summary"
-              style={{
-                fontSize: 13,
-                color: "var(--text-muted)",
-                marginBottom: "1.25rem",
-                marginTop: 0,
-              }}
+              className="text-muted text-13 mb-5"
               aria-live="polite"
             >
               {selectedCategory === ALL
@@ -303,7 +247,7 @@ function StoriesPageContent() {
                   <Link
                     key={s.id}
                     href={`/stories/${s.id}`}
-                    style={{ textDecoration: "none" }}
+                    className="link-unstyled"
                   >
                     <div className="story-card">
                       <div className="story-card-top">
@@ -347,9 +291,7 @@ export default function StoriesPage() {
     <Suspense
       fallback={
         <main className="main-content">
-          <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: "1.5rem" }}>
-            Loading...
-          </p>
+          <p className="text-muted text-14 mt-xl">Loading...</p>
         </main>
       }
     >

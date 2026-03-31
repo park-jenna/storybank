@@ -51,7 +51,7 @@
 .input {
   width: 100%;
   padding: 9px 12px;
-  border: 0.5px solid var(--border-input);
+  border: var(--stroke-1) solid var(--border-input);
   border-radius: var(--radius-md);
   font-size: 14px;
   color: var(--text-primary);
@@ -82,7 +82,7 @@
 .textarea {
   width: 100%;
   padding: 9px 12px;
-  border: 0.5px solid var(--border-input);
+  border: var(--stroke-1) solid var(--border-input);
   border-radius: var(--radius-md);
   font-size: 14px;
   color: var(--text-primary);
@@ -107,7 +107,7 @@
   font-size: 13px;
   color: var(--warn-text);
   background: var(--warn-bg);
-  border: 0.5px solid var(--warn-border);
+  border: var(--stroke-1) solid var(--warn-border);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
   margin-bottom: 1rem;

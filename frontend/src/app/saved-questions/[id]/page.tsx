@@ -72,7 +72,7 @@ export default function SavedQuestionDetailPage({
   if (loading) {
     return (
       <main className="main-content">
-        <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading question...</p>
+        <p className="text-muted text-14">Loading question...</p>
       </main>
     );
   }
@@ -85,8 +85,7 @@ export default function SavedQuestionDetailPage({
         </div>
         <button
           type="button"
-          className="back-btn"
-          style={{ marginTop: 12 }}
+          className="back-btn mt-3"
           onClick={() => router.push("/saved-questions")}
         >
           <svg
@@ -112,8 +111,8 @@ export default function SavedQuestionDetailPage({
   if (!userQuestion) {
     return (
       <main className="main-content">
-        <div className="card" style={{ marginBottom: 12 }}>
-          <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Question not found.</p>
+        <div className="card mb-3">
+          <p className="text-muted text-14">Question not found.</p>
         </div>
         <button
           type="button"
@@ -182,19 +181,9 @@ export default function SavedQuestionDetailPage({
         </div>
       </div>
 
-      <div className="card" style={{ marginBottom: 12 }}>
-        <h1
-          style={{
-            fontSize: 21,
-            fontWeight: 500,
-            color: "var(--text-primary)",
-            marginBottom: 8,
-            lineHeight: 1.3,
-          }}
-        >
-          {userQuestion.question.content}
-        </h1>
-        <p style={{ fontSize: 13, color: "var(--text-hint)", marginBottom: 12 }}>
+      <div className="card mb-3">
+        <h1>{userQuestion.question.content}</h1>
+        <p className="text-hint text-13 mb-3">
           Saved: {new Date(userQuestion.createdAt).toLocaleDateString()}
         </p>
         {userQuestion.question.recommendedCategories?.length > 0 && (
@@ -225,7 +214,6 @@ export default function SavedQuestionDetailPage({
                 <Link
                   href={`/stories/${s.id}`}
                   className="story-row-title"
-                  style={{ textDecoration: "none" }}
                 >
                   {s.title}
                 </Link>
@@ -239,8 +227,7 @@ export default function SavedQuestionDetailPage({
               </div>
               <Link
                 href={`/stories/${s.id}`}
-                className="btn-inline"
-                style={{ fontSize: 12, flexShrink: 0 }}
+                className="btn-inline text-12 flex-shrink-0"
               >
                 View →
               </Link>

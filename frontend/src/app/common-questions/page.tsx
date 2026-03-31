@@ -344,7 +344,7 @@ function CommonQuestionsContent() {
   if (loadingQuestions) {
     return (
       <main className="main-content">
-        <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading common questions...</p>
+        <p className="text-muted text-14">Loading common questions...</p>
       </main>
     );
   }
@@ -357,8 +357,7 @@ function CommonQuestionsContent() {
         </div>
         <button
           type="button"
-          className="back-btn"
-          style={{ marginTop: 12 }}
+          className="back-btn mt-3"
           onClick={() => router.push("/saved-questions")}
         >
           <svg
@@ -606,7 +605,7 @@ function CommonQuestionsContent() {
                               <Link
                                 key={s.id}
                                 href={storyDetailHref(s.id)}
-                                style={{ textDecoration: "none" }}
+                                className="link-unstyled"
                               >
                                 <div className="story-card">
                                   <div className="story-card-top">
@@ -802,8 +801,7 @@ function CommonQuestionsContent() {
                                             </div>
                                             <Link
                                               href={storyDetailHref(s.id)}
-                                              className="btn-inline"
-                                              style={{ fontSize: 12 }}
+                                              className="btn-inline text-12"
                                               onClick={(e) => e.stopPropagation()}
                                             >
                                               View story →
@@ -816,7 +814,7 @@ function CommonQuestionsContent() {
                                 ) : (
                                   <Link
                                     href={storyDetailHref(s.id)}
-                                    style={{ textDecoration: "none" }}
+                                    className="link-unstyled"
                                   >
                                     <div className="story-card">
                                       <div className="story-card-top">
@@ -977,7 +975,7 @@ export default function CommonQuestionsPage() {
     <Suspense
       fallback={
         <main className="main-content">
-          <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading...</p>
+          <p className="text-muted text-14">Loading...</p>
         </main>
       }
     >

@@ -4,7 +4,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useState,
 } from "react";
 
@@ -40,17 +39,12 @@ function applyTheme(next: Theme) {
 }
 
 function getInitialTheme(): Theme {
-  if (typeof document === "undefined") return "light";
-  return document.documentElement.classList.contains("dark") ? "dark" : "light";
+  if (typeof window === "undefined") return "light";
+  return getStoredTheme() ?? getSystemTheme();
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(getInitialTheme);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const setTheme = useCallback((next: Theme) => {
     setThemeState(next);
@@ -66,7 +60,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value: ThemeContextValue = {
-    theme: mounted ? theme : "light",
+    theme,
     setTheme,
     toggleTheme,
   };

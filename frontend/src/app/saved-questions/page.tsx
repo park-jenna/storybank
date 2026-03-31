@@ -345,7 +345,7 @@ export default function SavedQuestionsPage() {
       )}
 
       {!loading && !error && filteredUserQuestions.length > 0 && !linkingUserQuestion && (
-        <div className="q-card-grid" style={{ marginTop: 16 }}>
+        <div className="q-card-grid mt-4">
           {filteredUserQuestions.map((uq) => {
             const commonId = getCommonQuestionIdByContent(uq.question.content);
             const maxVisible = 3;
@@ -367,12 +367,12 @@ export default function SavedQuestionsPage() {
                   </button>
                 </div>
 
-                <Link href={`/saved-questions/${uq.id}`} style={{ textDecoration: "none" }}>
+                <Link href={`/saved-questions/${uq.id}`} className="link-unstyled">
                   <div className="q-card-title">{uq.question.content}</div>
                 </Link>
 
                 {uq.question.recommendedCategories?.length > 0 && (
-                  <div className="chips-row" style={{ marginBottom: 14 }}>
+                  <div className="chips-row mb-4">
                     {uq.question.recommendedCategories.slice(0, 4).map((cat) => (
                       <span key={cat} className="tag">
                         {cat}

@@ -21,7 +21,7 @@ function QuestionsRedirect() {
 
   return (
     <main className="main-content">
-      <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Redirecting…</p>
+      <p className="text-muted text-14">Redirecting…</p>
     </main>
   );
 }
@@ -31,7 +31,7 @@ export default function QuestionsPage() {
     <Suspense
       fallback={
         <main className="main-content">
-          <p style={{ fontSize: 14, color: "var(--text-muted)" }}>Loading…</p>
+          <p className="text-muted text-14">Loading…</p>
         </main>
       }
     >

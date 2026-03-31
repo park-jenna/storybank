@@ -15,7 +15,7 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  border: 0.5px solid var(--border-chip);
+  border: var(--stroke-1) solid var(--border-chip);
   background: var(--bg-chip);
   color: var(--text-secondary);
   user-select: none;

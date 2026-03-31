@@ -23,6 +23,10 @@
   --border-input:   #D0DCC8;
   --border-chip:    #C8DCC8;
 
+  /* Border widths (standardize stroke weights) */
+  --stroke-1: 1px;
+  --stroke-2: 2px;
+
   /* Text */
   --text-primary:   #102818;
   --text-dark:      #1E3C28;
@@ -53,6 +57,9 @@
   --danger-bg:       #C87858;
   --danger-hover:    #B06040;
   --danger-disabled: #D8B0A0;
+
+  /* Semantic accents */
+  --accent-danger:   var(--warn-text);
 
   /* Success */
   --success-text:    #1A5830;
@@ -124,6 +131,11 @@
   --background-solid:     var(--bg-chip);
   --shadow:               0 1px 3px rgba(16, 40, 24, 0.06);
   --shadow-md:            0 2px 8px rgba(16, 40, 24, 0.08);
+  --shadow-lg:            0 10px 24px rgba(16, 40, 24, 0.12);
+
+  /* Compatibility aliases (to be removed after full refactor) */
+  --border-light:         var(--border-card);
+  --accent-red:           var(--accent-danger);
 }
 
 
@@ -173,28 +185,28 @@ h1, h2, h3, h4, h5, h6 {
    3. BASE TYPOGRAPHY
    ------------------------------------------------------------ */
 h1 {
-  font-size: 24px;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+
+h2 {
+  font-size: 20px;
   font-weight: 500;
   line-height: 1.3;
   color: var(--text-primary);
 }
 
-h2 {
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.35;
-  color: var(--text-primary);
-}
-
 h3 {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.4;
   color: var(--text-primary);
 }
 
 p {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-muted);
   line-height: 1.6;
 }
@@ -254,7 +266,7 @@ select {
   font-size: 14px;
   color: var(--text-primary);
   background: var(--bg-input);
-  border: 0.5px solid var(--border-input);
+  border: var(--stroke-1) solid var(--border-input);
   border-radius: var(--radius-md);
   outline: none;
   appearance: none;

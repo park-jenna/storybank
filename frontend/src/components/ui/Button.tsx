@@ -19,10 +19,10 @@ const variantClasses: Record<ButtonVariant, string> = {
   menu: "btn-ghost",
 };
 
-const sizePadding: Record<ButtonSize, React.CSSProperties> = {
-  sm: { padding: "8px 16px" },
-  md: { padding: "10px 20px" },
-  lg: { padding: "12px 24px" },
+const sizeClasses: Record<ButtonSize, string> = {
+  sm: "btn-size-sm",
+  md: "btn-size-md",
+  lg: "btn-size-lg",
 };
 
 export default function Button({
@@ -30,15 +30,12 @@ export default function Button({
   size = "md",
   className = "",
   disabled,
-  style,
   ...props
 }: ButtonProps) {
-  const paddingStyle = sizePadding[size];
   return (
     <button
       type={props.type ?? "button"}
-      style={{ ...paddingStyle, ...style }}
-      className={`${variantClasses[variant]} ${className}`}
+      className={`${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       disabled={disabled}
       {...props}
     />

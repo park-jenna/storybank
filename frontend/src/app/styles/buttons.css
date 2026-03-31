@@ -6,14 +6,19 @@
    4. BUTTONS
    ------------------------------------------------------------ */
 
+/* Button sizing (used by `components/ui/Button.tsx`) */
+.btn-size-sm { padding: 8px 16px; }
+.btn-size-md { padding: 10px 20px; }
+.btn-size-lg { padding: 12px 24px; }
+
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--green-primary);
   color: #fff;
-  border: 0.5px solid var(--border-chip);
-  border-radius: 8px;
+  border: var(--stroke-1) solid var(--border-chip);
+  border-radius: var(--radius-sm);
   padding: 9px 15px;
   font-size: 14px;
   font-weight: 600;
@@ -38,8 +43,8 @@
   justify-content: center;
   background: transparent;
   color: var(--text-primary);
-  border: 0.9px solid currentColor;
-  border-radius: 8px;
+  border: var(--stroke-1) solid currentColor;
+  border-radius: var(--radius-sm);
   padding: 9px 15px;
   font-size: 14px;
   font-weight: 500;
@@ -59,8 +64,8 @@
   justify-content: center;
   background: transparent;
   color: var(--text-secondary);
-  border: 0.7px solid var(--border-chip);
-  border-radius: 8px;
+  border: var(--stroke-1) solid var(--border-chip);
+  border-radius: var(--radius-sm);
   padding: 7px 12px;
   font-size: 13px;
   font-weight: 500;
@@ -79,8 +84,8 @@
 .btn-row-sm {
   font-size: 12px;
   padding: 3px 9px;
-  border-radius: 8px;
-  border: 0.9px solid currentColor;
+  border-radius: var(--radius-sm);
+  border: var(--stroke-1) solid currentColor;
 }
 
 .btn-danger {
@@ -89,7 +94,7 @@
   justify-content: center;
   background: transparent;
   color: var(--warn-text);
-  border: 0.5px solid var(--danger-hover);
+  border: var(--stroke-1) solid var(--danger-hover);
   border-radius: var(--radius-pill);
   padding: 9px 16px;
   font-size: 14px;
@@ -117,7 +122,7 @@
   justify-content: center;
   background: none;
   color: var(--text-secondary);
-  border: 0.5px solid var(--border-chip);
+  border: var(--stroke-1) solid var(--border-chip);
   border-radius: var(--radius-pill);
   padding: 8px 14px;
   font-size: 13px;
@@ -137,8 +142,8 @@
   justify-content: center;
   background: transparent;
   color: var(--warn-text);
-  border: 0.9px solid currentColor;
-  border-radius: 8px;
+  border: var(--stroke-1) solid currentColor;
+  border-radius: var(--radius-sm);
   padding: 9px 15px;
   font-size: 14px;
   font-weight: 500;

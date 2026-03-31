@@ -12,7 +12,17 @@
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   padding: 1.125rem 1.5rem;
-  border: 0.5px solid var(--border-card);
+  border: var(--stroke-1) solid var(--border-card);
+}
+
+/* Card variants used by `components/ui/Card.tsx` */
+.card--overview {
+  border-radius: var(--radius-xl);
+  padding: 0;
+}
+
+.card--error {
+  border-color: var(--accent-danger);
 }
 
 .card-head {
@@ -2583,11 +2593,14 @@ a.story-row.story-row--dashboard:hover {
 .flex-col    { display: flex; flex-direction: column; }
 .items-center { align-items: center; }
 .justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
 .gap-sm { gap: var(--space-sm); }
 .gap-md { gap: var(--space-md); }
 .flex-1     { flex: 1; }
 .min-w-0    { min-width: 0; }
 .flex-shrink-0 { flex-shrink: 0; }
+
+.mt-auto { margin-top: auto; }
 
 .col-stack {
   display: flex;
@@ -3199,7 +3212,6 @@ a.story-row.story-row--dashboard:hover {
   display: block;
   width: 100%;
   height: auto;
-  vertical-align: top;
 }
 
 .about-feature-shot-placeholder {

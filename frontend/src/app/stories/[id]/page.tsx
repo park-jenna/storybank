@@ -233,9 +233,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
   if (loading) {
     return (
       <main className="main-content">
-        <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
-          Loading story...
-        </p>
+        <p className="text-muted text-14">Loading story...</p>
       </main>
     );
   }
@@ -248,8 +246,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
         </div>
         <button
           type="button"
-          className="back-btn"
-          style={{ marginTop: 12 }}
+          className="back-btn mt-3"
           onClick={navigateBackFromStoryDetail}
         >
           <svg
@@ -275,10 +272,8 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
   if (!story) {
     return (
       <main className="main-content">
-        <div className="card" style={{ marginBottom: 12 }}>
-          <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
-            Story not found.
-          </p>
+        <div className="card mb-3">
+          <p className="text-muted text-14">Story not found.</p>
         </div>
         <button
           type="button"

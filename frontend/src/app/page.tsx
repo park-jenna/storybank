@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import BrowserFrame from "@/components/BrowserFrame";
@@ -8,12 +8,10 @@ import DashboardPreview from "@/components/DashboardPreview";
 
 export default function HomePage() {
   const router = useRouter();
-  const [hasToken, setHasToken] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setHasToken(!!token);
-  }, []);
+  const [hasToken] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !!localStorage.getItem("token");
+  });
 
   return (
     <main className="landing-page">

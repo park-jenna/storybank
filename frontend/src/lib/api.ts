@@ -21,10 +21,17 @@ function handleAuthFailure(): void {
     }
 }
 
-function shouldTreatAsAuthFailure(status: number, data: any): boolean {
+function getErrorMessage(data: unknown): string {
+    if (!data || typeof data !== "object") return "";
+    const rec = data as Record<string, unknown>;
+    const raw = rec.error ?? rec.message;
+    return raw == null ? "" : String(raw);
+}
+
+function shouldTreatAsAuthFailure(status: number, data: unknown): boolean {
     if (status === 401) return true;
     // Some backends respond 403 or a 400-ish with an "invalid token" message
-    const msg = (data?.error ?? data?.message ?? "").toString();
+    const msg = getErrorMessage(data);
     if (!msg) return false;
     return /invalid\s*token|token\s*expired|expired\s*token|jwt\s*expired|unauthorized/i.test(msg);
 }

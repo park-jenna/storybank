@@ -458,7 +458,6 @@ export default function DashboardPage() {
                         key={s.id}
                         href={`/stories/${s.id}`}
                         className="story-row story-row--dashboard"
-                        style={{ textDecoration: "none" }}
                       >
                         <div className="dot dot-done" aria-hidden />
                         <div className="story-row-info">
@@ -539,7 +538,6 @@ export default function DashboardPage() {
                           key={uq.id}
                           href="/saved-questions"
                           className="q-row"
-                          style={{ textDecoration: "none" }}
                         >
                           <div className={`q-icon ${hasStory ? "q-done" : "q-empty"}`} />
                           <div className="q-txt">{uq.question.content}</div>
@@ -551,7 +549,7 @@ export default function DashboardPage() {
                         </Link>
                       );
                     })}
-                  <div className="cta-row" style={{ marginTop: 12 }}>
+                  <div className="cta-row mt-3">
                     <Link href="/saved-questions" className="btn-secondary">
                       Browse
                     </Link>
