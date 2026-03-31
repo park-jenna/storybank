@@ -8,6 +8,27 @@ type ApiOptions = {
     token?: string;
 };
 
+function handleAuthFailure(): void {
+    if (typeof window === "undefined") return;
+    try {
+        localStorage.removeItem("token");
+    } catch {
+        // ignore storage failures (private mode, etc.)
+    }
+    // Avoid redirect loops if we're already on the login page
+    if (window.location.pathname !== "/login") {
+        window.location.replace("/login");
+    }
+}
+
+function shouldTreatAsAuthFailure(status: number, data: any): boolean {
+    if (status === 401) return true;
+    // Some backends respond 403 or a 400-ish with an "invalid token" message
+    const msg = (data?.error ?? data?.message ?? "").toString();
+    if (!msg) return false;
+    return /invalid\s*token|token\s*expired|expired\s*token|jwt\s*expired|unauthorized/i.test(msg);
+}
+
 export async function apiPost<T>(
     endpoint: string, 
     body: unknown,
@@ -33,6 +54,9 @@ export async function apiPost<T>(
     const data = await res.json().catch(() => null);
 
     if (!res.ok) {
+        if (shouldTreatAsAuthFailure(res.status, data)) {
+            handleAuthFailure();
+        }
         const msg = data?.error ?? `Error ${res.status}`;
         throw new Error(msg);
     }
@@ -53,6 +77,9 @@ export async function apiGet<T>(endpoint: string, token?: string): Promise<T> {
     const data = await res.json().catch(() => null);
 
     if (!res.ok) {
+        if (shouldTreatAsAuthFailure(res.status, data)) {
+            handleAuthFailure();
+        }
         const msg = data?.error ?? `Error ${res.status}`;
         throw new Error(msg);
     }
@@ -80,6 +107,9 @@ export async function apiDelete<T>(
     const data = await res.json().catch(() => null);
 
     if (!res.ok) {
+        if (shouldTreatAsAuthFailure(res.status, data)) {
+            handleAuthFailure();
+        }
         const msg = data?.error ?? `Error ${res.status}`;
         throw new Error(msg);
     }
@@ -111,6 +141,9 @@ export async function apiPatch<T>(
     const data = await res.json().catch(() => null);
 
     if (!res.ok) {
+        if (shouldTreatAsAuthFailure(res.status, data)) {
+            handleAuthFailure();
+        }
         const msg = data?.error ?? `Error ${res.status}`;
         throw new Error(msg);
     }

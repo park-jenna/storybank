@@ -271,22 +271,29 @@ export default function InterviewTipsPage() {
               . Tap a segment to jump to that part below.
             </p>
             <StarResourceTimeBar />
-            <div className="star-resource-parts-stack">
-              {STAR_PARTS.map(({ id, letter, title, pct, plain, body }) => (
-                <div key={letter} id={id} className="card star-resource-part">
-                  <div className="star-resource-part__head">
-                    <span className="star-resource-part__mark" aria-hidden>
-                      {letter}
-                    </span>
-                    <div>
-                      <h3 className="star-resource-part__title">{title}</h3>
-                      <p className="star-resource-part__pct">{pct} of your answer</p>
-                      <p className="star-resource-part__plain">{plain}</p>
+            <div className="card star-resource-timeline-stack">
+              <ol
+                className="star-resource-timeline"
+                aria-label="STAR answer structure in order"
+              >
+                {STAR_PARTS.map(({ id, letter, title, pct, plain, body }) => (
+                  <li key={id} id={id} className="star-resource-timeline__item">
+                    <div className="star-resource-timeline__track" aria-hidden>
+                      <span className="star-resource-timeline__node">{letter}</span>
                     </div>
-                  </div>
-                  <p className="star-resource-part__body">{body}</p>
-                </div>
-              ))}
+                    <div className="star-resource-timeline__segment">
+                      <div className="star-resource-part__head">
+                        <div className="star-resource-part__title-row">
+                          <h3 className="star-resource-part__title">{title}</h3>
+                          <span className="star-resource-part__pct">{pct} of your answer</span>
+                        </div>
+                        <p className="star-resource-part__plain">{plain}</p>
+                      </div>
+                      <p className="star-resource-part__body">{body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
             </div>
           </section>
 

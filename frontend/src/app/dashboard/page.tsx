@@ -133,7 +133,7 @@ export default function DashboardPage() {
         setError(null);
         const token = localStorage.getItem("token");
         if (!token) {
-          setError("No token found. Please log in again.");
+          setError("Session expired. Please log in again.");
           router.replace("/login");
           return;
         }
@@ -144,9 +144,13 @@ export default function DashboardPage() {
         setStories(storiesRes.stories);
         setUserQuestions(uqRes.userQuestions);
       } catch (err) {
-        const msg =
-          err instanceof Error ? err.message : "Failed to load stories.";
-        setError(msg);
+        const msg = err instanceof Error ? err.message : "Failed to load stories.";
+        // api layer will redirect on auth failure; keep a friendly message for the brief moment before navigation
+        const friendly =
+          /invalid\s*token|token\s*expired|expired\s*token|jwt\s*expired|unauthorized|401/i.test(msg)
+            ? "Session expired. Please log in again."
+            : msg;
+        setError(friendly);
       } finally {
         setLoading(false);
       }
