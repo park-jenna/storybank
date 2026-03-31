@@ -355,16 +355,34 @@ export default function SavedQuestionsPage() {
               <div key={uq.id} className="q-card">
                 <div className="q-card-top">
                   <span className="q-card-date">{formatDate(uq.createdAt)}</span>
-                  <button
-                    type="button"
-                    className="del-btn"
-                    disabled={deletingId === uq.id}
-                    onClick={() => openDeleteConfirm(uq.id)}
-                    aria-label="Remove this question from saved list"
-                    title="Remove from saved"
-                  >
-                    {deletingId === uq.id ? "Deleting..." : "Remove"}
-                  </button>
+                  <details className="q-card-menu">
+                    <summary
+                      className="q-card-menu-trigger"
+                      aria-label="More actions"
+                      title="More"
+                      onClick={(e) => {
+                        // Avoid toggling other click handlers in the card.
+                        e.stopPropagation();
+                      }}
+                    >
+                      <span aria-hidden>⋯</span>
+                    </summary>
+                    <div className="q-card-menu-popover" role="menu">
+                      <button
+                        type="button"
+                        className="q-card-menu-item q-card-menu-item--danger"
+                        disabled={deletingId === uq.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const details = e.currentTarget.closest("details");
+                          if (details) details.removeAttribute("open");
+                          openDeleteConfirm(uq.id);
+                        }}
+                      >
+                        {deletingId === uq.id ? "Deleting..." : "Remove"}
+                      </button>
+                    </div>
+                  </details>
                 </div>
 
                 <Link href={`/saved-questions/${uq.id}`} className="link-unstyled">

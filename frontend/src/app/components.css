@@ -2148,6 +2148,19 @@ a.story-row.story-row--dashboard:hover {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   padding: 1.25rem 1.5rem;
+  border: 0.5px solid var(--border-input);
+  box-shadow: 0 1px 3px rgba(16, 40, 24, 0.06);
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s, border-color 0.15s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.q-card:hover {
+  background: var(--bg-hover);
+  box-shadow: 0 3px 10px rgba(16, 40, 24, 0.1);
+  border-color: var(--border-chip);
+  transform: translateY(-1px);
 }
 
 .q-card-top {
@@ -2162,32 +2175,109 @@ a.story-row.story-row--dashboard:hover {
   color: var(--text-hint);
 }
 
-/* Delete button (saved questions card) */
-.del-btn {
-  font-size: 12px;
-  color: var(--warn-text);
-  background: none;
+/* Saved question card — kebab menu (⋯) */
+.q-card-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.q-card-menu > summary {
+  list-style: none;
+}
+
+.q-card-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.q-card-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 0.5px solid transparent;
+  background: transparent;
+  color: var(--text-hint);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.q-card-menu-trigger:hover {
+  background: var(--bg-chip);
+  color: var(--text-secondary);
+  border-color: var(--border-chip);
+}
+
+.q-card-menu[open] .q-card-menu-trigger {
+  background: var(--bg-chip-hover);
+  color: var(--text-primary);
+  border-color: var(--border-chip);
+}
+
+.q-card-menu-popover {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  min-width: 180px;
+  background: var(--bg-card);
+  border: 0.5px solid var(--border-card);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 24px rgba(16, 40, 24, 0.12);
+  padding: 6px;
+  z-index: 30;
+}
+
+.q-card-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
   border: none;
   cursor: pointer;
-  padding: 3px 8px;
-  border-radius: var(--radius-sm);
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
 }
-.del-btn:hover {
+
+.q-card-menu-item:hover:not(:disabled) {
+  background: var(--bg-chip);
+  color: var(--text-primary);
+}
+
+.q-card-menu-item--danger {
+  color: var(--warn-text);
+}
+
+.q-card-menu-item--danger:hover:not(:disabled) {
   background: var(--warn-bg);
   color: var(--warn-text);
 }
-.del-btn:disabled {
+
+.q-card-menu-item:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
 .q-card-title {
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--text-primary);
   line-height: 1.45;
   margin-bottom: 10px;
   cursor: pointer;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .q-card-title:hover {
@@ -2220,8 +2310,8 @@ a.story-row.story-row--dashboard:hover {
 
 .no-stories-text {
   font-size: 13px;
-  color: var(--warn-text);
-  font-style: italic;
+  color: var(--text-hint);
+  margin: 0;
 }
 
 /* Common questions: empty linked-stories hint */
