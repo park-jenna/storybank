@@ -75,17 +75,6 @@ export default function EditSavedQuestionPage({
     });
   }
 
-  const formatDate = (dateString: string) => {
-    const d = new Date(dateString);
-    const now = new Date();
-    const diffDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    return d.toLocaleDateString();
-  };
-
   function toggleStory(storyId: string) {
     setSelectedStoryIds((prev) => {
       const next = new Set(prev);
@@ -183,8 +172,13 @@ export default function EditSavedQuestionPage({
           Back
         </button>
       </div>
-      <div className="page-header-left" style={{ marginBottom: "1.5rem" }}>
-        <h1 className="page-title">Edit Saved Question</h1>
+      <div className="page-header" style={{ marginBottom: "1.25rem" }}>
+        <div className="page-header-left">
+          <h1 className="page-title">Edit saved question</h1>
+          <p className="page-subtitle">
+            Update the question text, tweak categories, and select which stories you want to link.
+          </p>
+        </div>
       </div>
 
       <form onSubmit={handleSave}>
@@ -234,7 +228,7 @@ export default function EditSavedQuestionPage({
             <label className="field-label">Linked stories</label>
             <p className="field-hint">
               Choose which stories you want to use to answer this question.
-              Click + to link, expand to see details.
+              Check to link (or uncheck to unlink). Use the chevron to preview details.
             </p>
 
             {stories.length === 0 ? (
@@ -256,14 +250,14 @@ export default function EditSavedQuestionPage({
                   }}
                 >
                   <span className="section-label" style={{ marginBottom: 0 }}>
-                    Stories to link
+                    Stories
                   </span>
                   <span style={{ fontSize: 13, color: "var(--text-hint)" }}>
                     {selectedStoryIds.size} selected
                   </span>
                 </div>
                 <p className="field-hint" style={{ marginBottom: 10 }}>
-                  Click the + button to link a story to this question; click again to unlink.
+                  Select the stories you want associated with this question.
                 </p>
 
                 <div
@@ -292,11 +286,18 @@ export default function EditSavedQuestionPage({
                               flexShrink: 0,
                             }}
                             onClick={() => toggleStory(s.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                toggleStory(s.id);
+                              }
+                            }}
                             role="checkbox"
                             aria-checked={isSelected}
                             aria-label={
                               isSelected ? `Unlink "${s.title}"` : `Link "${s.title}"`
                             }
+                            tabIndex={0}
                           >
                             {isSelected ? "✓" : ""}
                           </div>
@@ -315,16 +316,10 @@ export default function EditSavedQuestionPage({
                                 type="button"
                                 onClick={() => toggleStoryExpanded(s.id)}
                                 aria-expanded={isExpanded}
-                                style={{
-                                  fontSize: 12,
-                                  color: "var(--text-hint)",
-                                  background: "none",
-                                  border: "none",
-                                  cursor: "pointer",
-                                  flexShrink: 0,
-                                }}
+                                className="rc-expand-btn"
+                                aria-label={isExpanded ? "Collapse details" : "Expand details"}
                               >
-                                {isExpanded ? "▼" : "▶"}
+                                <span aria-hidden>{isExpanded ? "▼" : "▶"}</span>
                               </button>
                             </div>
 
@@ -388,30 +383,26 @@ export default function EditSavedQuestionPage({
               Error: {error}
             </div>
           )}
+        </div>
 
-          <div
-            className="btn-group"
-            style={{
-              marginTop: "1.25rem",
-              paddingTop: "1.25rem",
-              borderTop: "0.5px solid var(--border-card)",
-            }}
-          >
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={saving}
-            >
-              {saving ? "Saving..." : "Save Changes"}
-            </button>
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => router.push(`/saved-questions/${questionId}`)}
-              disabled={saving}
-            >
-              Cancel
-            </button>
+        <div className="edit-actions-bar">
+          <div className="edit-actions-bar-inner">
+            <div className="btn-group">
+              <button type="submit" className="btn-primary" disabled={saving}>
+                {saving ? "Saving..." : "Save changes"}
+              </button>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => router.push(`/saved-questions/${questionId}`)}
+                disabled={saving}
+              >
+                Cancel
+              </button>
+            </div>
+            <span className="edit-actions-bar-hint">
+              {selectedStoryIds.size} linked
+            </span>
           </div>
         </div>
       </form>
