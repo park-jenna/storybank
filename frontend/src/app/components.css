@@ -375,26 +375,47 @@
 
 .stories-in-progress-queue .carousel-card .story-card-situation {
   min-height: 0;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   -webkit-line-clamp: 2;
   line-clamp: 2;
 }
 
-.stories-in-progress-queue .carousel-card .star-completion-visual {
-  margin-bottom: 6px;
-}
-
 .carousel-card-footer {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
   margin-top: auto;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
-.carousel-card-footer .story-card-cats {
+.carousel-card-footer-cats {
   flex: 1;
   min-width: 0;
+  align-self: flex-end;
+}
+
+.carousel-card-footer-cats .story-card-cats {
+  margin-bottom: 0;
+}
+
+/* Narrow carousel: long category names wrap; slightly smaller tags stay balanced vs STAR + CTA */
+.carousel-card-footer-cats .tag {
+  font-size: 11px;
+  line-height: 1.25;
+  padding: 2px 7px;
+}
+
+.carousel-card-footer-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.carousel-card-footer .star-completion-visual {
   margin-bottom: 0;
 }
 

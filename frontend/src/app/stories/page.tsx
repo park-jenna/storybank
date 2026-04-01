@@ -163,39 +163,45 @@ function StoriesPageContent() {
                       >
                         {s.situation || "No situation written yet."}
                       </div>
-                      <StarCompletionVisual
-                        variant="card"
-                        situation={situation}
-                        action={action}
-                        result={result}
-                      />
                       <div className="carousel-card-footer">
-                        <div className="story-card-cats">
-                          {s.categories.slice(0, 2).map((c) => (
-                            <span key={c} className="tag">
-                              {c}
-                            </span>
-                          ))}
-                          {s.categories.length > 2 && (
-                            <span className="tag">
-                              +{s.categories.length - 2}
-                            </span>
-                          )}
+                        <div className="carousel-card-footer-cats">
+                          <div className="story-card-cats">
+                            {s.categories.slice(0, 2).map((c) => (
+                              <span key={c} className="tag">
+                                {c}
+                              </span>
+                            ))}
+                            {s.categories.length > 2 && (
+                              <span className="tag">
+                                +{s.categories.length - 2}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <button
-                          type="button"
-                          className="btn-row btn-row-sm carousel-card-footer-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(
-                              `/stories/${s.id}/edit?from=${encodeURIComponent(
-                                "/stories"
-                              )}`
-                            );
-                          }}
-                        >
-                          {!situation && !action && !result ? "Start" : "Edit"}
-                        </button>
+                        <div className="carousel-card-footer-actions">
+                          <StarCompletionVisual
+                            variant="card"
+                            situation={situation}
+                            action={action}
+                            result={result}
+                          />
+                          <button
+                            type="button"
+                            className="btn-row btn-row-sm carousel-card-footer-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(
+                                `/stories/${s.id}/edit?from=${encodeURIComponent(
+                                  "/stories"
+                                )}`
+                              );
+                            }}
+                          >
+                            {!situation && !action && !result
+                              ? "Start"
+                              : "Edit"}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
