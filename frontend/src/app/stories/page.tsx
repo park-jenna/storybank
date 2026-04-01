@@ -116,15 +116,25 @@ function StoriesPageContent() {
           </div>
 
           {inProgressStories.length > 0 && (
-            <div className="mb-5">
-              <div className="section-label">IN PROGRESS</div>
+            <section
+              className="stories-in-progress-queue card mb-5"
+              aria-labelledby="stories-in-progress-heading"
+            >
+              <div className="stories-in-progress-queue-head">
+                <p className="dashboard-onboarding-eyebrow">In progress</p>
+                <h2
+                  id="stories-in-progress-heading"
+                  className="stories-in-progress-queue-title"
+                >
+                  Pick up where you left off
+                </h2>
+              </div>
               <div className="carousel-wrap">
                 <div className="carousel">
                 {inProgressStories.map((s) => {
-                  const missing: string[] = [];
-                  if (!s.situation?.trim()) missing.push("Situation/Task");
-                  if (!s.action?.trim()) missing.push("Action");
-                  if (!s.result?.trim()) missing.push("Result");
+                  const situation = !!s.situation?.trim();
+                  const action = !!s.action?.trim();
+                  const result = !!s.result?.trim();
                   return (
                     <div
                       key={s.id}
@@ -145,28 +155,36 @@ function StoriesPageContent() {
                         }
                       }}
                     >
-                      <div style={{ minHeight: 70 }}>
+                      <div className="story-card-top">
                         <div className="story-card-title">{s.title}</div>
-                        <div className={`story-card-situation${s.situation ? "" : " empty"}`}>
-                          {s.situation || "No situation written yet."}
-                        </div>
                       </div>
-                      {missing.length > 0 && (
-                        <div
-                          className="story-card-missing"
-                        >
-                          <span className="text-warn text-12">Missing:</span>
-                          {missing.map((m) => (
-                            <span key={m} className="tag-missing">
-                              {m}
+                      <div
+                        className={`story-card-situation${situation ? "" : " empty"}`}
+                      >
+                        {s.situation || "No situation written yet."}
+                      </div>
+                      <StarCompletionVisual
+                        variant="card"
+                        situation={situation}
+                        action={action}
+                        result={result}
+                      />
+                      <div className="carousel-card-footer">
+                        <div className="story-card-cats">
+                          {s.categories.slice(0, 2).map((c) => (
+                            <span key={c} className="tag">
+                              {c}
                             </span>
                           ))}
+                          {s.categories.length > 2 && (
+                            <span className="tag">
+                              +{s.categories.length - 2}
+                            </span>
+                          )}
                         </div>
-                      )}
-                      <div className="flex justify-end mt-auto">
                         <button
                           type="button"
-                          className="btn-row btn-row-sm"
+                          className="btn-row btn-row-sm carousel-card-footer-btn"
                           onClick={(e) => {
                             e.stopPropagation();
                             router.push(
@@ -176,7 +194,7 @@ function StoriesPageContent() {
                             );
                           }}
                         >
-                          {!s.situation && !s.action && !s.result ? "Start" : "Edit"}
+                          {!situation && !action && !result ? "Start" : "Edit"}
                         </button>
                       </div>
                     </div>
@@ -184,7 +202,7 @@ function StoriesPageContent() {
                 })}
                 </div>
               </div>
-            </div>
+            </section>
           )}
 
           <div className="chips-row mb-2">

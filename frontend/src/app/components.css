@@ -355,6 +355,53 @@
   transform: translateY(-1px);
 }
 
+/* Stories / in-progress queue: match grid story cards + compact body */
+.stories-in-progress-queue .carousel-card {
+  min-height: 0;
+  border: 0.5px solid var(--border-input);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.stories-in-progress-queue .carousel-card:hover {
+  border-color: var(--border-chip);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.stories-in-progress-queue .carousel-card .story-card-title {
+  min-height: 0;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.stories-in-progress-queue .carousel-card .story-card-situation {
+  min-height: 0;
+  margin-bottom: 6px;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.stories-in-progress-queue .carousel-card .star-completion-visual {
+  margin-bottom: 6px;
+}
+
+.carousel-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+.carousel-card-footer .story-card-cats {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.carousel-card-footer-btn {
+  flex-shrink: 0;
+}
+
 /* In-progress carousel: desktop width matches 3-col grid; on narrow screens use a readable min width */
 @media (max-width: 900px) {
   .carousel-card {
