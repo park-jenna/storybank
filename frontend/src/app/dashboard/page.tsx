@@ -536,7 +536,7 @@ export default function DashboardPage() {
                       return (
                         <Link
                           key={uq.id}
-                          href="/saved-questions"
+                          href={`/saved-questions/${uq.id}`}
                           className="q-row"
                         >
                           <div className={`q-icon ${hasStory ? "q-done" : "q-empty"}`} />
