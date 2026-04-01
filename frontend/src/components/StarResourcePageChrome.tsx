@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 
 const TOC_ITEMS = [
-  { id: "star-intro", href: "#star-intro", label: "What is STAR?" },
-  { id: "star-why", href: "#star-why", label: "Why it helps" },
-  { id: "star-four", href: "#star-four", label: "The four parts" },
-  { id: "star-tips", href: "#star-tips", label: "Before you answer" },
-  { id: "star-prep", href: "#star-prep", label: "Preparing your stories" },
-  { id: "star-storybank", href: "#star-storybank", label: "StoryBank & how to use it" },
-  { id: "star-practice", href: "#star-practice", label: "Next steps" },
+  { id: "star-intro", href: "#star-intro", label: "Start here" },
+  { id: "star-why", href: "#star-why", label: "Why STAR?" },
+  { id: "star-glance", href: "#star-glance", label: "One view" },
+  { id: "star-four", href: "#star-four", label: "Each letter" },
+  { id: "star-tips", href: "#star-tips", label: "Tips" },
+  { id: "star-storybank", href: "#star-storybank", label: "StoryBank" },
+  { id: "star-next", href: "#star-next", label: "Next steps" },
 ] as const;
 
 function getScrollContainer(): HTMLElement | null {
@@ -74,17 +74,15 @@ export function StarResourceTocNav() {
   }, []);
 
   return (
-    <ul className="star-resource-aside-nav">
+    <ul className="sb-star-page-toc">
       {TOC_ITEMS.map(({ id, href, label }) => {
         const isActive = active === id;
         return (
-          <li key={id}>
+          <li key={id} className="sb-star-page-toc__item">
             <a
               href={href}
               className={
-                isActive
-                  ? "star-resource-aside-nav__link star-resource-aside-nav__link--active"
-                  : "star-resource-aside-nav__link"
+                isActive ? "sb-star-page-toc__link sb-star-page-toc__link--active" : "sb-star-page-toc__link"
               }
               aria-current={isActive ? "location" : undefined}
             >
@@ -120,7 +118,7 @@ export function StarResourceBackToTop() {
   return (
     <button
       type="button"
-      className="star-resource-back-top"
+      className="sb-star-page-back-top"
       onClick={() => {
         const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const behavior: ScrollBehavior = reduce ? "auto" : "smooth";
@@ -141,32 +139,5 @@ export function StarResourceBackToTop() {
       </svg>
       <span>Top</span>
     </button>
-  );
-}
-
-/** Compact S–T–A–R jump row for the aside (avoids repeating full blurbs from the main column). */
-export function StarResourceGlanceJump() {
-  const jumps = [
-    { letter: "S", href: "#star-part-s", label: "Situation" },
-    { letter: "T", href: "#star-part-t", label: "Task" },
-    { letter: "A", href: "#star-part-a", label: "Action" },
-    { letter: "R", href: "#star-part-r", label: "Result" },
-  ] as const;
-
-  return (
-    <div className="star-resource-glance-jump" role="navigation" aria-label="Jump to STAR sections">
-      {jumps.map(({ letter, href, label }, i) => (
-        <span key={letter} className="star-resource-glance-jump__item">
-          {i > 0 && (
-            <span className="star-resource-glance-jump__sep" aria-hidden>
-              →
-            </span>
-          )}
-          <a href={href} className="star-resource-glance-jump__link" title={`${label}`}>
-            {letter}
-          </a>
-        </span>
-      ))}
-    </div>
   );
 }

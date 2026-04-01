@@ -9,7 +9,7 @@ const SEGMENTS = [
     pct: "~20%",
     label: "Situation",
     href: "#star-part-s",
-    className: "star-resource-timebar__seg star-resource-timebar__seg--s",
+    className: "sb-star-page-timebar__seg sb-star-page-timebar__seg--s",
   },
   {
     key: "t",
@@ -17,7 +17,7 @@ const SEGMENTS = [
     pct: "~10%",
     label: "Task",
     href: "#star-part-t",
-    className: "star-resource-timebar__seg star-resource-timebar__seg--t",
+    className: "sb-star-page-timebar__seg sb-star-page-timebar__seg--t",
   },
   {
     key: "a",
@@ -25,7 +25,7 @@ const SEGMENTS = [
     pct: "~60%",
     label: "Action",
     href: "#star-part-a",
-    className: "star-resource-timebar__seg star-resource-timebar__seg--a",
+    className: "sb-star-page-timebar__seg sb-star-page-timebar__seg--a",
   },
   {
     key: "r",
@@ -33,7 +33,7 @@ const SEGMENTS = [
     pct: "~10%",
     label: "Result",
     href: "#star-part-r",
-    className: "star-resource-timebar__seg star-resource-timebar__seg--r",
+    className: "sb-star-page-timebar__seg sb-star-page-timebar__seg--r",
   },
 ] as const;
 
@@ -49,7 +49,7 @@ export function StarResourceTimeBar() {
 
   return (
     <div
-      className="star-resource-timebar star-resource-timebar--interactive"
+      className="sb-star-page-timebar sb-star-page-timebar--interactive"
       role="group"
       aria-label="Rough share of answer time for each STAR step. Select a step to jump to that section."
     >
@@ -62,11 +62,14 @@ export function StarResourceTimeBar() {
           aria-label={`${label}, ${pct}. Jump to ${label} details below.`}
           onClick={() => onActivate(href)}
         >
-          <span className="star-resource-timebar__label">
-            <span className="star-resource-timebar__letter" aria-hidden>
+          <span className="sb-star-page-timebar__label">
+            <span className="sb-star-page-timebar__letter" aria-hidden>
               {letter}
             </span>
-            <span className="star-resource-timebar__pct">{pct}</span>
+            <span className="sb-star-page-timebar__name" aria-hidden>
+              {label}
+            </span>
+            <span className="sb-star-page-timebar__pct">{pct}</span>
           </span>
         </button>
       ))}
