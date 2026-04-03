@@ -231,10 +231,10 @@
 }
 
 .page-subtitle {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-muted);
-  margin-top: 3px;
-  line-height: 1.5;
+  margin-top: 4px;
+  line-height: 1.6;
 }
 
 /* Editing subtitle with badge (e.g. "Editing: {story title}") */

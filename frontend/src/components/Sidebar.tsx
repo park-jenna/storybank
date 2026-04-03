@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchStories } from "@/lib/stories";
 import { fetchUserQuestions } from "@/lib/user-questions";
+import { useTheme } from "@/contexts/ThemeContext";
 
 function storyProgress(s: { situation?: string | null; action?: string | null; result?: string | null }): number {
   let n = 0;
@@ -31,6 +32,7 @@ type SidebarProps = {
 export default function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
   const [inProgressCount, setInProgressCount] = useState(0);
   const [unlinkedCount, setUnlinkedCount] = useState(0);
 
@@ -243,6 +245,27 @@ export default function Sidebar({ onClose }: SidebarProps) {
         <div className="sidebar-spacer" />
 
         <div className="sidebar-bottom-links">
+          <button
+            type="button"
+            className="sidebar-bottom-link"
+            onClick={toggleTheme}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {theme === "dark" ? (
+                <svg viewBox="0 0 24 24" width={15} height={15} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" width={15} height={15} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden>
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+              )}
+              {theme === "dark" ? "Light mode" : "Dark mode"}
+            </span>
+          </button>
           <button
             type="button"
             className="sidebar-bottom-link"

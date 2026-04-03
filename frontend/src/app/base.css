@@ -140,6 +140,76 @@
 
 
 /* ------------------------------------------------------------
+   1b. DARK MODE TOKEN OVERRIDES
+   ------------------------------------------------------------ */
+.dark {
+  /* Backgrounds */
+  --bg-page:        #121a14;
+  --bg-sidebar:     #161f18;
+  --bg-card:        #1c2820;
+  --bg-input:       #213026;
+  --bg-chip:        #243028;
+  --bg-chip-hover:  #2a3830;
+  --bg-hover:       rgba(255, 255, 255, 0.06);
+
+  /* Borders */
+  --border-page:    #2c3e32;
+  --border-card:    #263628;
+  --border-input:   #304038;
+  --border-chip:    #3a4e42;
+
+  /* Text */
+  --text-primary:   #dff0e4;
+  --text-dark:      #c8e8d4;
+  --text-secondary: #8ab89a;
+  --text-muted:     #7aaa8a;
+  --text-hint:      #6a9878;
+  --text-faint:     #527060;
+  --input-placeholder: #6a9878;
+
+  /* Brand */
+  --green-primary:  #5aaa78;
+  --green-hover:    #4a9a68;
+  --green-light:    #1e3428;
+  --green-dot:      #5aaa78;
+  --green-focus:    rgba(90, 170, 120, 0.18);
+
+  /* Warning */
+  --warn-text:       #e07858;
+  --warn-bg:         #3a2018;
+  --warn-border:     #7a4428;
+  --warn-badge-bg:   #3a2c10;
+  --warn-badge-text: #d0a060;
+
+  /* Danger */
+  --danger-bg:       #a06050;
+  --danger-hover:    #905040;
+
+  /* Success */
+  --success-text:    #5aaa78;
+  --success-bg:      #1e3428;
+
+  /* Badges */
+  --badge-bg:        #a04838;
+
+  /* Component aliases */
+  --shadow:         0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md:      0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-lg:      0 10px 24px rgba(0, 0, 0, 0.4);
+
+  /* Tag */
+  --tag-bg:         var(--bg-chip);
+  --tag-border:     var(--border-chip);
+
+  /* Misc */
+  --bg-row-active:  #1e3228;
+  --star-tip-bg:    #1a2e1e;
+  --progress-bg:    #243028;
+  --dot-empty:      #4a6858;
+  --btn-primary-disabled-bg: #2e4038;
+}
+
+/* ------------------------------------------------------------
    2. RESET
    ------------------------------------------------------------ */
 *,
@@ -159,7 +229,7 @@ html {
 body {
   min-height: 100%;
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.5;
   color: var(--text-primary);
   background: var(--bg-page);
@@ -206,9 +276,9 @@ h3 {
 }
 
 p {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text-muted);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 small {
@@ -263,7 +333,7 @@ input,
 textarea,
 select {
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-primary);
   background: var(--bg-input);
   border: var(--stroke-1) solid var(--border-input);

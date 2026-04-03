@@ -48,7 +48,8 @@
   padding: 3px 9px;
   border-radius: var(--radius-sm);
   background: var(--tag-bg);
-  color: var(--text-faint);
+  color: var(--text-secondary);
+  border: var(--stroke-1) solid var(--tag-border);
 }
 
 /* Tag highlight — question’s “good categories to highlight” and matching categories in story cards */

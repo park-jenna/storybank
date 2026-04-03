@@ -53,7 +53,7 @@
   padding: 9px 12px;
   border: var(--stroke-1) solid var(--border-input);
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-primary);
   background: var(--bg-input);
   outline: none;
@@ -84,12 +84,12 @@
   padding: 9px 12px;
   border: var(--stroke-1) solid var(--border-input);
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-primary);
   background: var(--bg-input);
   outline: none;
   resize: vertical;
-  line-height: 1.6;
+  line-height: 1.65;
   min-height: 80px;
 }
 
