@@ -23,6 +23,70 @@ function storyDetailHref(storyId: string) {
   return `/stories/${storyId}?returnTo=${encodeURIComponent("/common-questions")}`;
 }
 
+const MAX_CATEGORY_TAGS_ON_CARD = 3;
+
+/** Recommended categories first, then the rest (preserves order within each group). */
+function orderedStoryCategories(categories: string[], recommended: string[]): string[] {
+  const rec = new Set(recommended);
+  const matches = categories.filter((c) => rec.has(c));
+  const rest = categories.filter((c) => !rec.has(c));
+  return [...matches, ...rest];
+}
+
+function StoryCategoryTagsRow({
+  categories,
+  recommendedCategories,
+  maxVisible,
+}: {
+  categories: string[];
+  recommendedCategories: string[];
+  maxVisible: number;
+}) {
+  const ordered = orderedStoryCategories(categories, recommendedCategories);
+  const visible = ordered.slice(0, maxVisible);
+  const moreCount = Math.max(0, ordered.length - maxVisible);
+  return (
+    <>
+      {visible.map((c) => (
+        <span
+          key={c}
+          className={`tag${recommendedCategories.includes(c) ? " tag-match" : ""}`}
+        >
+          {c}
+        </span>
+      ))}
+      {moreCount > 0 && (
+        <span className="tag tag-more" aria-label={`${moreCount} more categories`}>
+          +{moreCount}
+        </span>
+      )}
+    </>
+  );
+}
+
+/** Full ordered list (e.g. expanded detail) — no +N truncation. */
+function StoryCategoryTagsAll({
+  categories,
+  recommendedCategories,
+}: {
+  categories: string[];
+  recommendedCategories: string[];
+}) {
+  const ordered = orderedStoryCategories(categories, recommendedCategories);
+  return (
+    <>
+      {ordered.map((c) => (
+        <span
+          key={c}
+          className={`tag${recommendedCategories.includes(c) ? " tag-match" : ""}`}
+        >
+          {c}
+        </span>
+      ))}
+    </>
+  );
+}
+
 function CommonQuestionsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -616,14 +680,13 @@ function CommonQuestionsContent() {
                                   </div>
                                   <div className="story-card-missing" />
                                   <div className="story-card-cats">
-                                    {s.categories.slice(0, 3).map((c) => (
-                                      <span
-                                        key={c}
-                                        className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-match" : ""}`}
-                                      >
-                                        {c}
-                                      </span>
-                                    ))}
+                                    <StoryCategoryTagsRow
+                                      categories={s.categories}
+                                      recommendedCategories={
+                                        selectedQuestion?.recommendedCategories ?? []
+                                      }
+                                      maxVisible={MAX_CATEGORY_TAGS_ON_CARD}
+                                    />
                                   </div>
                                 </div>
                               </Link>
@@ -790,14 +853,12 @@ function CommonQuestionsContent() {
                                               {s.result || s.situation || "No summary"}
                                             </p>
                                             <div className="rc-cats" style={{ marginBottom: 6 }}>
-                                              {s.categories.slice(0, 3).map((c) => (
-                                                <span
-                                                  key={c}
-                                                  className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-match" : ""}`}
-                                                >
-                                                  {c}
-                                                </span>
-                                              ))}
+                                              <StoryCategoryTagsAll
+                                                categories={s.categories}
+                                                recommendedCategories={
+                                                  selectedQuestion?.recommendedCategories ?? []
+                                                }
+                                              />
                                             </div>
                                             <Link
                                               href={storyDetailHref(s.id)}
@@ -825,14 +886,13 @@ function CommonQuestionsContent() {
                                       </div>
                                       <div className="story-card-missing" />
                                       <div className="story-card-cats">
-                                        {s.categories.slice(0, 3).map((c) => (
-                                          <span
-                                            key={c}
-                                            className={`tag${(selectedQuestion?.recommendedCategories ?? []).includes(c) ? " tag-match" : ""}`}
-                                          >
-                                            {c}
-                                          </span>
-                                        ))}
+                                        <StoryCategoryTagsRow
+                                          categories={s.categories}
+                                          recommendedCategories={
+                                            selectedQuestion?.recommendedCategories ?? []
+                                          }
+                                          maxVisible={MAX_CATEGORY_TAGS_ON_CARD}
+                                        />
                                       </div>
                                     </div>
                                   </Link>

@@ -66,6 +66,18 @@
   margin-right: 4px;
 }
 
+/* Overflow count when not all categories fit on the card */
+.tag.tag-more {
+  background: color-mix(in srgb, var(--tag-bg) 88%, var(--text-muted));
+  color: var(--text-muted);
+  font-weight: 600;
+  border-style: dashed;
+}
+
+.tag.tag-more::before {
+  content: none;
+}
+
 /* Missing tag — single chip e.g. "Missing Action Result" */
 .tag-missing {
   display: inline-flex;
