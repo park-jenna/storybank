@@ -217,8 +217,42 @@ export default function DashboardPage() {
   return (
     <main className="main-content" role="main" aria-label="Dashboard overview">
       {loading && (
-        <div className="loading-state" aria-live="polite" aria-busy="true">
-          <p className="loading-message">Loading stories...</p>
+        <div aria-hidden="true" aria-busy="true">
+          {/* Header skeleton */}
+          <div className="page-header" style={{ marginBottom: "var(--space-6)" }}>
+            <div>
+              <div className="skeleton skeleton-line--title" />
+              <div className="skeleton skeleton-line--subtitle" />
+            </div>
+          </div>
+          {/* Stat cards skeleton */}
+          <div className="stats-row" style={{ marginBottom: "var(--space-6)" }}>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="stat-card">
+                <div className="skeleton skeleton-line" style={{ width: "55%", marginBottom: 12 }} />
+                <div className="skeleton skeleton-stat-value" />
+                <div className="skeleton skeleton-line" style={{ width: "40%", marginTop: 4 }} />
+              </div>
+            ))}
+          </div>
+          {/* Content cards skeleton */}
+          <div className="dashboard-grid">
+            <div className="card" style={{ padding: "1.25rem" }}>
+              <div className="skeleton skeleton-line--title" style={{ marginBottom: 16 }} />
+              {[0, 1, 2].map((i) => (
+                <div key={i} style={{ marginBottom: 12 }}>
+                  <div className="skeleton skeleton-line" style={{ width: "80%" }} />
+                  <div className="skeleton skeleton-line" />
+                </div>
+              ))}
+            </div>
+            <div className="card" style={{ padding: "1.25rem" }}>
+              <div className="skeleton skeleton-line--title" style={{ marginBottom: 16 }} />
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="skeleton skeleton-line" style={{ width: `${80 - i * 10}%`, marginBottom: 10 }} />
+              ))}
+            </div>
+          </div>
         </div>
       )}
 

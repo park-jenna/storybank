@@ -14,6 +14,7 @@ import {
 } from "@/lib/user-questions";
 import { getCommonQuestionIdByContent } from "@/constants/interviewQuestions";
 import { CATEGORIES } from "@/constants/categories";
+import { useToast } from "@/contexts/ToastContext";
 
 const ALL = "All" as const;
 
@@ -35,6 +36,7 @@ export default function SavedQuestionsPage() {
   const [savingLinks, setSavingLinks] = useState(false);
   const [saveLinkSuccess, setSaveLinkSuccess] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>(ALL);
+  const { showToast } = useToast();
 
   useEffect(() => {
     async function load() {
@@ -136,6 +138,7 @@ export default function SavedQuestionsPage() {
         storyIds: Array.from(selectedStoryIds),
       });
       setSaveLinkSuccess(true);
+      showToast("Links saved ✓");
       const data = await fetchUserQuestions(token);
       setUserQuestions(data.userQuestions);
       setLinkingUserQuestion(
@@ -175,6 +178,7 @@ export default function SavedQuestionsPage() {
       await deleteUserQuestion(token, confirmDeleteId);
       setUserQuestions((prev) => prev.filter((uq) => uq.id !== confirmDeleteId));
       closeDeleteConfirm();
+      showToast("Question removed");
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to delete question.");
     } finally {
@@ -250,9 +254,18 @@ export default function SavedQuestionsPage() {
       )}
 
       {loading && (
-        <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: "1.5rem" }}>
-          Loading saved questions...
-        </p>
+        <div aria-hidden="true" aria-busy="true" style={{ marginTop: "1.5rem" }}>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="skeleton-card"
+              style={{ marginBottom: 10, padding: "1rem 1.25rem" }}
+            >
+              <div className="skeleton skeleton-line" style={{ width: "70%", height: 15, marginBottom: 10 }} />
+              <div className="skeleton skeleton-line" style={{ width: "45%" }} />
+            </div>
+          ))}
+        </div>
       )}
 
       {error && (

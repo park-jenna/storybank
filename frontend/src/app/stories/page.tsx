@@ -88,8 +88,31 @@ function StoriesPageContent() {
   return (
     <main className="main-content">
       {loading && (
-        <div className="loading-state">
-          <p className="loading-message">Loading stories...</p>
+        <div aria-hidden="true" aria-busy="true">
+          {/* Header skeleton */}
+          <div className="page-header" style={{ marginBottom: "var(--space-6)" }}>
+            <div>
+              <div className="skeleton skeleton-line--title" />
+              <div className="skeleton skeleton-line--subtitle" />
+            </div>
+          </div>
+          {/* Category chips skeleton */}
+          <div className="chips-row" style={{ marginBottom: 20 }}>
+            {[60, 40, 75, 55, 65, 50].map((w, i) => (
+              <div key={i} className="skeleton" style={{ width: w, height: 30, borderRadius: 20 }} />
+            ))}
+          </div>
+          {/* Story cards skeleton */}
+          <div className="story-grid-3">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton skeleton-line" style={{ width: "75%", height: 16, marginBottom: 12 }} />
+                <div className="skeleton skeleton-line" />
+                <div className="skeleton skeleton-line" />
+                <div className="skeleton skeleton-line" style={{ width: "50%", marginTop: 12 }} />
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -324,8 +347,22 @@ export default function StoriesPage() {
   return (
     <Suspense
       fallback={
-        <main className="main-content">
-          <p className="text-muted text-14 mt-xl">Loading...</p>
+        <main className="main-content" aria-busy="true">
+          <div className="page-header" style={{ marginBottom: "var(--space-6)" }}>
+            <div>
+              <div className="skeleton skeleton-line--title" />
+              <div className="skeleton skeleton-line--subtitle" />
+            </div>
+          </div>
+          <div className="story-grid-3">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton skeleton-line" style={{ width: "75%", height: 16, marginBottom: 12 }} />
+                <div className="skeleton skeleton-line" />
+                <div className="skeleton skeleton-line" />
+              </div>
+            ))}
+          </div>
         </main>
       }
     >

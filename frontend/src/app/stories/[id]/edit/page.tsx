@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { fetchStoryById, Story, updateStoryById } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
 import { StarWritingTips } from "@/components/StarWritingTips";
+import { useToast } from "@/contexts/ToastContext";
 
 type EditStoryPageProps = {
   params: Promise<{ id: string }>;
@@ -25,6 +26,7 @@ export default function EditStoryPage({ params }: EditStoryPageProps) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const fromParam = searchParams.get("from");
   const safeFrom =
@@ -101,6 +103,7 @@ export default function EditStoryPage({ params }: EditStoryPageProps) {
         action: action.trim(),
         result: result.trim(),
       });
+      showToast("Story saved ✓");
       router.push(`/stories/${storyId}`);
     } catch (err) {
       const msg =
