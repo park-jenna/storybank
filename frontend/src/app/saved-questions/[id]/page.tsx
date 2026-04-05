@@ -187,10 +187,11 @@ export default function SavedQuestionDetailPage({
           <h1
             style={{
               fontSize: 21,
-              fontWeight: 500,
+              fontWeight: 600,
               color: "var(--text-primary)",
               marginBottom: 8,
-              lineHeight: 1.3,
+              lineHeight: 1.35,
+              letterSpacing: "var(--tracking-tight)",
             }}
           >
             {userQuestion.question.content}
