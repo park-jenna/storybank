@@ -25,6 +25,17 @@ const RESOURCE_ITEMS = [
   { href: "/interview-tips", label: "STAR method" },
 ] as const;
 
+function getEmailFromToken(token: string): string | null {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return null;
+    const decoded = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+    return decoded?.email ?? decoded?.sub ?? null;
+  } catch {
+    return null;
+  }
+}
+
 type SidebarProps = {
   onClose?: () => void;
 };
@@ -35,12 +46,14 @@ export default function Sidebar({ onClose }: SidebarProps) {
   const { theme, toggleTheme } = useTheme();
   const [inProgressCount, setInProgressCount] = useState(0);
   const [unlinkedCount, setUnlinkedCount] = useState(0);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
       const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
       if (!token) return;
+      if (!cancelled) setUserEmail(getEmailFromToken(token));
       try {
         const [storiesRes, uqRes] = await Promise.all([
           fetchStories(token),
@@ -243,6 +256,17 @@ export default function Sidebar({ onClose }: SidebarProps) {
         </nav>
 
         <div className="sidebar-spacer" />
+
+        {userEmail && (
+          <div className="sidebar-user">
+            <div className="sidebar-avatar" aria-hidden>
+              {userEmail[0].toUpperCase()}
+            </div>
+            <div className="sidebar-user-info">
+              <div className="sidebar-user-email" title={userEmail}>{userEmail}</div>
+            </div>
+          </div>
+        )}
 
         <div className="sidebar-bottom-links">
           <button

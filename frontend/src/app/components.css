@@ -157,11 +157,34 @@
   border: var(--stroke-1) solid var(--border-card);
 }
 
+.stat-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.stat-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--green-primary) 12%, var(--bg-page));
+  color: var(--green-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon--warn {
+  background: color-mix(in srgb, var(--warn-text) 10%, var(--bg-page));
+  color: var(--warn-text);
+}
+
 .stat-label {
   font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
-  margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }

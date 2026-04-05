@@ -371,26 +371,59 @@ export default function DashboardPage() {
             {/* Stat cards row */}
             <div className="stats-row">
               <div className="stat-card">
-                <div className="stat-label">Total stories</div>
+                <div className="stat-card-top">
+                  <div className="stat-label">Total stories</div>
+                  <div className="stat-icon" aria-hidden>
+                    <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
+                    </svg>
+                  </div>
+                </div>
                 <div className="stat-value" aria-label={`${stories.length} total stories`}>
                   {stories.length}
                 </div>
                 <div className="stat-sub">written</div>
               </div>
               <div className="stat-card">
-                <div className="stat-label">STAR complete</div>
+                <div className="stat-card-top">
+                  <div className="stat-label">STAR complete</div>
+                  <div className="stat-icon" aria-hidden>
+                    <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                      <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                  </div>
+                </div>
                 <div className="stat-value">{completedCount}</div>
                 <div className="stat-sub">
                   {inProgressStories.length} in progress
                 </div>
               </div>
               <div className="stat-card">
-                <div className="stat-label">Saved questions</div>
+                <div className="stat-card-top">
+                  <div className="stat-label">Saved questions</div>
+                  <div className="stat-icon" aria-hidden>
+                    <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                    </svg>
+                  </div>
+                </div>
                 <div className="stat-value">{userQuestions.length}</div>
                 <div className="stat-sub">stories linked</div>
               </div>
               <div className="stat-card">
-                <div className="stat-label">Category coverage</div>
+                <div className="stat-card-top">
+                  <div className="stat-label">Category coverage</div>
+                  <div className={`stat-icon${missingCategorySummary ? " stat-icon--warn" : ""}`} aria-hidden>
+                    <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="7" height="7" rx="1" />
+                      <rect x="14" y="3" width="7" height="7" rx="1" />
+                      <rect x="3" y="14" width="7" height="7" rx="1" />
+                      <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                  </div>
+                </div>
                 <div className={`stat-value${missingCategorySummary ? " warn" : ""}`}>
                   {categoryCoveredCount}/{CATEGORIES.length}
                 </div>
