@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Prepository",
+  title: "StoryBank",
   description:
     "A personal workspace for organizing behavioral interview stories using the STAR framework.",
 };
