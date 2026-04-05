@@ -460,12 +460,12 @@
   }
 }
 
-/* Carousel scroll container */
+/* Carousel scroll container — top/bottom padding avoids clipping hover lift + shadow */
 .carousel {
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  padding-bottom: 6px;
+  padding: 6px 0 8px;
 }
 
 /* Story row (dashboard list) */

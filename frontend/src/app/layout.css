@@ -364,9 +364,9 @@
   display: none !important;
 }
 
-/* Side padding was for the fades; keep flush with card padding */
+/* Vertical padding so hover (translateY + shadow) isn’t clipped by overflow-x scrollport */
 .stories-in-progress-queue .carousel-wrap .carousel {
-  padding: 0 0 6px;
+  padding: 8px 0 10px;
 }
 
 .dashboard-onboarding-head {
