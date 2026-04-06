@@ -216,6 +216,7 @@ export default function DashboardPage() {
 
   return (
     <main className="main-content" role="main" aria-label="Dashboard overview">
+      <div className="page-shell page-shell--wide">
       {loading && (
         <div aria-hidden="true" aria-busy="true">
           {/* Header skeleton */}
@@ -628,7 +629,8 @@ export default function DashboardPage() {
               </div>
             </div>
           </>
-        )}
+      )}
+      </div>
     </main>
   );
 }

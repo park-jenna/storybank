@@ -2387,7 +2387,7 @@ a.story-row.story-row--dashboard:hover {
 
 .landing-hero {
   padding: 0;
-  max-width: 1180px;
+  max-width: 1240px;
   width: 100%;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
@@ -2569,14 +2569,14 @@ a.story-row.story-row--dashboard:hover {
 }
 
 .about-content {
-  max-width: 680px;
+  max-width: 920px;
   margin: 0 auto;
-  padding: 3rem 2rem 4rem;
+  padding: 3rem 2rem 4.5rem;
   width: 100%;
 }
 
 .about-header {
-  margin-bottom: 1.75rem;
+  margin-bottom: 2rem;
 }
 
 .about-tag {
@@ -2601,7 +2601,7 @@ a.story-row.story-row--dashboard:hover {
 }
 
 .about-section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 2.75rem;
 }
 
 .about-section-label {

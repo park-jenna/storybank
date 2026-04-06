@@ -74,6 +74,11 @@
     padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
     padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
   }
+  .page-shell,
+  .page-shell--wide,
+  .page-shell--narrow {
+    max-width: 100%;
+  }
   .sidebar {
     position: fixed;
     top: 0;
@@ -138,6 +143,20 @@
   min-width: 0;
   min-height: 0;
   padding: var(--space-8) var(--space-10);
+}
+
+.page-shell {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.page-shell--wide {
+  max-width: 1240px;
+}
+
+.page-shell--narrow {
+  max-width: 880px;
 }
 
 

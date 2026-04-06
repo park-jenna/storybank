@@ -87,6 +87,7 @@ function StoriesPageContent() {
 
   return (
     <main className="main-content">
+      <div className="page-shell page-shell--wide">
       {loading && (
         <div aria-hidden="true" aria-busy="true">
           {/* Header skeleton */}
@@ -339,6 +340,7 @@ function StoriesPageContent() {
           )}
         </>
       )}
+      </div>
     </main>
   );
 }
@@ -348,20 +350,22 @@ export default function StoriesPage() {
     <Suspense
       fallback={
         <main className="main-content" aria-busy="true">
-          <div className="page-header" style={{ marginBottom: "var(--space-6)" }}>
-            <div>
-              <div className="skeleton skeleton-line--title" />
-              <div className="skeleton skeleton-line--subtitle" />
-            </div>
-          </div>
-          <div className="story-grid-3">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="skeleton-card">
-                <div className="skeleton skeleton-line" style={{ width: "75%", height: 16, marginBottom: 12 }} />
-                <div className="skeleton skeleton-line" />
-                <div className="skeleton skeleton-line" />
+          <div className="page-shell page-shell--wide">
+            <div className="page-header" style={{ marginBottom: "var(--space-6)" }}>
+              <div>
+                <div className="skeleton skeleton-line--title" />
+                <div className="skeleton skeleton-line--subtitle" />
               </div>
-            ))}
+            </div>
+            <div className="story-grid-3">
+              {[0, 1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="skeleton-card">
+                  <div className="skeleton skeleton-line" style={{ width: "75%", height: 16, marginBottom: 12 }} />
+                  <div className="skeleton skeleton-line" />
+                  <div className="skeleton skeleton-line" />
+                </div>
+              ))}
+            </div>
           </div>
         </main>
       }

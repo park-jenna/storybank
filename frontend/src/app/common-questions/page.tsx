@@ -408,7 +408,9 @@ function CommonQuestionsContent() {
   if (loadingQuestions) {
     return (
       <main className="main-content">
-        <p className="text-muted text-14">Loading common questions...</p>
+        <div className="page-shell page-shell--wide">
+          <p className="text-muted text-14">Loading common questions...</p>
+        </div>
       </main>
     );
   }
@@ -416,36 +418,39 @@ function CommonQuestionsContent() {
   if (error && questions.length === 0) {
     return (
       <main className="main-content">
-        <div className="error-banner show" role="alert">
-          Error: {error}
-        </div>
-        <button
-          type="button"
-          className="back-btn mt-3"
-          onClick={() => router.push("/saved-questions")}
-        >
-          <svg
-            viewBox="0 0 14 14"
-            style={{
-              width: 14,
-              height: 14,
-              fill: "none",
-              stroke: "currentColor",
-              strokeWidth: 2,
-              strokeLinecap: "round",
-            }}
-            aria-hidden
+        <div className="page-shell page-shell--wide">
+          <div className="error-banner show" role="alert">
+            Error: {error}
+          </div>
+          <button
+            type="button"
+            className="back-btn mt-3"
+            onClick={() => router.push("/saved-questions")}
           >
-            <path d="M9 2L4 7l5 5" />
-          </svg>
-          Saved Questions
-        </button>
+            <svg
+              viewBox="0 0 14 14"
+              style={{
+                width: 14,
+                height: 14,
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: 2,
+                strokeLinecap: "round",
+              }}
+              aria-hidden
+            >
+              <path d="M9 2L4 7l5 5" />
+            </svg>
+            Saved Questions
+          </button>
+        </div>
       </main>
     );
   }
 
   return (
     <main className="main-content">
+      <div className="page-shell page-shell--wide">
       {returnToPath && (
         <div className="topbar">
           <button
@@ -1026,6 +1031,7 @@ function CommonQuestionsContent() {
           </div>
         </div>
       )}
+      </div>
     </main>
   );
 }
