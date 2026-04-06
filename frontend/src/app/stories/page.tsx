@@ -91,26 +91,26 @@ function StoriesPageContent() {
       {loading && (
         <div aria-hidden="true" aria-busy="true">
           {/* Header skeleton */}
-          <div className="page-header" style={{ marginBottom: "var(--space-6)" }}>
+          <div className="page-header mb-5">
             <div>
               <div className="skeleton skeleton-line--title" />
               <div className="skeleton skeleton-line--subtitle" />
             </div>
           </div>
           {/* Category chips skeleton */}
-          <div className="chips-row" style={{ marginBottom: 20 }}>
+          <div className="chips-row mb-5">
             {[60, 40, 75, 55, 65, 50].map((w, i) => (
-              <div key={i} className="skeleton" style={{ width: w, height: 30, borderRadius: 20 }} />
+              <div key={i} className="skeleton skeleton-chip" style={{ width: w }} />
             ))}
           </div>
           {/* Story cards skeleton */}
           <div className="story-grid-3">
             {[0, 1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="skeleton-card">
-                <div className="skeleton skeleton-line" style={{ width: "75%", height: 16, marginBottom: 12 }} />
+                <div className="skeleton skeleton-line skeleton-line--w75-h16" />
                 <div className="skeleton skeleton-line" />
                 <div className="skeleton skeleton-line" />
-                <div className="skeleton skeleton-line" style={{ width: "50%", marginTop: 12 }} />
+                <div className="skeleton skeleton-line skeleton-line--w50-top" />
               </div>
             ))}
           </div>
@@ -351,7 +351,7 @@ export default function StoriesPage() {
       fallback={
         <main className="main-content" aria-busy="true">
           <div className="page-shell page-shell--wide">
-            <div className="page-header" style={{ marginBottom: "var(--space-6)" }}>
+            <div className="page-header mb-5">
               <div>
                 <div className="skeleton skeleton-line--title" />
                 <div className="skeleton skeleton-line--subtitle" />
@@ -360,7 +360,7 @@ export default function StoriesPage() {
             <div className="story-grid-3">
               {[0, 1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="skeleton-card">
-                  <div className="skeleton skeleton-line" style={{ width: "75%", height: 16, marginBottom: 12 }} />
+                  <div className="skeleton skeleton-line skeleton-line--w75-h16" />
                   <div className="skeleton skeleton-line" />
                   <div className="skeleton skeleton-line" />
                 </div>

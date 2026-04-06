@@ -2372,6 +2372,132 @@ a.story-row.story-row--dashboard:hover {
 .text-13 { font-size: 13px; }
 .text-14 { font-size: 14px; }
 
+.inline-icon {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.inline-icon--sm {
+  width: 13px;
+  height: 13px;
+}
+
+.btn-inline.btn-inline--with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.body-copy-sm {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin: 0;
+}
+
+.stack-lines > span {
+  display: block;
+}
+
+.about-feature-block--divided {
+  border-bottom: 0.5px solid var(--border-card);
+}
+
+.chips-row--section {
+  margin-bottom: 0.5rem;
+}
+
+.section-stack {
+  margin-top: var(--space-4);
+}
+
+.section-stack-lg {
+  margin-top: var(--space-6);
+}
+
+.section-divider-top {
+  border-top: 0.5px solid var(--border-card);
+  padding-top: 14px;
+  margin-top: 14px;
+}
+
+.section-heading-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.section-label--inline {
+  margin-bottom: 0;
+}
+
+.section-count {
+  font-size: 13px;
+  color: var(--text-hint);
+}
+
+.section-description {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.story-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.success-msg--spaced {
+  margin-top: 10px;
+}
+
+.empty-state--spaced {
+  margin-top: 24px;
+}
+
+.align-start {
+  align-self: flex-start;
+}
+
+.skeleton-chip {
+  height: 30px;
+  border-radius: var(--radius-pill);
+}
+
+.skeleton-line--w75-h16 {
+  width: 75%;
+  height: 16px;
+  margin-bottom: 12px;
+}
+
+.skeleton-line--w50-top {
+  width: 50%;
+  margin-top: 12px;
+}
+
+.skeleton-line--w70-h15 {
+  width: 70%;
+  height: 15px;
+  margin-bottom: 10px;
+}
+
+.skeleton-line--w45 {
+  width: 45%;
+}
+
+.skeleton-card--compact {
+  margin-bottom: 10px;
+  padding: 1rem 1.25rem;
+}
+
 
 /* ── Landing page ────────────────────────────── */
 .landing-page {

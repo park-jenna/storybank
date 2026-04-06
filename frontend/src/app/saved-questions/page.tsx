@@ -210,30 +210,17 @@ export default function SavedQuestionsPage() {
         </div>
         <Link
           href="/common-questions"
-          className="btn-inline"
-          style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12 }}
+          className="btn-inline btn-inline--with-icon text-12"
         >
           Browse common questions
-          <svg
-            viewBox="0 0 14 14"
-            style={{
-              width: 13,
-              height: 13,
-              fill: "none",
-              stroke: "currentColor",
-              strokeWidth: 2,
-              strokeLinecap: "round",
-              strokeLinejoin: "round",
-            }}
-            aria-hidden
-          >
+          <svg viewBox="0 0 14 14" className="inline-icon inline-icon--sm" aria-hidden>
             <path d="M3 7h8M7 3l4 4-4 4" />
           </svg>
         </Link>
       </div>
 
       {userQuestions.length > 0 && !linkingUserQuestion && (
-        <div className="chips-row" style={{ marginBottom: "0.5rem" }}>
+        <div className="chips-row chips-row--section">
           {[ALL, ...CATEGORIES].map((cat) => (
             <div
               key={cat}
@@ -255,22 +242,18 @@ export default function SavedQuestionsPage() {
       )}
 
       {loading && (
-        <div aria-hidden="true" aria-busy="true" style={{ marginTop: "1.5rem" }}>
+        <div aria-hidden="true" aria-busy="true" className="section-stack-lg">
           {[0, 1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="skeleton-card"
-              style={{ marginBottom: 10, padding: "1rem 1.25rem" }}
-            >
-              <div className="skeleton skeleton-line" style={{ width: "70%", height: 15, marginBottom: 10 }} />
-              <div className="skeleton skeleton-line" style={{ width: "45%" }} />
+            <div key={i} className="skeleton-card skeleton-card--compact">
+              <div className="skeleton skeleton-line skeleton-line--w70-h15" />
+              <div className="skeleton skeleton-line skeleton-line--w45" />
             </div>
           ))}
         </div>
       )}
 
       {error && (
-        <div className="error-banner show" role="alert" style={{ marginTop: 16 }}>
+        <div className="error-banner show mt-4" role="alert">
           Error: {error}
         </div>
       )}
@@ -431,7 +414,7 @@ export default function SavedQuestionsPage() {
         userQuestions.length > 0 &&
         filteredUserQuestions.length === 0 &&
         !linkingUserQuestion && (
-          <div className="empty-state" style={{ marginTop: 24 }}>
+        <div className="empty-state empty-state--spaced">
             <div className="empty-state-icon">🔍</div>
             <h3 className="empty-state-title">No questions in this category</h3>
             <p className="empty-state-desc">
@@ -654,13 +637,7 @@ export default function SavedQuestionsPage() {
                       })}
                     </div>
 
-                    <div
-                      style={{
-                        borderTop: "0.5px solid var(--border-card)",
-                        paddingTop: 14,
-                        marginTop: 14,
-                      }}
-                    >
+                    <div className="section-divider-top">
                       <div className="btn-group">
                         <button
                           type="button"
@@ -681,11 +658,7 @@ export default function SavedQuestionsPage() {
                         </button>
                       </div>
                       {saveLinkSuccess && (
-                        <div
-                          className="success-msg show"
-                          role="status"
-                          style={{ marginTop: 10 }}
-                        >
+                        <div className="success-msg show success-msg--spaced" role="status">
                           Linked stories updated.
                         </div>
                       )}

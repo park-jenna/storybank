@@ -427,18 +427,7 @@ function CommonQuestionsContent() {
             className="back-btn mt-3"
             onClick={() => router.push("/saved-questions")}
           >
-            <svg
-              viewBox="0 0 14 14"
-              style={{
-                width: 14,
-                height: 14,
-                fill: "none",
-                stroke: "currentColor",
-                strokeWidth: 2,
-                strokeLinecap: "round",
-              }}
-              aria-hidden
-            >
+            <svg viewBox="0 0 14 14" className="inline-icon" aria-hidden>
               <path d="M9 2L4 7l5 5" />
             </svg>
             Saved Questions
@@ -458,18 +447,7 @@ function CommonQuestionsContent() {
             className="back-btn"
             onClick={() => router.push(returnToPath)}
           >
-            <svg
-              viewBox="0 0 14 14"
-              style={{
-                width: 14,
-                height: 14,
-                fill: "none",
-                stroke: "currentColor",
-                strokeWidth: 2,
-                strokeLinecap: "round",
-              }}
-              aria-hidden
-            >
+            <svg viewBox="0 0 14 14" className="inline-icon" aria-hidden>
               <path d="M9 2L4 7l5 5" />
             </svg>
             Back
@@ -488,7 +466,7 @@ function CommonQuestionsContent() {
       </div>
 
       {questions.length > 0 && (
-        <div className="chips-row" style={{ marginBottom: "0.5rem" }}>
+        <div className="chips-row chips-row--section">
           {[ALL, ...CATEGORIES].map((cat) => (
             <div
               key={cat}
@@ -536,7 +514,7 @@ function CommonQuestionsContent() {
                     }
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
+                  <div className="flex items-center gap-md flex-1 min-w-0">
                     <span className="q-row-num">{String(i + 1).padStart(2, "0")}</span>
                     <span className="q-row-text">{q.content}</span>
                   </div>
@@ -603,14 +581,8 @@ function CommonQuestionsContent() {
               </div>
 
               {!hasToken ? (
-                <div className="card" style={{ marginTop: 16 }}>
-                  <p
-                    style={{
-                      fontSize: 14,
-                      color: "var(--text-muted)",
-                      marginBottom: 12,
-                    }}
-                  >
+                <div className="card section-stack">
+                  <p className="text-muted text-14 mb-3">
                     Log in to see your recommended stories and save this question.
                   </p>
                   <button
@@ -624,36 +596,14 @@ function CommonQuestionsContent() {
               ) : (
                 <>
                   {selectedQuestion.alreadySaved && (
-                    <div
-                      style={{ marginBottom: "1.5rem" }}
-                      aria-labelledby="linked-stories-heading"
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "baseline",
-                          gap: 8,
-                          marginBottom: 4,
-                        }}
-                      >
-                        <span
-                          className="section-label"
-                          id="linked-stories-heading"
-                          style={{ marginBottom: 0 }}
-                        >
+                    <div className="mb-6" aria-labelledby="linked-stories-heading">
+                      <div className="section-heading-row">
+                        <span className="section-label section-label--inline" id="linked-stories-heading">
                           LINKED STORIES
                         </span>
-                        <span style={{ fontSize: 13, color: "var(--text-hint)" }}>
-                          {linkedStories.length}
-                        </span>
+                        <span className="section-count">{linkedStories.length}</span>
                       </div>
-                      <p
-                        style={{
-                          fontSize: 13,
-                          color: "var(--text-muted)",
-                          marginBottom: 12,
-                        }}
-                      >
+                      <p className="section-description">
                         Stories you linked to this question. These are the ones you plan to use when answering.
                       </p>
 
@@ -662,13 +612,7 @@ function CommonQuestionsContent() {
                           No stories linked yet. Select stories below to link them to this question.
                         </p>
                       ) : (
-                        <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                            gap: 10,
-                          }}
-                        >
+                        <div className="story-grid-2">
                           {linkedStories.map((s) => {
                             return (
                               <Link
@@ -703,59 +647,27 @@ function CommonQuestionsContent() {
                   )}
 
                   <div aria-labelledby="recommended-stories-heading">
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "baseline",
-                        gap: 8,
-                        marginBottom: 4,
-                      }}
-                    >
-                      <span
-                        className="section-label"
-                        id="recommended-stories-heading"
-                        style={{ marginBottom: 0 }}
-                      >
+                    <div className="section-heading-row">
+                      <span className="section-label section-label--inline" id="recommended-stories-heading">
                         {selectedQuestion.alreadySaved
                           ? "MORE STORIES TO LINK"
                           : "RECOMMENDED STORIES"}
                       </span>
-                      <span style={{ fontSize: 13, color: "var(--text-hint)" }}>
-                        {recommendedStoriesFiltered.length}
-                      </span>
+                      <span className="section-count">{recommendedStoriesFiltered.length}</span>
                     </div>
-                    <p
-                      style={{
-                        fontSize: 13,
-                        color: "var(--text-muted)",
-                        marginBottom: 12,
-                      }}
-                    >
+                    <p className="section-description">
                       {selectedQuestion.alreadySaved
                         ? "Other stories that match this question's categories. Link more to use when answering."
                         : "Your stories that match this question's categories. Link the ones you want to use when answering."}
                     </p>
 
                     {loadingRecommendations && (
-                      <div
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                          gap: 10,
-                        }}
-                        aria-hidden
-                      >
+                      <div className="story-grid-2" aria-hidden>
                         {[1, 2, 3, 4].map((i) => (
                           <div key={i} className="skeleton-card">
-                            <div
-                              className="skeleton skeleton-line"
-                              style={{ width: "80%" }}
-                            />
+                            <div className="skeleton skeleton-line" style={{ width: "80%" }} />
                             <div className="skeleton skeleton-line" />
-                            <div
-                              className="skeleton skeleton-line"
-                              style={{ width: "50%" }}
-                            />
+                            <div className="skeleton skeleton-line" style={{ width: "50%" }} />
                           </div>
                         ))}
                       </div>

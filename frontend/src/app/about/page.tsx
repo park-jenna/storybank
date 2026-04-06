@@ -93,17 +93,7 @@ export default function AboutPage() {
           type="button"
           onClick={() => router.push("/")}
         >
-          <svg
-            viewBox="0 0 14 14"
-            style={{
-              width: 14,
-              height: 14,
-              fill: "none",
-              stroke: "currentColor",
-              strokeWidth: 2,
-              strokeLinecap: "round",
-            }}
-          >
+          <svg viewBox="0 0 14 14" className="inline-icon">
             <path d="M9 2L4 7l5 5" />
           </svg>
           Back to app
@@ -123,14 +113,7 @@ export default function AboutPage() {
         <div className="about-section">
           <div className="about-section-label">Why I built this</div>
           <div className="card">
-            <p
-              style={{
-                fontSize: 14,
-                color: "var(--text-secondary)",
-                lineHeight: 1.75,
-                margin: 0,
-              }}
-            >
+            <p className="body-copy-sm">
               I kept re-writing the same interview stories across different job
               applications with no consistent structure. I wanted a tool that
               would let me write each story once, organize them using the STAR
@@ -148,11 +131,9 @@ export default function AboutPage() {
             {STACK.map(({ layer, tech }) => (
               <div key={layer} className="about-stack-item">
                 <div className="about-stack-layer">{layer}</div>
-                <div className="about-stack-tech">
+                <div className="about-stack-tech stack-lines">
                   {tech.split("\n").map((line) => (
-                    <span key={line} style={{ display: "block" }}>
-                      {line}
-                    </span>
+                    <span key={line}>{line}</span>
                   ))}
                 </div>
               </div>
@@ -173,13 +154,7 @@ export default function AboutPage() {
               return (
                 <div
                   key={id}
-                  className="about-feature-block"
-                  style={{
-                    borderBottom:
-                      i < FEATURES.length - 1
-                        ? "0.5px solid var(--border-card)"
-                        : "none",
-                  }}
+                  className={`about-feature-block${i < FEATURES.length - 1 ? " about-feature-block--divided" : ""}`}
                 >
                   <button
                     type="button"
@@ -335,4 +310,3 @@ export default function AboutPage() {
     </main>
   );
 }
-
