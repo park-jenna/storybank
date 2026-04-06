@@ -17,46 +17,65 @@
   justify-content: center;
   background: var(--green-primary);
   color: #fff;
-  border: var(--stroke-1) solid var(--border-chip);
+  border: var(--stroke-1) solid color-mix(in srgb, var(--green-primary) 72%, black 8%);
   border-radius: var(--radius-sm);
-  padding: 9px 15px;
-  font-size: 14px;
+  padding: 10px 16px;
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.1s, box-shadow 0.1s;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
   white-space: nowrap;
-  box-shadow: 0 1px 3px rgba(16, 40, 24, 0.18), 0 1px 2px rgba(16, 40, 24, 0.1);
+  box-shadow: var(--shadow);
 }
 
 .btn-primary:hover {
   background: var(--green-hover);
-  box-shadow: 0 2px 6px rgba(16, 40, 24, 0.22), 0 1px 3px rgba(16, 40, 24, 0.12);
+  border-color: color-mix(in srgb, var(--green-hover) 78%, black 10%);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .btn-primary:disabled {
   background: var(--btn-primary-disabled-bg);
-  color: var(--text-primary);
+  color: color-mix(in srgb, var(--text-primary) 72%, white 28%);
+  border-color: color-mix(in srgb, var(--btn-primary-disabled-bg) 84%, var(--border-chip));
   cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  background: var(--surface-raised);
   color: var(--text-primary);
-  border: var(--stroke-1) solid currentColor;
+  border: var(--stroke-1) solid var(--border-chip);
   border-radius: var(--radius-sm);
-  padding: 9px 15px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 10px 16px;
+  font-size: var(--text-sm);
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.1s;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
   white-space: nowrap;
+  box-shadow: var(--shadow);
 }
 
 .btn-secondary:hover {
   background: var(--bg-chip-hover);
+  border-color: color-mix(in srgb, var(--green-primary) 24%, var(--border-chip));
+  color: var(--text-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 /* Row action (dashboard list): tertiary button variant */
@@ -69,10 +88,13 @@
   border: var(--stroke-1) solid var(--border-chip);
   border-radius: var(--radius-sm);
   padding: 7px 12px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.1s, color 0.1s, border-color 0.1s;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
   white-space: nowrap;
 }
 
@@ -84,8 +106,8 @@
 
 /* Small row button (used in compact cards) */
 .btn-row-sm {
-  font-size: 12px;
-  padding: 3px 9px;
+  font-size: var(--text-xs);
+  padding: 4px 10px;
   border-radius: var(--radius-sm);
   border: var(--stroke-1) solid currentColor;
 }
@@ -98,11 +120,14 @@
   color: var(--warn-text);
   border: var(--stroke-1) solid var(--danger-hover);
   border-radius: var(--radius-pill);
-  padding: 9px 16px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 10px 16px;
+  font-size: var(--text-sm);
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.1s;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
   white-space: nowrap;
 }
 
@@ -127,8 +152,8 @@
   border: var(--stroke-1) solid var(--border-chip);
   border-radius: var(--radius-pill);
   padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -146,11 +171,14 @@
   color: var(--warn-text);
   border: var(--stroke-1) solid currentColor;
   border-radius: var(--radius-sm);
-  padding: 9px 15px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 10px 16px;
+  font-size: var(--text-sm);
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.1s;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .btn-warn:hover {
@@ -162,8 +190,8 @@
   background: none;
   border: none;
   padding: 0;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: 600;
   color: var(--green-primary);
   cursor: pointer;
 }
@@ -195,4 +223,3 @@
     justify-content: center;
   }
 }
-
