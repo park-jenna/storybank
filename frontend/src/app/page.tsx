@@ -1,17 +1,33 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import BrowserFrame from "@/components/BrowserFrame";
 import DashboardPreview from "@/components/DashboardPreview";
 
 export default function HomePage() {
   const router = useRouter();
-  const [hasToken] = useState(() => {
+  const pathname = usePathname();
+  const [hasToken, setHasToken] = useState(() => {
     if (typeof window === "undefined") return false;
     return !!localStorage.getItem("token");
   });
+
+  useEffect(() => {
+    if (pathname !== "/") return;
+    setHasToken(!!localStorage.getItem("token"));
+  }, [pathname]);
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "token" || e.key === null) {
+        setHasToken(!!localStorage.getItem("token"));
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   return (
     <main className="landing-page">
@@ -56,7 +72,7 @@ export default function HomePage() {
             )}
           </div>
 
-          <Link href="/about" className="landing-about-link">
+          <Link href="/about?returnTo=/" className="landing-about-link">
             About this project →
           </Link>
         </div>

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signup } from "@/lib/auth";
+import { postAuthDestinationFromWindow } from "@/lib/navigation";
 import { Button, FormField, Input } from "@/components/ui";
 
 const MIN_PASSWORD_LENGTH = 8;
@@ -13,11 +14,20 @@ export default function SignupPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
+    const [loginHref, setLoginHref] = useState("/login");
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const passwordMatch = !passwordConfirm || password === passwordConfirm;
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const r = params.get("returnTo");
+        if (r) {
+            setLoginHref(`/login?returnTo=${encodeURIComponent(r)}`);
+        }
+    }, []);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -36,7 +46,7 @@ export default function SignupPage() {
         try {
             const data = await signup(email, password);
             localStorage.setItem("token", data.token);
-            router.replace("/dashboard");
+            router.replace(postAuthDestinationFromWindow());
         } catch (err) {
             const msg = err instanceof Error ? err.message : "Signup failed";
             const friendly =
@@ -117,7 +127,7 @@ export default function SignupPage() {
 
                 <p className="muted auth-footer">
                     Already have an account?{" "}
-                    <Link href="/login" className="auth-link">
+                    <Link href={loginHref} className="auth-link">
                         Log in
                     </Link>
                 </p>

@@ -2,6 +2,8 @@
 // 통신 계층 (네트워크 공통 규칙)
 // 실제 fetch 수행 담당
 // 에러처리, JSON 처리, 공통 헤더 설정 등
+import { shouldSkipAuthFailureRedirect } from "@/lib/public-paths";
+
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 
 type ApiOptions = {
@@ -15,10 +17,10 @@ function handleAuthFailure(): void {
     } catch {
         // ignore storage failures (private mode, etc.)
     }
-    // Avoid redirect loops if we're already on the login page
-    if (window.location.pathname !== "/login") {
-        window.location.replace("/login");
+    if (shouldSkipAuthFailureRedirect(window.location.pathname)) {
+        return;
     }
+    window.location.replace("/login");
 }
 
 function getErrorMessage(data: unknown): string {

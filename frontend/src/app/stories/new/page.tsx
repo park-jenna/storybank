@@ -43,6 +43,15 @@ export default function NewStoryPage() {
   );
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.replace(
+        `/login?returnTo=${encodeURIComponent("/stories/new")}`
+      );
+    }
+  }, [router]);
+
+  useEffect(() => {
     if (!isDirty || skipLeaveGuardRef.current) return;
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();

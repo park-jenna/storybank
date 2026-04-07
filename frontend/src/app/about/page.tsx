@@ -1,8 +1,9 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import BrowserFrame from "@/components/BrowserFrame";
+import { safeInternalReturnPath } from "@/lib/navigation";
 
 const STACK = [
   { layer: "Frontend", tech: "Next.js 16, React 19\nTypeScript, Tailwind CSS" },
@@ -31,7 +32,7 @@ const FEATURES = [
     title: "Question bank with story linking",
     sub: "Save questions from a curated list · link one or more stories as answers",
     screenshot: "/img/about/questions.png",
-    frameUrl: "storybank-star.vercel.app/questions",
+    frameUrl: "storybank-star.vercel.app/common-questions",
   },
   {
     id: "dashboard",
@@ -83,6 +84,14 @@ export default function AboutPage() {
   const router = useRouter();
   const baseId = useId();
   const [openId, setOpenId] = useState<string | null>(null);
+  const [backHref, setBackHref] = useState("/");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ret = safeInternalReturnPath(params.get("returnTo"));
+    const token = localStorage.getItem("token");
+    setBackHref(ret ?? (token ? "/dashboard" : "/"));
+  }, []);
 
   return (
     <main className="about-page">
@@ -91,7 +100,7 @@ export default function AboutPage() {
         <button
           className="back-btn"
           type="button"
-          onClick={() => router.push("/")}
+          onClick={() => router.push(backHref)}
         >
           <svg viewBox="0 0 14 14" className="inline-icon">
             <path d="M9 2L4 7l5 5" />

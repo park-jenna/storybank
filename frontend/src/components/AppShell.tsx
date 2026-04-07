@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-
-const PUBLIC_PATHS = ["/", "/login", "/signup", "/about"];
+import { isPublicPathname } from "@/lib/public-paths";
 
 export default function AppShell({
   children,
@@ -12,11 +11,41 @@ export default function AppShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isPublicPage = pathname ? PUBLIC_PATHS.includes(pathname) : false;
+  const router = useRouter();
+  const isPublicPage = pathname ? isPublicPathname(pathname) : false;
+  const [authReady, setAuthReady] = useState(isPublicPage);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (!pathname) return;
+    if (isPublicPathname(pathname)) {
+      setAuthReady(true);
+      return;
+    }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setAuthReady(false);
+      const fullPath = `${window.location.pathname}${window.location.search}`;
+      router.replace(`/login?returnTo=${encodeURIComponent(fullPath)}`);
+      return;
+    }
+    setAuthReady(true);
+  }, [pathname, router]);
 
   if (isPublicPage) {
     return <>{children}</>;
+  }
+
+  if (!authReady) {
+    return (
+      <div className="app-layout">
+        <div className="app-layout-body">
+          <main className="main-content">
+            <p className="text-muted text-14">Loading…</p>
+          </main>
+        </div>
+      </div>
+    );
   }
 
   return (

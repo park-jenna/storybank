@@ -75,8 +75,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
     return () => { cancelled = true; };
   }, [pathname]);
 
-  const isDashboardActive =
-    pathname === "/dashboard" || pathname === "/";
+  const isDashboardActive = pathname === "/dashboard";
 
   function handleLogout() {
     if (typeof window !== "undefined") {

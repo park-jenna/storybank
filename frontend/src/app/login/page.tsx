@@ -1,18 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/auth";
+import { postAuthDestinationFromWindow } from "@/lib/navigation";
 import { Button, FormField, Input } from "@/components/ui";
 
 export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [signupHref, setSignupHref] = useState("/signup");
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const r = params.get("returnTo");
+        if (r) {
+            setSignupHref(`/signup?returnTo=${encodeURIComponent(r)}`);
+        }
+    }, []);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -22,7 +32,7 @@ export default function LoginPage() {
         try {
             const data = await login(email, password);
             localStorage.setItem("token", data.token);
-            router.replace("/dashboard");
+            router.replace(postAuthDestinationFromWindow());
         } catch (err) {
             const msg = err instanceof Error ? err.message : "Login failed";
             // Map backend auth errors to a clear user-facing message
@@ -104,7 +114,7 @@ export default function LoginPage() {
 
             <p className="auth-footer">
               Don&apos;t have an account?{" "}
-              <Link href="/signup" className="auth-link">
+              <Link href={signupHref} className="auth-link">
                 Sign up
               </Link>
             </p>
