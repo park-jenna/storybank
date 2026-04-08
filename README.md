@@ -67,6 +67,7 @@ storybank/
 │   │   │   ├── saved-questions/   # My saved questions & story links
 │   │   │   ├── stories/      # List, new, edit, detail
 │   │   │   ├── login/, signup/
+│   │   │   ├── styles/       # CSS styles
 │   │   │   └── page.tsx      # Landing
 │   │   ├── components/       # UI components
 │   │   ├── constants/        # Categories, interview/common question definitions
@@ -75,6 +76,8 @@ storybank/
 │   └── ...
 ├── backend/                  # Express API
 │   ├── src/
+│   │   ├── server.js         # Main server file
+│   │   ├── prisma.js         # Prisma client instance
 │   │   ├── routes/           # auth, stories, questions, user-questions
 │   │   ├── middleware/       # auth (JWT)
 │   │   ├── schemas/          # Zod validation
@@ -96,6 +99,7 @@ storybank/
 ```bash
 cd backend
 npm install
+npx prisma generate
 ```
 
 Create `backend/.env`:
