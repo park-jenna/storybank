@@ -1,9 +1,9 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const { Prisma } = require("@prisma/client");
 const prisma = require("../prisma"); 
 const { signToken } = require("../utils/jwt"); // JWT 발급 함수
 const { authBodySchema } = require("../schemas/auth"); // Zod 스키마
-const { de } = require("zod/v4/locales");
 
 const router = express.Router();
 
@@ -37,6 +37,9 @@ router.post("/signup", async (req, res) => {
 
         return res.status(201).json({ user, token });
     } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+            return res.status(409).json({ error: "Email already registered" });
+        }
         console.error("Error during signup:", error);
         // 이메일 중복이면 prisma가 에러 던짐
         return res.status(500).json({ error: "Internal server error" });

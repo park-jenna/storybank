@@ -124,6 +124,21 @@ npm run dev
 
 API base: `http://localhost:4000`.
 
+### Backend tests
+
+Create a dedicated test env file:
+
+```bash
+cp backend/.env.test.example backend/.env.test
+```
+
+Set `backend/.env.test` to a separate PostgreSQL database, then run:
+
+```bash
+cd backend
+npm test
+```
+
 ### 2. Frontend
 
 ```bash

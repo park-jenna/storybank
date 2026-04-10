@@ -1,31 +1,5 @@
 require("dotenv").config();
-
-const express = require("express");
-const cors = require("cors");
-
-const storiesRouter = require("./routes/stories");
-const authRouter = require("./routes/auth");
-const questionsRouter = require("./routes/questions");
-const userQuestionsRouter = require("./routes/user-questions");
-
-const app = express();
-
-app.use(cors({
-    origin: true,
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-}));
-app.use(express.json());
-
-app.get("/health", (req, res) => {
-    res.json({ status: "ok" });
-});
-
-// 라우터들 연결
-app.use("/auth", authRouter);   // auth 관련 라우트들 (signup, login)
-app.use("/stories", storiesRouter); // stories 관련 라우트들
-app.use("/questions", questionsRouter);
-app.use("/user-questions", userQuestionsRouter);
+const { app } = require("./app");
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
