@@ -1,0 +1,20 @@
+services:
+  postgres_test:
+    image: postgres:16-alpine
+    container_name: storybank-postgres-test
+    environment:
+      POSTGRES_DB: storybank_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d storybank_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - storybank_test_data:/var/lib/postgresql/data
+
+volumes:
+  storybank_test_data:

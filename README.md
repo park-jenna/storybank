@@ -132,11 +132,28 @@ Create a dedicated test env file:
 cp backend/.env.test.example backend/.env.test
 ```
 
-Set `backend/.env.test` to a separate PostgreSQL database, then run:
+Set `backend/.env.test` to a separate PostgreSQL database via `TEST_DATABASE_URL`. Tests will fail fast if this variable is missing so they do not silently use `backend/.env` or a shared Supabase database.
+
+Then run:
 
 ```bash
 cd backend
 npm test
+```
+
+For a local default test database, this repo includes a Docker Compose Postgres setup on port `5433` and a matching `backend/.env.test`:
+
+```bash
+cd backend
+npm run test:prepare
+npm test
+```
+
+Or run the whole flow in one command:
+
+```bash
+cd backend
+npm run test:local
 ```
 
 ### 2. Frontend
