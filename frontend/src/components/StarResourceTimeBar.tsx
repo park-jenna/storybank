@@ -2,6 +2,8 @@
 
 import { useCallback } from "react";
 
+import { scrollToHashId } from "@/lib/star-doc-scroll";
+
 const SEGMENTS = [
   {
     key: "s",
@@ -39,12 +41,7 @@ const SEGMENTS = [
 
 export function StarResourceTimeBar() {
   const onActivate = useCallback((href: string) => {
-    const el = document.querySelector(href);
-    if (!el) return;
-    const reduce =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    scrollToHashId(href);
   }, []);
 
   return (

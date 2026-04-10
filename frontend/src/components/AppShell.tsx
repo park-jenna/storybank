@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { isPublicPathname } from "@/lib/public-paths";
+import { isAuthOptionalPathname, isBareLayoutPathname } from "@/lib/public-paths";
 
 export default function AppShell({
   children,
@@ -12,13 +12,14 @@ export default function AppShell({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const isPublicPage = pathname ? isPublicPathname(pathname) : false;
-  const [authReady, setAuthReady] = useState(isPublicPage);
+  const authOptional = pathname ? isAuthOptionalPathname(pathname) : false;
+  const bareLayout = pathname ? isBareLayoutPathname(pathname) : false;
+  const [authReady, setAuthReady] = useState(authOptional);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!pathname) return;
-    if (isPublicPathname(pathname)) {
+    if (isAuthOptionalPathname(pathname)) {
       setAuthReady(true);
       return;
     }
@@ -32,7 +33,7 @@ export default function AppShell({
     setAuthReady(true);
   }, [pathname, router]);
 
-  if (isPublicPage) {
+  if (bareLayout) {
     return <>{children}</>;
   }
 
