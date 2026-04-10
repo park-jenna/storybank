@@ -1,4 +1,5 @@
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const bcrypt = require("bcrypt");
 const { Prisma } = require("@prisma/client");
 const prisma = require("../prisma"); 
@@ -8,11 +9,22 @@ const { sendError, sendInternalError, sendValidationError } = require("../utils/
 
 const router = express.Router();
 
+const authLimiter =
+  process.env.NODE_ENV === "test"
+    ? (req, res, next) => next()
+    : rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 30,
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: { error: "Too many attempts, try again later.", code: "RATE_LIMITED" },
+      });
+
 /*
 * POST /auth/signup
 * Body: { email, password }
 */
-router.post("/signup", async (req, res) => {
+router.post("/signup", authLimiter, async (req, res) => {
     try {
         const result = authBodySchema.safeParse(req.body);
         if (!result.success) {
@@ -49,7 +61,7 @@ router.post("/signup", async (req, res) => {
 * POST /auth/login
 * body: { email, password }
 */
-router.post("/login/", async (req, res) => {
+router.post("/login/", authLimiter, async (req, res) => {
     try {
 
         // 스키마로 요청 바디 검증

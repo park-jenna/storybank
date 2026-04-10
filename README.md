@@ -110,6 +110,10 @@ JWT_SECRET="your-secret-key"
 PORT=4000
 ```
 
+For **production**, set `NODE_ENV=production` and **`CORS_ORIGINS`** to a comma-separated list of allowed browser origins (for example your Vercel frontend URL). If `CORS_ORIGINS` is empty in production, cross-origin browser requests are denied. Local dev allows `localhost` / `127.0.0.1` without extra config.
+
+The API uses **Helmet** for security headers and **rate limits** signup/login (skipped when `NODE_ENV=test`).
+
 Run migrations:
 
 ```bash
