@@ -213,6 +213,32 @@
   gap: 4px;
 }
 
+.pagination-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--text-hint) 35%, transparent);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.12s, border-color 0.12s;
+}
+
+.pagination-dot:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--text-secondary) 55%, transparent);
+}
+
+.pagination-dot.active {
+  background: var(--green-primary);
+  border-color: color-mix(in srgb, var(--green-primary) 70%, transparent);
+}
+
+.pagination-dot:focus-visible {
+  outline: 2px solid var(--green-primary);
+  outline-offset: 3px;
+}
+
 .pagination-arrow {
   width: 32px;
   height: 32px;

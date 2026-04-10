@@ -1,10 +1,19 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
+import { SavedQuestionManageForm } from "@/components/SavedQuestionManageForm";
 import { fetchUserQuestionById, deleteUserQuestion, UserQuestionItem } from "@/lib/user-questions";
+
+const MAX_STORY_TAGS_ON_SLIDE = 3;
+
+function orderedStoryCategories(categories: string[], recommended: string[]): string[] {
+  const rec = new Set(recommended);
+  const matches = categories.filter((c) => rec.has(c));
+  const rest = categories.filter((c) => !rec.has(c));
+  return [...matches, ...rest];
+}
 
 type SavedQuestionDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -22,6 +31,12 @@ export default function SavedQuestionDetailPage({
   const [deleting, setDeleting] = useState(false);
   const [confirmStep, setConfirmStep] = useState<1 | 2>(1);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showManage, setShowManage] = useState(false);
+
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+  const [activeStoryIndex, setActiveStoryIndex] = useState(0);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -47,6 +62,67 @@ export default function SavedQuestionDetailPage({
     }
     load();
   }, [questionId, router]);
+
+  const slideCount = useMemo(
+    () => (userQuestion?.stories.length ?? 0) + (userQuestion?.stories.length ? 1 : 0),
+    [userQuestion?.stories.length]
+  );
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+
+    const update = () => {
+      const maxScrollLeft = Math.max(0, el.scrollWidth - el.clientWidth);
+      setCanScrollLeft(el.scrollLeft > 4);
+      setCanScrollRight(el.scrollLeft < maxScrollLeft - 4);
+
+      if (slideCount === 0) {
+        setActiveStoryIndex(0);
+        return;
+      }
+
+      // Find the card whose left edge is closest to the scrollport's left padding.
+      const children = Array.from(el.querySelectorAll<HTMLElement>("[data-carousel-item='story']"));
+      if (children.length === 0) return;
+      const containerRect = el.getBoundingClientRect();
+      let bestIdx = 0;
+      let bestDist = Number.POSITIVE_INFINITY;
+      for (let i = 0; i < children.length; i++) {
+        const r = children[i].getBoundingClientRect();
+        const dist = Math.abs(r.left - containerRect.left);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIdx = i;
+        }
+      }
+      setActiveStoryIndex(bestIdx);
+    };
+
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [slideCount]);
+
+  const scrollCarouselBy = (direction: "left" | "right") => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const delta = Math.max(240, Math.round(el.clientWidth * 0.8));
+    el.scrollBy({ left: direction === "left" ? -delta : delta, behavior: "smooth" });
+  };
+
+  const scrollToStoryIndex = (index: number) => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const children = Array.from(el.querySelectorAll<HTMLElement>("[data-carousel-item='story']"));
+    const target = children[index];
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+  };
 
   const handleDelete = async () => {
     if (!questionId) return;
@@ -167,7 +243,7 @@ export default function SavedQuestionDetailPage({
           <button
             type="button"
             className="btn-secondary"
-            onClick={() => router.push(`/saved-questions/${userQuestion.id}/edit`)}
+            onClick={() => setShowManage(true)}
           >
             Edit
           </button>
@@ -216,61 +292,244 @@ export default function SavedQuestionDetailPage({
 
         <hr className="divider" />
 
-        <section
-          className="saved-question-detail__linked"
-          aria-labelledby="saved-question-stories-heading"
-        >
-          <div className="card-head saved-question-detail__linked-head">
-            <h2 className="card-title" id="saved-question-stories-heading">
-              Linked stories
+        {showManage ? (
+          <section
+            className="saved-question-detail__manage"
+            aria-labelledby="saved-question-manage-heading"
+          >
+            <h2 className="card-title" id="saved-question-manage-heading">
+              Edit question &amp; linked stories
             </h2>
-            <button
-              type="button"
-              className="btn-secondary btn-size-sm"
-              onClick={() => router.push(`/saved-questions/${userQuestion.id}/edit`)}
-            >
-              Manage links
-            </button>
-          </div>
-
-          {userQuestion.stories.length > 0 && (
             <p className="saved-question-detail__linked-hint text-muted text-14">
-              Stories you practice with for this question. Open one to review your answer.
+              Update the question text, categories, and which stories are linked. Save when you are
+              done.
             </p>
-          )}
-
-          {userQuestion.stories.length === 0 ? (
-            <p className="card-empty-hint">
-              No stories linked yet. Use <strong>Manage links</strong> to choose which stories
-              you want here.
-            </p>
-          ) : (
-            <div className="saved-question-detail__story-list">
-              {userQuestion.stories.map((s) => (
-                <Link
-                  key={s.id}
-                  href={`/stories/${s.id}`}
-                  className="saved-question-detail__story"
-                  aria-label={`Open story: ${s.title}`}
-                >
-                  <div className="saved-question-detail__story-main">
-                    <span className="saved-question-detail__story-title">{s.title}</span>
-                    {s.categories.length > 0 && (
-                      <div className="chips-row">
-                        {s.categories.slice(0, 3).map((cat) => (
-                          <span key={cat} className="tag">
-                            {cat}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <span className="saved-question-detail__story-cta">View →</span>
-                </Link>
-              ))}
+            <SavedQuestionManageForm
+              questionId={userQuestion.id}
+              userQuestion={userQuestion}
+              onClose={() => setShowManage(false)}
+              onSaved={async () => {
+                const token = localStorage.getItem("token");
+                if (!token || !questionId) return;
+                const data = await fetchUserQuestionById(token, questionId);
+                setUserQuestion(data.userQuestion);
+                setShowManage(false);
+              }}
+            />
+          </section>
+        ) : (
+          <section
+            className="saved-question-detail__linked"
+            aria-labelledby="saved-question-stories-heading"
+          >
+            <div className="card-head saved-question-detail__linked-head">
+              <h2 className="card-title" id="saved-question-stories-heading">
+                Linked stories
+              </h2>
             </div>
-          )}
-        </section>
+
+            {userQuestion.stories.length > 0 && (
+              <p className="saved-question-detail__linked-hint text-muted text-14">
+                Stories you practice with for this question. Open one to review your answer.
+              </p>
+            )}
+
+            {userQuestion.stories.length === 0 ? (
+              <div className="saved-question-detail__linked-empty">
+                <div className="saved-question-detail__story-cta-card saved-question-detail__story-cta-card--empty">
+                  <div className="saved-question-detail__story-cta-title">
+                    Add stories to practice with
+                  </div>
+                  <p className="saved-question-detail__story-cta-subtitle">
+                    Link one or more STAR stories so you can review your answers for this question
+                    in one place.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() => setShowManage(true)}
+                  >
+                    + Add linked stories
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="saved-question-detail__carousel-row">
+                <button
+                  type="button"
+                  className="saved-question-detail__carousel-nav pagination-arrow"
+                  onClick={() => scrollCarouselBy("left")}
+                  disabled={!canScrollLeft}
+                  aria-label="Scroll linked stories left"
+                >
+                  ‹
+                </button>
+                <div className="saved-question-detail__carousel-viewport">
+                  <div
+                    ref={carouselRef}
+                    className="carousel saved-question-detail__story-carousel"
+                    aria-label="Linked stories carousel"
+                  >
+                  {userQuestion.stories.map((s) => {
+                    const questionCats = userQuestion.question.recommendedCategories ?? [];
+                    const orderedCats = orderedStoryCategories(s.categories, questionCats);
+                    const highlight = questionCats.length > 0;
+                    const visibleCats = orderedCats.slice(0, MAX_STORY_TAGS_ON_SLIDE);
+                    const moreCount = Math.max(0, orderedCats.length - MAX_STORY_TAGS_ON_SLIDE);
+                    return (
+                    <div
+                      key={s.id}
+                      data-carousel-item="story"
+                      className="saved-question-detail__story-slide"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Open story: ${s.title}`}
+                      onClick={() => router.push(`/stories/${s.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          router.push(`/stories/${s.id}`);
+                        }
+                      }}
+                    >
+                      <div className="saved-question-detail__story-slide-head">
+                        <div style={{ minWidth: 0 }}>
+                          <div className="story-card-title">{s.title}</div>
+                          {s.categories.length > 0 && (
+                            <div className="story-card-cats" style={{ marginTop: 6 }}>
+                              {visibleCats.map((cat) => (
+                                <span
+                                  key={cat}
+                                  className={`tag${highlight && questionCats.includes(cat) ? " tag-match" : ""}`}
+                                >
+                                  {cat}
+                                </span>
+                              ))}
+                              {moreCount > 0 && (
+                                <span className="tag tag-more" aria-label={`${moreCount} more categories`}>
+                                  +{moreCount}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          className="btn-secondary btn-size-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/stories/${s.id}`);
+                          }}
+                        >
+                          Open
+                        </button>
+                      </div>
+
+                      <div className="saved-question-detail__story-slide-body">
+                        <div className="saved-question-detail__story-star">
+                          <div className="saved-question-detail__story-star-label">Situation</div>
+                          <div className="saved-question-detail__story-star-text">
+                            {s.situation?.trim() ? s.situation : "No situation written yet."}
+                          </div>
+                        </div>
+                        <div className="saved-question-detail__story-star">
+                          <div className="saved-question-detail__story-star-label">Action</div>
+                          <div className="saved-question-detail__story-star-text">
+                            {s.action?.trim() ? s.action : "No action written yet."}
+                          </div>
+                        </div>
+                        <div className="saved-question-detail__story-star">
+                          <div className="saved-question-detail__story-star-label">Result</div>
+                          <div className="saved-question-detail__story-star-text">
+                            {s.result?.trim() ? s.result : "No result written yet."}
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    );
+                  })}
+
+                  <div
+                    key="add-more-stories"
+                    data-carousel-item="story"
+                    className="saved-question-detail__story-slide saved-question-detail__story-slide--cta"
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Add or remove linked stories"
+                    onClick={() => setShowManage(true)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setShowManage(true);
+                      }
+                    }}
+                  >
+                    <div className="saved-question-detail__story-cta-card">
+                      <div className="saved-question-detail__story-cta-title">
+                        + Add more stories
+                      </div>
+                      <p className="saved-question-detail__story-cta-subtitle">
+                        Link additional stories to practice this question with.
+                      </p>
+                      <button
+                        type="button"
+                        className="btn-primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowManage(true);
+                        }}
+                      >
+                        Choose stories
+                      </button>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className="saved-question-detail__carousel-nav pagination-arrow"
+                  onClick={() => scrollCarouselBy("right")}
+                  disabled={!canScrollRight}
+                  aria-label="Scroll linked stories right"
+                >
+                  ›
+                </button>
+              </div>
+
+              <div
+                className="pagination-dots"
+                role="tablist"
+                aria-label="Linked stories pagination"
+                style={{ justifyContent: "center", marginTop: 10 }}
+              >
+                {userQuestion.stories.map((s, idx) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`pagination-dot${idx === activeStoryIndex ? " active" : ""}`}
+                    onClick={() => scrollToStoryIndex(idx)}
+                    aria-label={`Go to story ${idx + 1}: ${s.title}`}
+                    aria-selected={idx === activeStoryIndex}
+                    role="tab"
+                  />
+                ))}
+                <button
+                  key="add-more-stories-dot"
+                  type="button"
+                  className={`pagination-dot${userQuestion.stories.length === activeStoryIndex ? " active" : ""}`}
+                  onClick={() => scrollToStoryIndex(userQuestion.stories.length)}
+                  aria-label="Go to add more stories"
+                  aria-selected={userQuestion.stories.length === activeStoryIndex}
+                  role="tab"
+                />
+              </div>
+              </>
+            )}
+          </section>
+        )}
       </div>
 
       {showDeleteConfirm && (
