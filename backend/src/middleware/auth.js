@@ -2,6 +2,7 @@
 // 형식: (req, res, next) => {...}
 
 const { verifyToken } = require("../utils/jwt");
+const { sendError } = require("../utils/http");
 
 function requireAuth(req, res, next) {
 
@@ -11,14 +12,20 @@ function requireAuth(req, res, next) {
 
         // 헤더가 없으면: 로그인 안 한 요청
         if (!authHeader) {
-            return res.status(401).json({ error: "Authorization header is missing" });
+            return sendError(res, 401, {
+                code: "AUTH_HEADER_MISSING",
+                message: "Authorization header is missing",
+            });
         }
 
         // 2) "Bearer <token>" 형식인지 확인
         const [type, token] = authHeader.split(" ");
 
         if (type !== "Bearer" || !token) {
-            return res.status(401).json({ error: "Invalid Authorization header format" });
+            return sendError(res, 401, {
+                code: "AUTH_HEADER_INVALID",
+                message: "Invalid Authorization header format",
+            });
         }
 
         // 3) 토큰 검증
@@ -30,7 +37,10 @@ function requireAuth(req, res, next) {
         return next();
 
     } catch (error) {
-        return res.status(401).json({ error: "Invalid token" });
+        return sendError(res, 401, {
+            code: "AUTH_TOKEN_INVALID",
+            message: "Invalid token",
+        });
     }
 }
 

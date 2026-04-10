@@ -2,6 +2,7 @@ const express = require("express");
 const prisma = require("../prisma");
 const { requireAuth } = require("../middleware/auth");
 const { createStoryBodySchema, updateStoryBodySchema } = require("../schemas/stories");
+const { sendError, sendInternalError, sendValidationError } = require("../utils/http");
 
 const router = express.Router();
 
@@ -17,10 +18,7 @@ router.post("/", requireAuth, async (req, res) => {
         // 요청 바디 검증
         const parsed = createStoryBodySchema.safeParse(req.body);
         if (!parsed.success) {
-            return res.status(400).json({
-                error: "Invalid request body",
-                details: parsed.error.issues,
-            });
+            return sendValidationError(res, parsed.error.issues);
         }
         const { title, categories, situation, action, result } = parsed.data;
         
@@ -37,8 +35,7 @@ router.post("/", requireAuth, async (req, res) => {
 
         return res.status(201).json( {story} );
     } catch (error) {
-        console.error("Error creating story:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error creating story:");
     }
 }); 
 
@@ -56,8 +53,7 @@ router.get("/", requireAuth, async (req, res) => {
 
         return res.json({ stories });
     } catch (error) {
-        console.error("Error fetching stories:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error fetching stories:");
     }
 });
 
@@ -77,13 +73,15 @@ router.get("/:id", requireAuth, async (req, res) => {
         });
 
         if (!story) {
-            return res.status(404).json({ error: "Story not found" });
+            return sendError(res, 404, {
+                code: "STORY_NOT_FOUND",
+                message: "Story not found",
+            });
         }
 
         return res.json({ story });
     } catch (error) {
-        console.error("Error fetching story:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error fetching story:");
     }
 });
 
@@ -104,7 +102,10 @@ router.delete("/:id", requireAuth, async (req, res) => {
         });
 
         if (!story) {
-            return res.status(404).json({ error: "Story not found" });
+            return sendError(res, 404, {
+                code: "STORY_NOT_FOUND",
+                message: "Story not found",
+            });
         }
 
         // 2) 이 스토리와 연결된 질문 링크 먼저 삭제 (FK 제약 때문에 순서 중요)
@@ -120,8 +121,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
         // 4) 응답
         return res.json({ ok: true });
     } catch (error) {
-        console.error("Error deleting story:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error deleting story:");
     }
 });
 
@@ -141,16 +141,16 @@ router.patch("/:id", requireAuth, async (req, res) => {
         });
 
         if (!existing) {
-            return res.status(404).json({ error: "Story not found" });
+            return sendError(res, 404, {
+                code: "STORY_NOT_FOUND",
+                message: "Story not found",
+            });
         }
 
         // 2) 업데이트할 데이터 검증 및 준비 (partial update)
         const parsed = updateStoryBodySchema.safeParse(req.body);
         if (!parsed.success) {
-            return res.status(400).json({
-                error: "Invalid request body",
-                details: parsed.error.issues,
-            });
+            return sendValidationError(res, parsed.error.issues);
         }
 
         const body = parsed.data;
@@ -162,7 +162,10 @@ router.patch("/:id", requireAuth, async (req, res) => {
         if (body.result !== undefined) updatedData.result = body.result;
 
         if (Object.keys(updatedData).length === 0) {
-            return res.status(400).json({ error: "No valid fields to update" });
+            return sendError(res, 400, {
+                code: "NO_FIELDS_TO_UPDATE",
+                message: "No valid fields to update",
+            });
         }
 
         // 3) 스토리 업데이트
@@ -173,8 +176,7 @@ router.patch("/:id", requireAuth, async (req, res) => {
 
         return res.json({ story: updatedStory });
     } catch (error) {
-        console.error("Error updating story:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error updating story:");
     }
 });
 

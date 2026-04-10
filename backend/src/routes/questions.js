@@ -4,6 +4,7 @@ const express = require("express");
 const prisma = require("../prisma");
 const { requireAuth } = require("../middleware/auth");
 const { COMMON_QUESTIONS, getCommonQuestionById } = require("../constants/commonQuestions");
+const { sendError, sendInternalError } = require("../utils/http");
 
 const router = express.Router();
 
@@ -25,8 +26,7 @@ router.get("/common", requireAuth, async (req, res) => {
         }));
         return res.json({ questions });
     } catch (error) {
-        console.error("Error fetching common questions:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error fetching common questions:");
     }
 });
 
@@ -41,7 +41,10 @@ router.get("/:id/recommendations", requireAuth, async (req, res) => {
 
         const question = getCommonQuestionById(id);
         if (!question) {
-            return res.status(404).json({ error: "Question not found" });
+            return sendError(res, 404, {
+                code: "QUESTION_NOT_FOUND",
+                message: "Question not found",
+            });
         }
 
         const recommendedCategories = question.recommendedCategories ?? [];
@@ -57,8 +60,7 @@ router.get("/:id/recommendations", requireAuth, async (req, res) => {
 
         return res.json({ question, recommendedStories });
     } catch (error) {
-        console.error("Error fetching recommendations:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error fetching recommendations:");
     }
 });
 

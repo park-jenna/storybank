@@ -5,6 +5,7 @@ const prisma = require("../prisma");
 const { requireAuth } = require("../middleware/auth");
 const { getCommonQuestionById } = require("../constants/commonQuestions");
 const { updateUserQuestionBodySchema } = require("../schemas/user-questions");
+const { sendError, sendInternalError, sendValidationError } = require("../utils/http");
 
 const router = express.Router();
 
@@ -41,8 +42,7 @@ router.get("/", requireAuth, async (req, res) => {
 
         return res.json({ userQuestions: result });
     } catch (error) {
-        console.error("Error fetching user questions:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error fetching user questions:");
     }
 });
 
@@ -58,43 +58,62 @@ router.post("/", requireAuth, async (req, res) => {
 
         const common = getCommonQuestionById(commonQuestionId);
         if (!common) {
-            return res.status(400).json({ error: "Invalid commonQuestionId" });
+            return sendError(res, 400, {
+                code: "INVALID_COMMON_QUESTION_ID",
+                message: "Invalid commonQuestionId",
+            });
         }
 
-        const existing = await prisma.question.findFirst({
-            where: { userId, content: common.content },
+        const { question, alreadySaved } = await prisma.$transaction(async (tx) => {
+            const existing = await tx.question.findFirst({
+                where: { userId, content: common.content },
+            });
+
+            let currentQuestion = existing;
+            if (existing) {
+                await tx.questionStory.deleteMany({ where: { questionId: existing.id } });
+            } else {
+                currentQuestion = await tx.question.create({
+                    data: {
+                        userId,
+                        content: common.content,
+                        recommendedCategories: common.recommendedCategories ?? [],
+                    },
+                });
+            }
+
+            if (Array.isArray(storyIds) && storyIds.length > 0) {
+                const userStoryIds = await tx.story.findMany({
+                    where: {
+                        userId,
+                        id: { in: storyIds },
+                    },
+                    select: { id: true },
+                });
+                const validStoryIds = userStoryIds.map((story) => story.id);
+
+                if (validStoryIds.length > 0) {
+                    await tx.questionStory.createMany({
+                        data: validStoryIds.map((storyId) => ({
+                            questionId: currentQuestion.id,
+                            storyId,
+                        })),
+                    });
+                }
+            }
+
+            return {
+                question: currentQuestion,
+                alreadySaved: !!existing,
+            };
         });
 
-        let question;
-        if (existing) {
-            question = existing;
-            await prisma.questionStory.deleteMany({ where: { questionId: existing.id } });
-        } else {
-            question = await prisma.question.create({
-                data: {
-                    userId,
-                    content: common.content,
-                    recommendedCategories: common.recommendedCategories ?? [],
-                },
-            });
-        }
-
-        if (Array.isArray(storyIds) && storyIds.length > 0) {
-            await prisma.questionStory.createMany({
-                data: storyIds.map((storyId) => ({
-                    questionId: question.id,
-                    storyId,
-                })),
-            });
-        }
-
-        return res.status(existing ? 200 : 201).json({
+        return res.status(alreadySaved ? 200 : 201).json({
             userQuestion: question,
-            alreadySaved: !!existing,
+            alreadySaved,
         });
     } catch (error) {
-        console.error("Error creating user question:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error creating user question:");
     }
 });
 
@@ -117,7 +136,10 @@ router.get("/:id", requireAuth, async (req, res) => {
         });
 
         if (!question) {
-            return res.status(404).json({ error: "Question not found" });
+            return sendError(res, 404, {
+                code: "QUESTION_NOT_FOUND",
+                message: "Question not found",
+            });
         }
 
         const result = {
@@ -133,8 +155,7 @@ router.get("/:id", requireAuth, async (req, res) => {
 
         return res.json({ userQuestion: result });
     } catch (error) {
-        console.error("Error fetching user question:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error fetching user question:");
     }
 });
 
@@ -153,15 +174,15 @@ router.patch("/:id", requireAuth, async (req, res) => {
         });
 
         if (!existing) {
-            return res.status(404).json({ error: "Question not found" });
+            return sendError(res, 404, {
+                code: "QUESTION_NOT_FOUND",
+                message: "Question not found",
+            });
         }
 
         const parsed = updateUserQuestionBodySchema.safeParse(req.body);
         if (!parsed.success) {
-            return res.status(400).json({
-                error: "Invalid request body",
-                details: parsed.error.issues,
-            });
+            return sendValidationError(res, parsed.error.issues);
         }
 
         const body = parsed.data;
@@ -172,41 +193,51 @@ router.patch("/:id", requireAuth, async (req, res) => {
 
         const hasStoryIdsUpdate = body.storyIds !== undefined;
         if (Object.keys(updatedData).length === 0 && !hasStoryIdsUpdate) {
-            return res.status(400).json({ error: "No valid fields to update" });
-        }
-
-        if (Object.keys(updatedData).length > 0) {
-            await prisma.question.update({
-                where: { id },
-                data: updatedData,
+            return sendError(res, 400, {
+                code: "NO_FIELDS_TO_UPDATE",
+                message: "No valid fields to update",
             });
         }
 
-        if (body.storyIds !== undefined) {
-            await prisma.questionStory.deleteMany({ where: { questionId: id } });
-            if (body.storyIds.length > 0) {
-                const userStoryIds = await prisma.story.findMany({
-                    where: { userId },
-                    select: { id: true },
-                });
-                const validIds = new Set(userStoryIds.map((s) => s.id));
-                const toLink = body.storyIds.filter((sid) => validIds.has(sid));
-                await prisma.questionStory.createMany({
-                    data: toLink.map((storyId) => ({
-                        questionId: id,
-                        storyId,
-                    })),
+        const updated = await prisma.$transaction(async (tx) => {
+            if (Object.keys(updatedData).length > 0) {
+                await tx.question.update({
+                    where: { id },
+                    data: updatedData,
                 });
             }
-        }
 
-        const updated = await prisma.question.findFirst({
-            where: { id, userId },
-            include: {
-                stories: {
-                    include: { story: true },
+            if (body.storyIds !== undefined) {
+                await tx.questionStory.deleteMany({ where: { questionId: id } });
+                if (body.storyIds.length > 0) {
+                    const userStoryIds = await tx.story.findMany({
+                        where: {
+                            userId,
+                            id: { in: body.storyIds },
+                        },
+                        select: { id: true },
+                    });
+                    const validStoryIds = userStoryIds.map((story) => story.id);
+
+                    if (validStoryIds.length > 0) {
+                        await tx.questionStory.createMany({
+                            data: validStoryIds.map((storyId) => ({
+                                questionId: id,
+                                storyId,
+                            })),
+                        });
+                    }
+                }
+            }
+
+            return tx.question.findFirst({
+                where: { id, userId },
+                include: {
+                    stories: {
+                        include: { story: true },
+                    },
                 },
-            },
+            });
         });
 
         const result = {
@@ -222,8 +253,7 @@ router.patch("/:id", requireAuth, async (req, res) => {
 
         return res.json({ userQuestion: result });
     } catch (error) {
-        console.error("Error updating user question:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error updating user question:");
     }
 });
 
@@ -242,18 +272,22 @@ router.delete("/:id", requireAuth, async (req, res) => {
         });
 
         if (!question) {
-            return res.status(404).json({ error: "Question not found" });
+            return sendError(res, 404, {
+                code: "QUESTION_NOT_FOUND",
+                message: "Question not found",
+            });
         }
 
-        await prisma.questionStory.deleteMany({ where: { questionId: id } });
-        await prisma.question.delete({
-            where: { id },
+        await prisma.$transaction(async (tx) => {
+            await tx.questionStory.deleteMany({ where: { questionId: id } });
+            await tx.question.delete({
+                where: { id },
+            });
         });
 
         return res.json({ ok: true });
     } catch (error) {
-        console.error("Error deleting user question:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error deleting user question:");
     }
 });
 

@@ -4,6 +4,7 @@ const { Prisma } = require("@prisma/client");
 const prisma = require("../prisma"); 
 const { signToken } = require("../utils/jwt"); // JWT 발급 함수
 const { authBodySchema } = require("../schemas/auth"); // Zod 스키마
+const { sendError, sendInternalError, sendValidationError } = require("../utils/http");
 
 const router = express.Router();
 
@@ -15,10 +16,7 @@ router.post("/signup", async (req, res) => {
     try {
         const result = authBodySchema.safeParse(req.body);
         if (!result.success) {
-            return res.status(400).json({
-                error: "Invalid request body",
-                details: result.error.issues,
-            });
+            return sendValidationError(res, result.error.issues);
         }
 
         const { email, password } = result.data;
@@ -38,11 +36,12 @@ router.post("/signup", async (req, res) => {
         return res.status(201).json({ user, token });
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-            return res.status(409).json({ error: "Email already registered" });
+            return sendError(res, 409, {
+                code: "EMAIL_ALREADY_REGISTERED",
+                message: "Email already registered",
+            });
         }
-        console.error("Error during signup:", error);
-        // 이메일 중복이면 prisma가 에러 던짐
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error during signup:");
     }
 });
 
@@ -56,10 +55,7 @@ router.post("/login/", async (req, res) => {
         // 스키마로 요청 바디 검증
         const result = authBodySchema.safeParse(req.body);
         if (!result.success) {
-            return res.status(400).json({
-                error: "Invalid request body",
-                details: result.error.issues,
-            });
+            return sendValidationError(res, result.error.issues);
         }
 
         const { email, password } = result.data;
@@ -67,13 +63,19 @@ router.post("/login/", async (req, res) => {
         // 1) 이메일로 유저 찾기
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
-            return res.status(401).json({ error: "Invalid email or password" });
+            return sendError(res, 401, {
+                code: "INVALID_CREDENTIALS",
+                message: "Invalid email or password",
+            });
         }
 
         // 2) 비밀번호 비교 (평문 vs 해시)
         const ok = await bcrypt.compare(password, user.password);
         if (!ok) {
-            return res.status(401).json({ error: "Invalid credentials" });
+            return sendError(res, 401, {
+                code: "INVALID_CREDENTIALS",
+                message: "Invalid credentials",
+            });
         }
 
         // 3) JWT 발급
@@ -81,8 +83,7 @@ router.post("/login/", async (req, res) => {
 
         return res.json({ user: { id: user.id, email: user.email }, token });
     } catch (error) {
-        console.error("Error during login:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return sendInternalError(res, error, "Error during login:");
     }
 });
 
