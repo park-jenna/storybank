@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -148,14 +155,10 @@ export default function StoriesPage() {
 
   return (
     <main className="main-content">
-      <div className="page-shell page-shell--wide">
+      <div className="page-shell page-shell--wide stories-page">
         {loading && (
           <div aria-hidden="true" aria-busy="true">
-            <div
-              className="page-header"
-              style={{ marginBottom: "var(--space-6)" }}
-              aria-hidden
-            >
+            <div className="page-header" aria-hidden>
               <div>
                 <div className="skeleton skeleton-line--title" />
                 <div className="skeleton skeleton-line--subtitle" />
@@ -181,7 +184,7 @@ export default function StoriesPage() {
         )}
 
         {!loading && !error && (
-          <>
+          <Fragment>
             <header className="page-header">
               <div className="page-header-left">
                 <h1 className="page-title">My Stories</h1>
@@ -199,7 +202,7 @@ export default function StoriesPage() {
             {inProgressStories.length > 0 && (
               <section
                 ref={inProgressSectionRef}
-                className="stories-in-progress-queue card mb-5"
+                className="stories-in-progress-queue card"
                 aria-labelledby="stories-in-progress-heading"
               >
                 <button
@@ -356,29 +359,6 @@ export default function StoriesPage() {
               </div>
             )}
 
-            {hasAnyStories && (
-              <div className="card-head stories-library-head">
-                <h2 id="stories-library-heading" className="card-title">
-                  Your stories
-                </h2>
-                <p className="stories-page-results" aria-live="polite">
-                  {filtersActive
-                    ? filteredStories.length === 1
-                      ? "1 story matches"
-                      : `${filteredStories.length} stories match`
-                    : stories.length === 1
-                      ? "1 story"
-                      : `${stories.length} stories`}
-                  {filtersActive && stories.length > 0 && (
-                    <span className="stories-page-results-total">
-                      {" "}
-                      ({stories.length} total)
-                    </span>
-                  )}
-                </p>
-              </div>
-            )}
-
             {!hasAnyStories && (
               <div className="empty-state">
                 <div className="empty-state-icon">
@@ -394,61 +374,84 @@ export default function StoriesPage() {
               </div>
             )}
 
-            {hasAnyStories && !hasFilteredResults && (
-              <div className="empty-state stories-filter-empty" role="status">
-                <p className="empty-state-desc stories-filter-empty__text">
-                  No stories match these filters. Try another category or turn
-                  off &quot;STAR complete only&quot;.
-                </p>
-                <button
-                  type="button"
-                  className="btn-inline"
-                  onClick={() => router.replace(pathname, { scroll: false })}
-                >
-                  Clear filters
-                </button>
+            {hasAnyStories && (
+              <div className="stories-page-library">
+                <div className="card-head stories-library-head">
+                  <h2 id="stories-library-heading" className="card-title">
+                    Your stories
+                  </h2>
+                  <p className="stories-page-results" aria-live="polite">
+                    {filtersActive
+                      ? filteredStories.length === 1
+                        ? "1 story matches"
+                        : `${filteredStories.length} stories match`
+                      : stories.length === 1
+                        ? "1 story"
+                        : `${stories.length} stories`}
+                    {filtersActive && stories.length > 0 && (
+                      <span className="stories-page-results-total">
+                        {" "}
+                        ({stories.length} total)
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                {!hasFilteredResults ? (
+                  <div className="empty-state stories-filter-empty" role="status">
+                    <p className="empty-state-desc stories-filter-empty__text">
+                      No stories match these filters. Try another category or
+                      turn off &quot;STAR complete only&quot;.
+                    </p>
+                    <button
+                      type="button"
+                      className="btn-inline"
+                      onClick={() => router.replace(pathname, { scroll: false })}
+                    >
+                      Clear filters
+                    </button>
+                  </div>
+                ) : (
+                  <section
+                    className="stories-page-library-grid"
+                    aria-labelledby="stories-library-heading"
+                  >
+                    <div className="story-grid-3">
+                      {filteredStories.map((s) => {
+                        const situation = !!s.situation?.trim();
+                        const action = !!s.action?.trim();
+                        const result = !!s.result?.trim();
+                        return (
+                          <Link
+                            key={s.id}
+                            href={`/stories/${s.id}`}
+                            className="link-unstyled story-grid-card-link"
+                          >
+                            <article className="story-card">
+                              <div className="story-card-top">
+                                <div className="story-card-title">{s.title}</div>
+                              </div>
+                              <div
+                                className={`story-card-situation${!s.situation ? " empty" : ""}`}
+                              >
+                                {s.situation || "No situation written yet."}
+                              </div>
+                              <StarCompletionVisual
+                                variant="card"
+                                situation={situation}
+                                action={action}
+                                result={result}
+                              />
+                            </article>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </section>
+                )}
               </div>
             )}
-
-            {hasAnyStories && hasFilteredResults && (
-              <section
-                className="stories-page-library-grid"
-                aria-labelledby="stories-library-heading"
-              >
-                <div className="story-grid-3">
-                  {filteredStories.map((s) => {
-                    const situation = !!s.situation?.trim();
-                    const action = !!s.action?.trim();
-                    const result = !!s.result?.trim();
-                    return (
-                      <Link
-                        key={s.id}
-                        href={`/stories/${s.id}`}
-                        className="link-unstyled story-grid-card-link"
-                      >
-                        <article className="story-card">
-                          <div className="story-card-top">
-                            <div className="story-card-title">{s.title}</div>
-                          </div>
-                          <div
-                            className={`story-card-situation${!s.situation ? " empty" : ""}`}
-                          >
-                            {s.situation || "No situation written yet."}
-                          </div>
-                          <StarCompletionVisual
-                            variant="card"
-                            situation={situation}
-                            action={action}
-                            result={result}
-                          />
-                        </article>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
-          </>
+          </Fragment>
         )}
       </div>
     </main>

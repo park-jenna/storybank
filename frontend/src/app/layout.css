@@ -418,6 +418,94 @@
   }
 }
 
+/* Stories list page — vertical rhythm, header alignment, filter toolbar */
+.stories-page .page-header {
+  align-items: center;
+  margin-bottom: var(--space-8);
+}
+
+.stories-page .stories-in-progress-queue {
+  margin-bottom: var(--space-6);
+}
+
+.stories-page .stories-in-progress-queue-toggle {
+  align-items: center;
+}
+
+.stories-page .stories-filters-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: var(--space-5);
+  row-gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-5);
+  border-bottom: var(--stroke-1) solid var(--border-card);
+}
+
+.stories-page .stories-filters-bar__chips.chips-row--section {
+  margin-bottom: 0;
+}
+
+.stories-page .stories-page-library {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.stories-page .stories-page-library .stories-library-head {
+  margin-bottom: 0;
+  align-items: baseline;
+}
+
+.stories-page .stories-page-library .stories-filter-empty {
+  margin-bottom: 0;
+}
+
+.stories-page .story-grid-3 {
+  gap: var(--space-5);
+}
+
+.stories-page .stories-page-library-grid {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .stories-page .page-header {
+    align-items: stretch;
+  }
+
+  .stories-page .stories-filters-bar__chips.chips-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: var(--space-2);
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stories-page .stories-filters-bar__chips.chips-row::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .stories-page .stories-filters-bar__chips.chips-row::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--text-hint) 35%, transparent);
+  }
+}
+
+@media (max-width: 520px) {
+  .stories-page .stories-filter-toggle {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    width: 100%;
+    padding-top: var(--space-1);
+    border-top: var(--stroke-1) solid var(--border-card);
+    margin-top: var(--space-1);
+  }
+}
+
 /* Editing subtitle with badge (e.g. "Editing: {story title}") */
 .page-subtitle-editing {
   display: flex;
