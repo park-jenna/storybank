@@ -135,6 +135,11 @@ export default function StoriesPage() {
     [stories]
   );
 
+  const completeCount = useMemo(
+    () => stories.filter((s) => isStoryStarComplete(s)).length,
+    [stories]
+  );
+
   const filteredStories = useMemo(() => {
     let list = stories;
     if (selectedCategory !== ALL) {
@@ -164,7 +169,7 @@ export default function StoriesPage() {
                 <div className="skeleton skeleton-line--subtitle" />
               </div>
             </div>
-            <div className="story-grid-3">
+            <div className="story-grid-2">
               {[0, 1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="skeleton-card">
                   <div className="skeleton skeleton-line skeleton-line--w75-h16" />
@@ -187,9 +192,28 @@ export default function StoriesPage() {
           <Fragment>
             <header className="page-header">
               <div className="page-header-left">
+                <p className="stories-page-eyebrow">Story library</p>
                 <h1 className="page-title">My Stories</h1>
                 <p className="page-subtitle">
-                  Open any STAR story to view or continue editing.
+                  {hasAnyStories ? (
+                    <>
+                      {stories.length} saved
+                      {completeCount > 0 && (
+                        <>
+                          {" · "}
+                          {completeCount} STAR-complete
+                        </>
+                      )}
+                      {inProgressStories.length > 0 && (
+                        <>
+                          {" · "}
+                          {inProgressStories.length} in progress
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    "Open any STAR story to view or continue editing."
+                  )}
                 </p>
               </div>
               <div className="page-header-actions">
@@ -215,12 +239,20 @@ export default function StoriesPage() {
                 >
                   <span className="stories-in-progress-queue-toggle-text">
                     <p className="dashboard-onboarding-eyebrow">In progress</p>
-                    <h2
-                      id="stories-in-progress-heading"
-                      className="stories-in-progress-queue-title"
-                    >
-                      Pick up where you left off
-                    </h2>
+                    <div className="stories-in-progress-queue-heading-row">
+                      <h2
+                        id="stories-in-progress-heading"
+                        className="stories-in-progress-queue-title"
+                      >
+                        Pick up where you left off
+                      </h2>
+                      <span
+                        className="stories-in-progress-queue-count"
+                        aria-label={`${inProgressStories.length} stories in progress`}
+                      >
+                        {inProgressStories.length}
+                      </span>
+                    </div>
                   </span>
                   <span
                     className={`about-feature-chevron${inProgressOpen ? " about-feature-chevron-open" : ""}`}
@@ -315,52 +347,54 @@ export default function StoriesPage() {
             )}
 
             {hasAnyStories && (
-              <div className="stories-filters-bar">
-                <div
-                  className="chips-row chips-row--section stories-filters-bar__chips"
-                  role="group"
-                  aria-label="Filter stories by category"
-                >
-                  {[ALL, ...CATEGORIES].map((cat) => {
-                    const selected = selectedCategory === cat;
-                    return (
-                      <button
-                        key={cat}
-                        type="button"
-                        aria-pressed={selected}
-                        className={`chip${selected ? " active" : ""}`}
-                        onClick={() => handleSelectCategory(cat)}
-                      >
-                        {cat}
-                      </button>
-                    );
-                  })}
-                </div>
-                <div className="stories-filter-toggle">
-                  <span
-                    className="stories-filter-toggle__label"
-                    id="stories-star-complete-label"
+              <div className="stories-page-filters-wrap">
+                <div className="stories-filters-bar">
+                  <div
+                    className="chips-row chips-row--section stories-filters-bar__chips"
+                    role="group"
+                    aria-label="Filter stories by category"
                   >
-                    STAR complete only
-                  </span>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={completeOnly}
-                    aria-labelledby="stories-star-complete-label"
-                    className={`stories-filter-toggle__switch${completeOnly ? " stories-filter-toggle__switch--on" : ""}`}
-                    onClick={toggleCompleteOnly}
-                  >
-                    <span className="visually-hidden">
-                      {completeOnly ? "On" : "Off"}
+                    {[ALL, ...CATEGORIES].map((cat) => {
+                      const selected = selectedCategory === cat;
+                      return (
+                        <button
+                          key={cat}
+                          type="button"
+                          aria-pressed={selected}
+                          className={`chip${selected ? " active" : ""}`}
+                          onClick={() => handleSelectCategory(cat)}
+                        >
+                          {cat}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="stories-filter-toggle">
+                    <span
+                      className="stories-filter-toggle__label"
+                      id="stories-star-complete-label"
+                    >
+                      STAR complete only
                     </span>
-                  </button>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={completeOnly}
+                      aria-labelledby="stories-star-complete-label"
+                      className={`stories-filter-toggle__switch${completeOnly ? " stories-filter-toggle__switch--on" : ""}`}
+                      onClick={toggleCompleteOnly}
+                    >
+                      <span className="visually-hidden">
+                        {completeOnly ? "On" : "Off"}
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
 
             {!hasAnyStories && (
-              <div className="empty-state">
+              <div className="empty-state stories-page-empty">
                 <div className="empty-state-icon">
                   <EmptyStateGlyph kind="document" />
                 </div>
@@ -375,7 +409,7 @@ export default function StoriesPage() {
             )}
 
             {hasAnyStories && (
-              <div className="stories-page-library">
+              <div className="stories-page-library stories-page-library-panel card">
                 <div className="card-head stories-library-head">
                   <h2 id="stories-library-heading" className="card-title">
                     Your stories
@@ -416,7 +450,7 @@ export default function StoriesPage() {
                     className="stories-page-library-grid"
                     aria-labelledby="stories-library-heading"
                   >
-                    <div className="story-grid-3">
+                    <div className="story-grid-2">
                       {filteredStories.map((s) => {
                         const situation = !!s.situation?.trim();
                         const action = !!s.action?.trim();

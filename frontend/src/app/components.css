@@ -422,7 +422,9 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 6px;
-  margin-bottom: 5px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 0.5px solid var(--border-card);
 }
 
 .story-card-title {
@@ -569,7 +571,7 @@
 }
 
 /* Ensure story grid links stretch so cards align in height */
-.story-grid-3 > a {
+.story-grid-2 > a {
   height: 100%;
   display: block;
 }
@@ -588,10 +590,10 @@
   transform: translateY(-1px);
 }
 
-/* Carousel card (in-progress) — ~2/3 width of a .story-grid-3 cell.
-   Base cell = (100% + 52px) / 3 (see .carousel horizontal padding vs grid). */
+/* Carousel card (in-progress) — ~2/3 width of a .story-grid-2 cell.
+   Base cell ≈ (100% + 52px) / 2; 2/3 of that → (100% + 52px) / 3. */
 .carousel-card {
-  --carousel-card-width: calc((100% + 52px) * 2 / 9);
+  --carousel-card-width: calc((100% + 52px) / 3);
   background: var(--surface-raised);
   border-radius: var(--radius-lg);
   padding: 1rem 1.125rem;
@@ -704,7 +706,7 @@
   flex-shrink: 0;
 }
 
-/* In-progress carousel: desktop width matches 3-col grid; on narrow screens use a readable min width */
+/* In-progress carousel: desktop width matches 2-col grid; on narrow screens use a readable min width */
 @media (max-width: 900px) {
   .carousel-card {
     --carousel-card-width: min(280px, calc(100vw - 5.5rem));
@@ -2774,12 +2776,6 @@ a.story-row-title--link:hover {
   font-size: 13px;
   color: var(--text-muted);
   margin-bottom: 12px;
-}
-
-.story-grid-2 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
 }
 
 .success-msg--spaced {
