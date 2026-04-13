@@ -124,6 +124,11 @@ function CommonQuestionsContent() {
     kind: "bookmark" | "panel";
     question: Question;
   } | null>(null);
+  const [hasToken, setHasToken] = useState(false);
+
+  useEffect(() => {
+    setHasToken(!!localStorage.getItem("token"));
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -391,8 +396,6 @@ function CommonQuestionsContent() {
       return next;
     });
   };
-
-  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token");
 
   const handleSelectCategory = (cat: string) => {
     setSelectedCategory(cat);

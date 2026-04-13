@@ -9,10 +9,7 @@ import DashboardPreview from "@/components/DashboardPreview";
 export default function HomePage() {
   const router = useRouter();
   const pathname = usePathname();
-  const [hasToken, setHasToken] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return !!localStorage.getItem("token");
-  });
+  const [hasToken, setHasToken] = useState(false);
 
   useEffect(() => {
     if (pathname !== "/") return;
