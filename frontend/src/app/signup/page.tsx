@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signup } from "@/lib/auth";
 import { postAuthDestinationFromWindow } from "@/lib/navigation";
+import { setSessionToken } from "@/lib/session";
 import { Button, FormField, Input } from "@/components/ui";
 
 const MIN_PASSWORD_LENGTH = 8;
@@ -45,7 +46,7 @@ export default function SignupPage() {
         setLoading(true);
         try {
             const data = await signup(email, password);
-            localStorage.setItem("token", data.token);
+            setSessionToken(data.token);
             router.replace(postAuthDestinationFromWindow());
         } catch (err) {
             const msg = err instanceof Error ? err.message : "Signup failed";
@@ -135,4 +136,3 @@ export default function SignupPage() {
         </main>
     );
 }
-                

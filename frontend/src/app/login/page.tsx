@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/auth";
 import { postAuthDestinationFromWindow } from "@/lib/navigation";
+import { setSessionToken } from "@/lib/session";
 import { Button, FormField, Input } from "@/components/ui";
 
 export default function LoginPage() {
@@ -31,7 +32,7 @@ export default function LoginPage() {
 
         try {
             const data = await login(email, password);
-            localStorage.setItem("token", data.token);
+            setSessionToken(data.token);
             router.replace(postAuthDestinationFromWindow());
         } catch (err) {
             const msg = err instanceof Error ? err.message : "Login failed";

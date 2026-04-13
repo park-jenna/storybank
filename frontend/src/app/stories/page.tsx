@@ -15,6 +15,7 @@ import { fetchStories, Story } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
 import { StarCompletionVisual } from "@/components/StarCompletionVisual";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
+import { getSessionToken, redirectToLogin } from "@/lib/session";
 
 const ALL = "All" as const;
 const CATEGORY_QUERY = "category";
@@ -104,10 +105,10 @@ export default function StoriesPage() {
     async function load() {
       try {
         setError(null);
-        const token = localStorage.getItem("token");
+        const token = getSessionToken();
         if (!token) {
           setError("No token found. Please log in again.");
-          router.replace("/login");
+          redirectToLogin(router);
           return;
         }
         const data = await fetchStories(token);

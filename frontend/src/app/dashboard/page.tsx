@@ -8,6 +8,7 @@ import { fetchUserQuestions, UserQuestionItem } from "@/lib/user-questions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CATEGORIES } from "@/constants/categories";
+import { getSessionToken, redirectToLogin } from "@/lib/session";
 
 function storyProgress(s: Story): number {
   let n = 0;
@@ -117,7 +118,6 @@ function OnboardingTagIcon() {
   );
 }
 
-const USER_NAME = "User"; // TODO: from auth when available
 const CATEGORY_GOAL = 3;
 
 export default function DashboardPage() {
@@ -131,10 +131,10 @@ export default function DashboardPage() {
     async function load() {
       try {
         setError(null);
-        const token = localStorage.getItem("token");
+        const token = getSessionToken();
         if (!token) {
           setError("Session expired. Please log in again.");
-          router.replace("/login");
+          redirectToLogin(router);
           return;
         }
         const [storiesRes, uqRes] = await Promise.all([
@@ -208,11 +208,6 @@ export default function DashboardPage() {
     const moreCount = missingCategories.length - 1;
     return moreCount > 0 ? `Missing: ${first} +${moreCount} more` : `Missing: ${first}`;
   }, [missingCategories]);
-
-  const maxCategoryCount = useMemo(
-    () => Math.max(...Object.values(categoryCounts), 1),
-    [categoryCounts]
-  );
 
   return (
     <main className="main-content" role="main" aria-label="Dashboard overview">

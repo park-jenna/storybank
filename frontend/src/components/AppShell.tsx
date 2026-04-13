@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { isAuthOptionalPathname, isBareLayoutPathname } from "@/lib/public-paths";
+import { redirectToLogin, useSessionToken } from "@/lib/session";
 
 export default function AppShell({
   children,
@@ -14,24 +15,15 @@ export default function AppShell({
   const router = useRouter();
   const authOptional = pathname ? isAuthOptionalPathname(pathname) : false;
   const bareLayout = pathname ? isBareLayoutPathname(pathname) : false;
-  const [authReady, setAuthReady] = useState(authOptional);
+  const token = useSessionToken();
+  const authReady = authOptional || !!token;
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!pathname) return;
-    if (isAuthOptionalPathname(pathname)) {
-      setAuthReady(true);
-      return;
-    }
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setAuthReady(false);
-      const fullPath = `${window.location.pathname}${window.location.search}`;
-      router.replace(`/login?returnTo=${encodeURIComponent(fullPath)}`);
-      return;
-    }
-    setAuthReady(true);
-  }, [pathname, router]);
+    if (authOptional || token) return;
+    redirectToLogin(router);
+  }, [authOptional, pathname, router, token]);
 
   if (bareLayout) {
     return <>{children}</>;

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { fetchStories } from "@/lib/stories";
 import { fetchUserQuestions } from "@/lib/user-questions";
 import { useTheme } from "@/contexts/ThemeContext";
+import { clearSessionToken, useSessionToken } from "@/lib/session";
 
 function storyProgress(s: { situation?: string | null; action?: string | null; result?: string | null }): number {
   let n = 0;
@@ -44,6 +45,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
+  const token = useSessionToken();
   const [inProgressCount, setInProgressCount] = useState(0);
   const [unlinkedCount, setUnlinkedCount] = useState(0);
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -51,8 +53,12 @@ export default function Sidebar({ onClose }: SidebarProps) {
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-      if (!token) return;
+      if (!token) {
+        setUserEmail(null);
+        setInProgressCount(0);
+        setUnlinkedCount(0);
+        return;
+      }
       if (!cancelled) setUserEmail(getEmailFromToken(token));
       try {
         const [storiesRes, uqRes] = await Promise.all([
@@ -73,14 +79,12 @@ export default function Sidebar({ onClose }: SidebarProps) {
     }
     load();
     return () => { cancelled = true; };
-  }, [pathname]);
+  }, [pathname, token]);
 
   const isDashboardActive = pathname === "/dashboard";
 
   function handleLogout() {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
-    }
+    clearSessionToken();
     router.replace("/login");
     if (onClose) {
       onClose();

@@ -20,6 +20,7 @@ import { safeInternalReturnPath } from "@/lib/navigation";
 import { getQuestionsForCategories } from "@/constants/interviewQuestions";
 import Link from "next/link";
 import { StarCompletionVisual } from "@/components/StarCompletionVisual";
+import { getSessionToken, redirectToLogin } from "@/lib/session";
 
 function starStatus(story: Story) {
   return {
@@ -205,10 +206,10 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
       try {
         setError(null);
 
-        const token = localStorage.getItem("token");
+        const token = getSessionToken();
         if (!token) {
           setError("No token found. Please log in again.");
-          router.replace("/login");
+          redirectToLogin(router);
           return;
         }
 
@@ -511,7 +512,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
                       if (!story) return;
                       try {
                         setDeleting(true);
-                        const token = localStorage.getItem("token");
+                        const token = getSessionToken();
                         if (!token) {
                           throw new Error("No token found. Please log in again.");
                         }

@@ -8,6 +8,7 @@ import { fetchUserQuestions, deleteUserQuestion, UserQuestionItem } from "@/lib/
 import { CATEGORIES } from "@/constants/categories";
 import { useToast } from "@/contexts/ToastContext";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
+import { getSessionToken, redirectToLogin } from "@/lib/session";
 
 const ALL = "All" as const;
 const CATEGORY_QUERY = "category";
@@ -54,10 +55,10 @@ export default function SavedQuestionsPage() {
     async function load() {
       try {
         setError(null);
-        const token = localStorage.getItem("token");
+        const token = getSessionToken();
         if (!token) {
           setError("No token found. Please log in again.");
-          router.replace("/login");
+          redirectToLogin(router);
           return;
         }
         const data = await fetchUserQuestions(token);
@@ -104,9 +105,10 @@ export default function SavedQuestionsPage() {
 
   const handleConfirmDelete = async () => {
     if (!confirmDeleteId) return;
-    const token = localStorage.getItem("token");
+    const token = getSessionToken();
     if (!token) {
       closeDeleteConfirm();
+      redirectToLogin(router);
       return;
     }
     if (confirmStep === 1) {

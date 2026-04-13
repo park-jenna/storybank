@@ -3,6 +3,7 @@
 // 실제 fetch 수행 담당
 // 에러처리, JSON 처리, 공통 헤더 설정 등
 import { shouldSkipAuthFailureRedirect } from "@/lib/public-paths";
+import { clearSessionToken } from "@/lib/session";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 
@@ -13,7 +14,7 @@ type ApiOptions = {
 function handleAuthFailure(): void {
     if (typeof window === "undefined") return;
     try {
-        localStorage.removeItem("token");
+        clearSessionToken();
     } catch {
         // ignore storage failures (private mode, etc.)
     }

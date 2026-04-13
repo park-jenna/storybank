@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { SavedQuestionManageForm } from "@/components/SavedQuestionManageForm";
 import { fetchUserQuestionById, deleteUserQuestion, UserQuestionItem } from "@/lib/user-questions";
+import { getSessionToken, redirectToLogin } from "@/lib/session";
 
 const MAX_STORY_TAGS_ON_SLIDE = 3;
 
@@ -42,10 +43,10 @@ export default function SavedQuestionDetailPage({
     async function load() {
       try {
         setError(null);
-        const token = localStorage.getItem("token");
+        const token = getSessionToken();
         if (!token) {
           setError("No token found. Please log in again.");
-          router.replace("/login");
+          redirectToLogin(router);
           return;
         }
         if (!questionId) {
@@ -130,7 +131,7 @@ export default function SavedQuestionDetailPage({
       setConfirmStep(2);
       return;
     }
-    const token = localStorage.getItem("token");
+    const token = getSessionToken();
     if (!token) return;
     try {
       setDeleting(true);
@@ -309,7 +310,7 @@ export default function SavedQuestionDetailPage({
               userQuestion={userQuestion}
               onClose={() => setShowManage(false)}
               onSaved={async () => {
-                const token = localStorage.getItem("token");
+                const token = getSessionToken();
                 if (!token || !questionId) return;
                 const data = await fetchUserQuestionById(token, questionId);
                 setUserQuestion(data.userQuestion);

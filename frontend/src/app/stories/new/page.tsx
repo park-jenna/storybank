@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createStory } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
 import { StarWritingTips } from "@/components/StarWritingTips";
+import { getSessionToken, redirectToLogin } from "@/lib/session";
 
 export default function NewStoryPage() {
   const router = useRouter();
@@ -43,11 +44,9 @@ export default function NewStoryPage() {
   );
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = getSessionToken();
     if (!token) {
-      router.replace(
-        `/login?returnTo=${encodeURIComponent("/stories/new")}`
-      );
+      redirectToLogin(router, "/stories/new");
     }
   }, [router]);
 
@@ -106,7 +105,7 @@ export default function NewStoryPage() {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
+      const token = getSessionToken();
       if (!token) {
         throw new Error("No token found. Please log in again.");
       }

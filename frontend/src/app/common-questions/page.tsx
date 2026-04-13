@@ -17,6 +17,7 @@ import {
 } from "@/lib/user-questions";
 import { CATEGORIES } from "@/constants/categories";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
+import { getSessionToken, redirectToLogin, useSessionToken } from "@/lib/session";
 
 const ALL = "All" as const;
 
@@ -124,19 +125,16 @@ function CommonQuestionsContent() {
     kind: "bookmark" | "panel";
     question: Question;
   } | null>(null);
-  const [hasToken, setHasToken] = useState(false);
-
-  useEffect(() => {
-    setHasToken(!!localStorage.getItem("token"));
-  }, []);
+  const hasToken = !!useSessionToken();
+  const selectedQuestionId = selectedQuestion?.id ?? null;
 
   useEffect(() => {
     async function load() {
       try {
         setError(null);
-        const token = localStorage.getItem("token");
+        const token = getSessionToken();
         if (!token) {
-          router.replace("/login");
+          redirectToLogin(router);
           return;
         }
         const [commonData, userData] = await Promise.all([
@@ -165,13 +163,13 @@ function CommonQuestionsContent() {
   }, [questions, questionIdFromUrl]);
 
   useEffect(() => {
-    if (!selectedQuestion) {
+    if (!selectedQuestionId) {
       setRecommendedStories([]);
       setShowSavePanel(false);
       setSelectedStoryIds(new Set());
       return;
     }
-    const token = localStorage.getItem("token");
+    const token = getSessionToken();
     if (!token) {
       setRecommendedStories([]);
       return;
@@ -180,13 +178,13 @@ function CommonQuestionsContent() {
     setShowSavePanel(false);
     setSelectedStoryIds(new Set());
     setExpandedStoryIds(new Set());
-    fetchQuestionRecommendations(token, selectedQuestion.id)
+    fetchQuestionRecommendations(token, selectedQuestionId)
       .then((data) => {
         setRecommendedStories(data.recommendedStories ?? []);
       })
       .catch(() => setRecommendedStories([]))
       .finally(() => setLoadingRecommendations(false));
-  }, [selectedQuestion?.id]);
+  }, [selectedQuestionId]);
 
   const filteredQuestions = useMemo(() => {
     if (selectedCategory === ALL) return questions;
@@ -227,9 +225,9 @@ function CommonQuestionsContent() {
   };
 
   const performSaveWithoutStories = async (q: Question) => {
-    const token = localStorage.getItem("token");
+    const token = getSessionToken();
     if (!token) {
-      router.replace("/login");
+      redirectToLogin(router);
       return;
     }
 
@@ -255,9 +253,9 @@ function CommonQuestionsContent() {
   };
 
   const handleToggleSaved = async (q: Question) => {
-    const token = localStorage.getItem("token");
+    const token = getSessionToken();
     if (!token) {
-      router.replace("/login");
+      redirectToLogin(router);
       return;
     }
 
@@ -296,9 +294,9 @@ function CommonQuestionsContent() {
   const handleToastAction = async () => {
     const action = toast.action;
     if (!action) return;
-    const token = localStorage.getItem("token");
+    const token = getSessionToken();
     if (!token) {
-      router.replace("/login");
+      redirectToLogin(router);
       return;
     }
     setSaving(true);
@@ -341,9 +339,9 @@ function CommonQuestionsContent() {
   };
 
   const handleSaveToMyQuestions = async (opts?: { skipEmptyConfirm?: boolean }) => {
-    const token = localStorage.getItem("token");
+    const token = getSessionToken();
     if (!token) {
-      router.replace("/login");
+      redirectToLogin(router);
       return;
     }
     if (!selectedQuestion) return;
@@ -603,7 +601,7 @@ function CommonQuestionsContent() {
                   <button
                     type="button"
                     className="btn-primary"
-                    onClick={() => router.replace("/login")}
+                    onClick={() => redirectToLogin(router)}
                   >
                     Log in
                   </button>

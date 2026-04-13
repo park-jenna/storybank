@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import BrowserFrame from "@/components/BrowserFrame";
 import { safeInternalReturnPath } from "@/lib/navigation";
+import { useSessionToken } from "@/lib/session";
 
 const STACK = [
   { layer: "Frontend", tech: "Next.js 16, React 19\nTypeScript, Tailwind CSS" },
@@ -83,15 +84,14 @@ function FeatureScreenshot({
 export default function AboutPage() {
   const router = useRouter();
   const baseId = useId();
+  const token = useSessionToken();
   const [openId, setOpenId] = useState<string | null>(null);
-  const [backHref, setBackHref] = useState("/");
-
-  useEffect(() => {
+  const [returnToPath] = useState(() => {
+    if (typeof window === "undefined") return null;
     const params = new URLSearchParams(window.location.search);
-    const ret = safeInternalReturnPath(params.get("returnTo"));
-    const token = localStorage.getItem("token");
-    setBackHref(ret ?? (token ? "/dashboard" : "/"));
-  }, []);
+    return safeInternalReturnPath(params.get("returnTo"));
+  });
+  const backHref = returnToPath ?? (token ? "/dashboard" : "/");
 
   return (
     <main className="about-page">

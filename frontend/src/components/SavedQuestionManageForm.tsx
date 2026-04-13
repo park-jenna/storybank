@@ -6,6 +6,7 @@ import Link from "next/link";
 import { updateUserQuestion, type UserQuestionItem } from "@/lib/user-questions";
 import { fetchStories, type Story } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
+import { getSessionToken } from "@/lib/session";
 
 const MAX_CATEGORY_TAGS_ON_ROW = 3;
 
@@ -44,23 +45,23 @@ export function SavedQuestionManageForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const categoriesKey = [...(userQuestion.question.recommendedCategories ?? [])]
-    .sort()
-    .join("\0");
-  const linkedIdsKey = userQuestion.stories.map((s) => s.id).sort().join("\0");
-
   useEffect(() => {
     setContent(userQuestion.question.content);
     setSelectedCategories([...(userQuestion.question.recommendedCategories ?? [])]);
     setSelectedStoryIds(new Set(userQuestion.stories.map((s) => s.id)));
-  }, [userQuestion.id, userQuestion.question.content, categoriesKey, linkedIdsKey]);
+  }, [
+    userQuestion.id,
+    userQuestion.question.content,
+    userQuestion.question.recommendedCategories,
+    userQuestion.stories,
+  ]);
 
   useEffect(() => {
     let cancelled = false;
     async function loadStories() {
       setLoadingStories(true);
       try {
-        const token = localStorage.getItem("token");
+        const token = getSessionToken();
         if (!token) return;
         const res = await fetchStories(token);
         if (!cancelled) setStories(res.stories);
@@ -117,7 +118,7 @@ export function SavedQuestionManageForm({
     setError(null);
     setSaving(true);
     try {
-      const token = localStorage.getItem("token");
+      const token = getSessionToken();
       if (!token) throw new Error("No token found. Please log in again.");
       const trimmedContent = content.trim();
       if (!trimmedContent) throw new Error("Question content is required.");

@@ -6,6 +6,7 @@ import { fetchStoryById, Story, updateStoryById } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
 import { StarWritingTips } from "@/components/StarWritingTips";
 import { useToast } from "@/contexts/ToastContext";
+import { getSessionToken, redirectToLogin } from "@/lib/session";
 
 type EditStoryPageProps = {
   params: Promise<{ id: string }>;
@@ -52,10 +53,10 @@ export default function EditStoryPage({ params }: EditStoryPageProps) {
     async function load() {
       try {
         setError(null);
-        const token = localStorage.getItem("token");
+        const token = getSessionToken();
         if (!token) {
           setError("No token found. Please log in again.");
-          router.replace("/login");
+          redirectToLogin(router);
           return;
         }
         if (!storyId) {
@@ -86,7 +87,7 @@ export default function EditStoryPage({ params }: EditStoryPageProps) {
     setSaving(true);
 
     try {
-      const token = localStorage.getItem("token");
+      const token = getSessionToken();
       if (!token) throw new Error("No token found. Please log in again.");
       if (!storyId) throw new Error("No story ID provided.");
 

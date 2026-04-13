@@ -1,30 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import BrowserFrame from "@/components/BrowserFrame";
 import DashboardPreview from "@/components/DashboardPreview";
+import { useSessionToken } from "@/lib/session";
 
 export default function HomePage() {
   const router = useRouter();
-  const pathname = usePathname();
-  const [hasToken, setHasToken] = useState(false);
-
-  useEffect(() => {
-    if (pathname !== "/") return;
-    setHasToken(!!localStorage.getItem("token"));
-  }, [pathname]);
-
-  useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === "token" || e.key === null) {
-        setHasToken(!!localStorage.getItem("token"));
-      }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
+  const hasToken = !!useSessionToken();
 
   return (
     <main className="landing-page">
