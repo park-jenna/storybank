@@ -1,28 +1,97 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { fetchStories, Story } from "@/lib/stories";
+import { CATEGORIES } from "@/constants/categories";
 import { StarCompletionVisual } from "@/components/StarCompletionVisual";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 
-function storyProgress(s: Story): number {
-  let n = 0;
-  if (s.situation?.trim()) n++;
-  if (s.action?.trim()) n++;
-  if (s.result?.trim()) n++;
-  return Math.round((n / 3) * 100);
+const ALL = "All" as const;
+const CATEGORY_QUERY = "category";
+const COMPLETE_QUERY = "complete";
+
+function categoryFromSearchParams(searchParams: URLSearchParams): string {
+  const raw = searchParams.get(CATEGORY_QUERY);
+  if (!raw) return ALL;
+  if (raw === ALL || (CATEGORIES as readonly string[]).includes(raw)) return raw;
+  return ALL;
+}
+
+function isStoryStarComplete(s: Story): boolean {
+  return (
+    !!s.situation?.trim() &&
+    !!s.action?.trim() &&
+    !!s.result?.trim()
+  );
 }
 
 export default function StoriesPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [inProgressOpen, setInProgressOpen] = useState(false);
   const inProgressSectionRef = useRef<HTMLElement>(null);
+
+  const selectedCategory = useMemo(
+    () => categoryFromSearchParams(searchParams),
+    [searchParams]
+  );
+  const completeOnly = searchParams.get(COMPLETE_QUERY) === "1";
+
+  useEffect(() => {
+    const raw = searchParams.get(CATEGORY_QUERY);
+    if (!raw) return;
+    const validCategory = (CATEGORIES as readonly string[]).includes(raw);
+    const shouldStrip = raw === ALL || !validCategory;
+    if (shouldStrip) {
+      const next = new URLSearchParams(searchParams.toString());
+      next.delete(CATEGORY_QUERY);
+      const q = next.toString();
+      router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
+    }
+  }, [searchParams, pathname, router]);
+
+  useEffect(() => {
+    const raw = searchParams.get(COMPLETE_QUERY);
+    if (raw === null) return;
+    if (raw !== "1") {
+      const next = new URLSearchParams(searchParams.toString());
+      next.delete(COMPLETE_QUERY);
+      const q = next.toString();
+      router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
+    }
+  }, [searchParams, pathname, router]);
+
+  const handleSelectCategory = useCallback(
+    (cat: string) => {
+      const next = new URLSearchParams(searchParams.toString());
+      if (cat === ALL) {
+        next.delete(CATEGORY_QUERY);
+      } else {
+        next.set(CATEGORY_QUERY, cat);
+      }
+      const q = next.toString();
+      router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
+    },
+    [pathname, router, searchParams]
+  );
+
+  const toggleCompleteOnly = useCallback(() => {
+    const next = new URLSearchParams(searchParams.toString());
+    if (completeOnly) {
+      next.delete(COMPLETE_QUERY);
+    } else {
+      next.set(COMPLETE_QUERY, "1");
+    }
+    const q = next.toString();
+    router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
+  }, [completeOnly, pathname, router, searchParams]);
 
   useEffect(() => {
     async function load() {
@@ -50,7 +119,7 @@ export default function StoriesPage() {
   const inProgressStories = useMemo(
     () =>
       [...stories]
-        .filter((s) => storyProgress(s) < 100)
+        .filter((s) => !isStoryStarComplete(s))
         .sort(
           (a, b) =>
             new Date(b.createdAt || 0).getTime() -
@@ -59,7 +128,23 @@ export default function StoriesPage() {
     [stories]
   );
 
+  const filteredStories = useMemo(() => {
+    let list = stories;
+    if (selectedCategory !== ALL) {
+      list = list.filter((s) =>
+        (s.categories ?? []).includes(selectedCategory)
+      );
+    }
+    if (completeOnly) {
+      list = list.filter((s) => isStoryStarComplete(s));
+    }
+    return list;
+  }, [stories, selectedCategory, completeOnly]);
+
   const hasAnyStories = stories.length > 0;
+  const filtersActive =
+    selectedCategory !== ALL || completeOnly;
+  const hasFilteredResults = filteredStories.length > 0;
 
   return (
     <main className="main-content">
@@ -227,14 +312,69 @@ export default function StoriesPage() {
             )}
 
             {hasAnyStories && (
+              <div className="stories-filters-bar">
+                <div
+                  className="chips-row chips-row--section stories-filters-bar__chips"
+                  role="group"
+                  aria-label="Filter stories by category"
+                >
+                  {[ALL, ...CATEGORIES].map((cat) => {
+                    const selected = selectedCategory === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        aria-pressed={selected}
+                        className={`chip${selected ? " active" : ""}`}
+                        onClick={() => handleSelectCategory(cat)}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="stories-filter-toggle">
+                  <span
+                    className="stories-filter-toggle__label"
+                    id="stories-star-complete-label"
+                  >
+                    STAR complete only
+                  </span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={completeOnly}
+                    aria-labelledby="stories-star-complete-label"
+                    className={`stories-filter-toggle__switch${completeOnly ? " stories-filter-toggle__switch--on" : ""}`}
+                    onClick={toggleCompleteOnly}
+                  >
+                    <span className="visually-hidden">
+                      {completeOnly ? "On" : "Off"}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {hasAnyStories && (
               <div className="card-head stories-library-head">
                 <h2 id="stories-library-heading" className="card-title">
                   Your stories
                 </h2>
                 <p className="stories-page-results" aria-live="polite">
-                  {stories.length === 1
-                    ? "1 story"
-                    : `${stories.length} stories`}
+                  {filtersActive
+                    ? filteredStories.length === 1
+                      ? "1 story matches"
+                      : `${filteredStories.length} stories match`
+                    : stories.length === 1
+                      ? "1 story"
+                      : `${stories.length} stories`}
+                  {filtersActive && stories.length > 0 && (
+                    <span className="stories-page-results-total">
+                      {" "}
+                      ({stories.length} total)
+                    </span>
+                  )}
                 </p>
               </div>
             )}
@@ -254,13 +394,29 @@ export default function StoriesPage() {
               </div>
             )}
 
-            {hasAnyStories && (
+            {hasAnyStories && !hasFilteredResults && (
+              <div className="empty-state stories-filter-empty" role="status">
+                <p className="empty-state-desc stories-filter-empty__text">
+                  No stories match these filters. Try another category or turn
+                  off &quot;STAR complete only&quot;.
+                </p>
+                <button
+                  type="button"
+                  className="btn-inline"
+                  onClick={() => router.replace(pathname, { scroll: false })}
+                >
+                  Clear filters
+                </button>
+              </div>
+            )}
+
+            {hasAnyStories && hasFilteredResults && (
               <section
                 className="stories-page-library-grid"
                 aria-labelledby="stories-library-heading"
               >
                 <div className="story-grid-3">
-                  {stories.map((s) => {
+                  {filteredStories.map((s) => {
                     const situation = !!s.situation?.trim();
                     const action = !!s.action?.trim();
                     const result = !!s.result?.trim();
