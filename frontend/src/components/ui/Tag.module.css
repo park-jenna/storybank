@@ -1,0 +1,36 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 6px;
+  border: var(--stroke-1) solid #f7e1d5;
+  border-radius: 0.5rem;
+  background: #fff0e794;
+  color: #494949;
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+.default {
+  font-weight: 500;
+}
+
+.match,
+.highlight {
+  background: #f7e1d5;
+  color: #494949;
+  font-weight: 600;
+}
+
+.match::before {
+  content: "✓";
+  margin-right: 4px;
+  font-weight: 700;
+}
+
+.more {
+  background: color-mix(in srgb, var(--tag-bg) 88%, var(--text-muted));
+  color: var(--text-muted);
+  border-color: #f7e1d5;
+  border-style: dashed;
+  font-weight: 600;
+}

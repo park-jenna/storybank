@@ -1,9 +1,10 @@
 "use client";
 
 import type { ButtonHTMLAttributes } from "react";
+import styles from "./Button.module.css";
 
-type ButtonVariant = "default" | "primary" | "danger" | "menu";
-type ButtonSize = "sm" | "md" | "lg";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "link";
+export type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -13,29 +14,39 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  default: "btn-secondary",
-  primary: "btn-primary",
-  danger: "btn-danger",
-  menu: "btn-ghost",
+  primary: styles.primary,
+  secondary: styles.secondary,
+  ghost: styles.ghost,
+  danger: styles.danger,
+  link: styles.link,
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: "btn-size-sm",
-  md: "btn-size-md",
-  lg: "btn-size-lg",
+  sm: styles.sm,
+  md: styles.md,
+  lg: styles.lg,
 };
 
 export default function Button({
-  variant = "default",
+  variant = "secondary",
   size = "md",
   className = "",
   disabled,
   ...props
 }: ButtonProps) {
+  const classes = [
+    styles.button,
+    variantClasses[variant],
+    sizeClasses[size],
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <button
       type={props.type ?? "button"}
-      className={`${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={classes}
       disabled={disabled}
       {...props}
     />

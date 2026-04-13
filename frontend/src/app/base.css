@@ -71,7 +71,7 @@
   /* Component-specific aliases (reduce hard-coding) */
   --btn-primary-disabled-bg: #B9CABB;
 
-  --tag-bg:          #F3F6F1; /* used by .tag */
+  --tag-bg:          #F3F6F1; /* used by Tag overflow state */
   --tag-border:     var(--border-page);
 
   --warn-hover-bg:  #F7E1D5;

@@ -1,0 +1,71 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border: var(--stroke-1) solid #c2d0c0;
+  border-radius: var(--radius-pill);
+  background: #f4f6f1;
+  color: var(--text-secondary);
+  box-shadow: none;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  user-select: none;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.chip:hover:not(:disabled):not(.selected) {
+  background: #f4f6f1;
+  border-color: #2f6b45;
+  color: var(--text-secondary);
+}
+
+.chip:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--green-light) 85%, transparent),
+    0 0 0 4px color-mix(in srgb, var(--green-primary) 35%, transparent);
+}
+
+.chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.selected {
+  background: #2f6b45;
+  border-color: #2f6b45;
+  color: #fff;
+}
+
+.selected:hover:not(:disabled) {
+  background: #2f6b45;
+  border-color: #2f6b45;
+  color: #fff;
+}
+
+.selected:focus-visible {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--bg-card) 88%, var(--green-light)),
+    0 0 0 4px color-mix(in srgb, #2f6b45 55%, transparent);
+}
+
+.sm {
+  min-height: 28px;
+  padding: 5px 10px;
+  font-size: var(--text-xs);
+}
+
+.md {
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: var(--text-sm);
+}

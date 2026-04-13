@@ -18,6 +18,7 @@ import {
 import { CATEGORIES } from "@/constants/categories";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 import { getSessionToken, redirectToLogin, useSessionToken } from "@/lib/session";
+import { Badge, Chip, Tag } from "@/components/ui";
 
 const ALL = "All" as const;
 
@@ -50,17 +51,17 @@ function StoryCategoryTagsRow({
   return (
     <>
       {visible.map((c) => (
-        <span
+        <Tag
           key={c}
-          className={`tag${recommendedCategories.includes(c) ? " tag-match" : ""}`}
+          tone={recommendedCategories.includes(c) ? "match" : "default"}
         >
           {c}
-        </span>
+        </Tag>
       ))}
       {moreCount > 0 && (
-        <span className="tag tag-more" aria-label={`${moreCount} more categories`}>
+        <Tag tone="more" aria-label={`${moreCount} more categories`}>
           +{moreCount}
-        </span>
+        </Tag>
       )}
     </>
   );
@@ -78,12 +79,12 @@ function StoryCategoryTagsAll({
   return (
     <>
       {ordered.map((c) => (
-        <span
+        <Tag
           key={c}
-          className={`tag${recommendedCategories.includes(c) ? " tag-match" : ""}`}
+          tone={recommendedCategories.includes(c) ? "match" : "default"}
         >
           {c}
-        </span>
+        </Tag>
       ))}
     </>
   );
@@ -472,15 +473,13 @@ function CommonQuestionsContent() {
           {[ALL, ...CATEGORIES].map((cat) => {
             const selected = selectedCategory === cat;
             return (
-              <button
+              <Chip
                 key={cat}
-                type="button"
-                aria-pressed={selected}
-                className={`chip${selected ? " active" : ""}`}
+                selected={selected}
                 onClick={() => handleSelectCategory(cat)}
               >
                 {cat}
-              </button>
+              </Chip>
             );
           })}
         </div>
@@ -576,15 +575,15 @@ function CommonQuestionsContent() {
                 <div className="common-questions-categories">
                   <span className="common-questions-section-label">Good categories to highlight</span>
                   {(selectedQuestion.recommendedCategories ?? []).map((cat) => (
-                    <span key={cat} className="tag tag-highlight">
+                    <Tag key={cat} tone="highlight">
                       {cat}
-                    </span>
+                    </Tag>
                   ))}
                 </div>
                 {(selectedQuestion.recommendedCategories ?? []).length > 0 && (
                   <p className="common-questions-tag-legend">
                     <span className="common-questions-tag-legend__sample" aria-hidden="true">
-                      <span className="tag tag-match">Category</span>
+                      <Tag tone="match">Category</Tag>
                     </span>
                     <span>
                       Tags with a checkmark match this question&apos;s recommended categories.
@@ -617,11 +616,9 @@ function CommonQuestionsContent() {
                         <span className="common-questions-section-title" id="linked-stories-heading">
                           Linked stories
                         </span>
-                        <span
-                          className={`common-questions-count-pill${linkedStories.length === 0 ? " common-questions-count-pill--zero" : " common-questions-count-pill--has-items"}`}
-                        >
+                        <Badge tone={linkedStories.length === 0 ? "neutral" : "success"}>
                           {linkedStories.length}
-                        </span>
+                        </Badge>
                       </div>
                       <p className="section-description common-questions-section-desc">
                         Stories you linked to this question. These are the ones you plan to use when answering.
@@ -703,9 +700,9 @@ function CommonQuestionsContent() {
                           ? "More stories to link"
                           : "Recommended stories"}
                       </span>
-                      <span className="common-questions-count-pill">
+                      <Badge tone="success">
                         {recommendedStoriesFiltered.length}
-                      </span>
+                      </Badge>
                     </div>
                     <p className="section-description common-questions-section-desc">
                       {selectedQuestion.alreadySaved

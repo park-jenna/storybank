@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { CATEGORIES } from "@/constants/categories";
 import { StarWritingTips } from "@/components/StarWritingTips";
+import { Chip } from "@/components/ui";
 
 export type StoryFormValues = {
   title: string;
@@ -146,15 +147,13 @@ export function StoryForm({
               {CATEGORIES.map((category) => {
                 const selected = values.categories.includes(category);
                 return (
-                  <button
+                  <Chip
                     key={category}
-                    type="button"
-                    aria-pressed={selected}
-                    className={`chip${selected ? " active" : ""}`}
+                    selected={selected}
                     onClick={() => toggleCategory(category)}
                   >
                     {category}
-                  </button>
+                  </Chip>
                 );
               })}
             </div>

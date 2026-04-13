@@ -16,6 +16,7 @@ import { CATEGORIES } from "@/constants/categories";
 import { StarCompletionVisual } from "@/components/StarCompletionVisual";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
+import { Chip } from "@/components/ui";
 
 const ALL = "All" as const;
 const CATEGORY_QUERY = "category";
@@ -358,15 +359,13 @@ export default function StoriesPage() {
                     {[ALL, ...CATEGORIES].map((cat) => {
                       const selected = selectedCategory === cat;
                       return (
-                        <button
+                        <Chip
                           key={cat}
-                          type="button"
-                          aria-pressed={selected}
-                          className={`chip${selected ? " active" : ""}`}
+                          selected={selected}
                           onClick={() => handleSelectCategory(cat)}
                         >
                           {cat}
-                        </button>
+                        </Chip>
                       );
                     })}
                   </div>

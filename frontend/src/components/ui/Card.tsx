@@ -1,26 +1,47 @@
 "use client";
 
 import type { HTMLAttributes } from "react";
+import styles from "./Card.module.css";
+
+export type CardTone = "default" | "muted" | "error";
+export type CardPadding = "none" | "sm" | "md" | "lg";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "story" | "overview" | "error";
+  tone?: CardTone;
+  padding?: CardPadding;
   children: React.ReactNode;
   className?: string;
 }
 
-const variantClasses: Record<CardProps["variant"] & string, string> = {
-  default: "card",
-  story: "story-card",
-  overview: "card card--overview",
-  error: "card card--error",
+const toneClasses: Record<CardTone, string> = {
+  default: styles.default,
+  muted: styles.muted,
+  error: styles.error,
+};
+
+const paddingClasses: Record<CardPadding, string> = {
+  none: styles.paddingNone,
+  sm: styles.paddingSm,
+  md: styles.paddingMd,
+  lg: styles.paddingLg,
 };
 
 export function Card({
-  variant = "default",
+  tone = "default",
+  padding = "md",
   className = "",
   ...props
 }: CardProps) {
+  const classes = [
+    styles.card,
+    toneClasses[tone],
+    paddingClasses[padding],
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className={`${variantClasses[variant]} ${className}`} {...props} />
+    <div className={classes} {...props} />
   );
 }

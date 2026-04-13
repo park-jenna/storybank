@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { SavedQuestionManageForm } from "@/components/SavedQuestionManageForm";
 import { fetchUserQuestionById, deleteUserQuestion, UserQuestionItem } from "@/lib/user-questions";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
+import { Tag } from "@/components/ui";
 
 const MAX_STORY_TAGS_ON_SLIDE = 3;
 
@@ -283,9 +284,9 @@ export default function SavedQuestionDetailPage({
             userQuestion.question.recommendedCategories.length > 0 && (
               <div className="chips-row">
                 {userQuestion.question.recommendedCategories.map((c) => (
-                  <span key={c} className="tag">
+                  <Tag key={c}>
                     {c}
-                  </span>
+                  </Tag>
                 ))}
               </div>
             )}
@@ -400,17 +401,17 @@ export default function SavedQuestionDetailPage({
                           {s.categories.length > 0 && (
                             <div className="story-card-cats" style={{ marginTop: 6 }}>
                               {visibleCats.map((cat) => (
-                                <span
+                                <Tag
                                   key={cat}
-                                  className={`tag${highlight && questionCats.includes(cat) ? " tag-match" : ""}`}
+                                  tone={highlight && questionCats.includes(cat) ? "match" : "default"}
                                 >
                                   {cat}
-                                </span>
+                                </Tag>
                               ))}
                               {moreCount > 0 && (
-                                <span className="tag tag-more" aria-label={`${moreCount} more categories`}>
+                                <Tag tone="more" aria-label={`${moreCount} more categories`}>
                                   +{moreCount}
-                                </span>
+                                </Tag>
                               )}
                             </div>
                           )}

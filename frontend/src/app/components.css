@@ -682,13 +682,6 @@
   margin-bottom: 0;
 }
 
-/* Narrow carousel: long category names wrap; slightly smaller tags stay balanced vs STAR + CTA */
-.carousel-card-footer-cats .tag {
-  font-size: 11px;
-  line-height: 1.25;
-  padding: 2px 7px;
-}
-
 .carousel-card-footer-actions {
   display: flex;
   flex-direction: column;
@@ -820,21 +813,6 @@ a.story-row-title--link:hover {
 .dot-done    { background: var(--green-dot); }
 .dot-partial { background: var(--warn-dot); }
 .dot-empty   { background: var(--dot-empty); }
-
-/* Badge (pill) */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 3px 9px;
-  border-radius: var(--radius-pill);
-}
-
-.badge-done    { background: var(--green-light); color: var(--success-text); }
-.badge-partial { background: var(--warn-badge-bg); color: var(--warn-badge-text); }
-.badge-warn    { background: var(--warn-bg); color: var(--warn-text); }
-.badge-saved   { background: var(--green-light); color: var(--success-text); }
 
 /* Progress bar */
 .progress-wrap {
@@ -3739,7 +3717,6 @@ a.story-row-title--link:hover {
   .story-card,
   .carousel-card,
   .q-row,
-  .chip,
   .btn-primary,
   .btn-secondary,
   .btn-danger,
@@ -3760,8 +3737,7 @@ a.story-row-title--link:hover {
   box-shadow: 0 0 0 3px var(--green-dot);
 }
 
-/* Common questions + chips: match story-link focus (soft ring) */
-.chip:focus-visible,
+/* Common questions: match story-link focus (soft ring) */
 .bookmark-btn:focus-visible,
 .bookmark-btn--list:focus-visible {
   outline: none;
@@ -3889,7 +3865,6 @@ a.story-row-title--link:hover {
 .btn-ghost:active:not(:disabled),
 .btn-warn:active:not(:disabled),
 .cta:active,
-.chip:active,
 .bookmark-btn:active {
   transform: translateY(1px);
 }

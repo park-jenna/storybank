@@ -7,6 +7,7 @@ import { fetchStories } from "@/lib/stories";
 import { fetchUserQuestions } from "@/lib/user-questions";
 import { useTheme } from "@/contexts/ThemeContext";
 import { clearSessionToken, useSessionToken } from "@/lib/session";
+import { Badge } from "@/components/ui";
 
 function storyProgress(s: { situation?: string | null; action?: string | null; result?: string | null }): number {
   let n = 0;
@@ -198,9 +199,14 @@ export default function Sidebar({ onClose }: SidebarProps) {
                 </span>
                 {label}
                 {badge != null && badge > 0 && (
-                  <span className="sidebar-badge" aria-label={badgeAriaLabel}>
+                  <Badge
+                    tone="danger"
+                    size="sm"
+                    className="sidebar-badge"
+                    aria-label={badgeAriaLabel}
+                  >
                     {badge}
-                  </span>
+                  </Badge>
                 )}
               </Link>
             );

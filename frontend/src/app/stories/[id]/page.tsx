@@ -21,6 +21,7 @@ import { getQuestionsForCategories } from "@/constants/interviewQuestions";
 import Link from "next/link";
 import { StarCompletionVisual } from "@/components/StarCompletionVisual";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
+import { Tag } from "@/components/ui";
 
 function starStatus(story: Story) {
   return {
@@ -142,22 +143,22 @@ function StoryDetailQuestionsList({
               borderBottom: "0.5px solid var(--border-card)",
             }}
           >
-            <span className="story-detail-q-bullet" aria-hidden />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <Link
-                className="story-detail-q-link"
-                href={`/common-questions?q=${encodeURIComponent(q.id)}&returnTo=${encodeURIComponent(`/stories/${storyId}`)}`}
-              >
-                <span className="story-detail-q-text">{q.text}</span>
-              </Link>
-              <div className="chips-row">
-                {q.categories.map((cat) => (
-                  <span key={cat} className="tag">
-                    {cat}
-                  </span>
-                ))}
-              </div>
-            </div>
+                <span className="story-detail-q-bullet" aria-hidden />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <Link
+                    className="story-detail-q-link"
+                    href={`/common-questions?q=${encodeURIComponent(q.id)}&returnTo=${encodeURIComponent(`/stories/${storyId}`)}`}
+                  >
+                    <span className="story-detail-q-text">{q.text}</span>
+                  </Link>
+                  <div className="chips-row">
+                    {q.categories.map((cat) => (
+                      <Tag key={cat}>
+                        {cat}
+                      </Tag>
+                    ))}
+                  </div>
+                </div>
           </div>
         ))}
       </div>
@@ -378,9 +379,9 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
         </div>
         <div className="chips-row">
           {story.categories.map((c) => (
-            <span key={c} className="tag">
+            <Tag key={c}>
               {c}
-            </span>
+            </Tag>
           ))}
         </div>
       </div>

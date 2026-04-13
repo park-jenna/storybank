@@ -7,6 +7,7 @@ import { updateUserQuestion, type UserQuestionItem } from "@/lib/user-questions"
 import { fetchStories, type Story } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
 import { getSessionToken } from "@/lib/session";
+import { Chip, Tag } from "@/components/ui";
 
 const MAX_CATEGORY_TAGS_ON_ROW = 3;
 
@@ -160,15 +161,13 @@ export function SavedQuestionManageForm({
           {CATEGORIES.map((category) => {
             const selected = selectedCategories.includes(category);
             return (
-              <button
+              <Chip
                 key={category}
-                type="button"
-                aria-pressed={selected}
-                className={`chip${selected ? " active" : ""}`}
+                selected={selected}
                 onClick={() => toggleCategory(category)}
               >
                 {category}
-              </button>
+              </Chip>
             );
           })}
         </div>
@@ -341,31 +340,31 @@ function ManageStoryLinkRow({
             {isExpanded ? (
               <>
                 {orderedCats.map((c) => (
-                  <span
+                  <Tag
                     key={c}
-                    className={`tag${showMatchHighlight && highlightCategories.includes(c) ? " tag-match" : ""}`}
+                    tone={showMatchHighlight && highlightCategories.includes(c) ? "match" : "default"}
                   >
                     {c}
-                  </span>
+                  </Tag>
                 ))}
               </>
             ) : (
               <>
                 {orderedCats.slice(0, MAX_CATEGORY_TAGS_ON_ROW).map((c) => (
-                  <span
+                  <Tag
                     key={c}
-                    className={`tag${showMatchHighlight && highlightCategories.includes(c) ? " tag-match" : ""}`}
+                    tone={showMatchHighlight && highlightCategories.includes(c) ? "match" : "default"}
                   >
                     {c}
-                  </span>
+                  </Tag>
                 ))}
                 {orderedCats.length > MAX_CATEGORY_TAGS_ON_ROW && (
-                  <span
-                    className="tag tag-more"
+                  <Tag
+                    tone="more"
                     aria-label={`${orderedCats.length - MAX_CATEGORY_TAGS_ON_ROW} more categories`}
                   >
                     +{orderedCats.length - MAX_CATEGORY_TAGS_ON_ROW}
-                  </span>
+                  </Tag>
                 )}
               </>
             )}

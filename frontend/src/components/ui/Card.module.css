@@ -1,0 +1,56 @@
+.card {
+  --card-bg: var(--surface-raised);
+  --card-border: var(--border-card);
+  --card-shadow: var(--shadow);
+  --card-padding: var(--space-5) var(--space-6);
+
+  background: var(--card-bg);
+  border: var(--stroke-1) solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  padding: var(--card-padding);
+}
+
+.default {
+  --card-bg: var(--surface-raised);
+  --card-border: var(--border-card);
+  --card-shadow: var(--shadow);
+}
+
+.muted {
+  --card-bg: color-mix(in srgb, var(--bg-page) 45%, var(--surface-raised));
+  --card-border: var(--border-card);
+  --card-shadow: none;
+}
+
+.error {
+  --card-bg: var(--surface-raised);
+  --card-border: var(--accent-danger);
+  --card-shadow: var(--shadow);
+}
+
+.paddingNone {
+  --card-padding: 0;
+}
+
+.paddingSm {
+  --card-padding: var(--space-4);
+}
+
+.paddingMd {
+  --card-padding: var(--space-5) var(--space-6);
+}
+
+.paddingLg {
+  --card-padding: var(--space-6) var(--space-8);
+}
+
+@media (max-width: 640px) {
+  .paddingMd {
+    --card-padding: var(--space-4);
+  }
+
+  .paddingLg {
+    --card-padding: var(--space-5);
+  }
+}
