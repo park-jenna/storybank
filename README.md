@@ -7,9 +7,9 @@ A full-stack web app for preparing behavioral interviews. Create and organize ST
 - **Story management** — Create, read, update, and delete your own STAR stories
 - **STAR format** — Structure each story with Situation/Task, Action, and Result
 - **Categories** — Tag stories with behavioral categories (Leadership, Teamwork, Problem Solving, etc.)
-- **Common questions** — Browse a curated list of interview questions with recommended categories; save any question to your collection and link one or more stories as answers
-- **Saved questions** — Manage your saved questions and their story mappings in one place
-- **Dashboard** — Overview of story completion, saved questions progress, category breakdown, and a “stories to complete” list for quick follow-up
+- **Common questions** — Browse a curated list of interview questions with recommended categories; save any question to My Questions and link one or more stories as answers
+- **My Questions** — Manage the questions you saved and their story mappings in one place
+- **Dashboard** — Overview of story completion, My Questions progress, category breakdown, and a “stories to complete” list for quick follow-up
 
 ## Live Demo & Test Account
 
@@ -20,7 +20,7 @@ A full-stack web app for preparing behavioral interviews. Create and organize ST
 
 ## Screenshots
 
-**Dashboard** — Stories and saved questions at a glance, with completion progress and category breakdown.
+**Dashboard** — Stories and My Questions at a glance, with completion progress and category breakdown.
 
 <img src="img/dashboard.png" width="600" alt="Dashboard" />
 
@@ -52,7 +52,7 @@ A full-stack web app for preparing behavioral interviews. Create and organize ST
   - Relations: `user`, `stories` (via QuestionStory)
 - **QuestionStory**
   - `id`, `questionId`, `storyId`, `createdAt`
-  - Links a saved question to one or more stories the user plans to use as answers.
+  - Links a saved question (`Question`) to one or more stories the user plans to use as answers.
 
 ## Project Structure
 
@@ -64,7 +64,7 @@ storybank/
 │   │   │   ├── dashboard/    # Overview, progress, stories to complete
 │   │   │   ├── questions/    # Browse questions by category (interview prep)
 │   │   │   ├── common-questions/  # Browse & save questions, link stories
-│   │   │   ├── saved-questions/   # My saved questions & story links
+│   │   │   ├── saved-questions/   # User `Question` rows & story links (UI: My Questions)
 │   │   │   ├── stories/      # List, new, edit, detail
 │   │   │   ├── login/, signup/
 │   │   │   ├── styles/       # CSS styles
@@ -195,7 +195,7 @@ App: `http://localhost:3000`.
 | DELETE | `/stories/:id` | Yes | Delete story |
 | GET | `/questions/common` | Yes | List common questions (with `alreadySaved` per question) |
 | GET | `/questions/:id/recommendations` | Yes | Recommended stories for a common question (by category) |
-| GET | `/user-questions` | Yes | List user's saved questions and linked stories |
+| GET | `/user-questions` | Yes | List user's saved questions (`Question`) and linked stories |
 | GET | `/user-questions/:id` | Yes | Get one saved question and its linked stories |
 | POST | `/user-questions` | Yes | Save a common question (by `commonQuestionId`) and optionally link `storyIds` |
 | PATCH | `/user-questions/:id` | Yes | Update a saved question (`content`, `recommendedCategories`, `storyIds`) |

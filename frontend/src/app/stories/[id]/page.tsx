@@ -490,7 +490,7 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
                   This cannot be undone. Really delete?
                 </h3>
                 <p className="modal-subtitle">
-                  Deleting this story will also unlink it from any saved questions.
+                  Deleting this story will also unlink it from any questions in My Questions.
                 </p>
                 <div className="modal-actions">
                   <button

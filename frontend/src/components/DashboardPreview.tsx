@@ -70,7 +70,7 @@ export default function DashboardPreview() {
           <svg viewBox="0 0 16 16" className="db-preview-nav-icon" aria-hidden>
             <path d="M4 2h8a1 1 0 011 1v11l-5-3-5 3V3a1 1 0 011-1z" />
           </svg>
-          Saved Questions
+          My Questions
           <span className="db-preview-badge">2</span>
         </div>
 
@@ -126,8 +126,8 @@ export default function DashboardPreview() {
           {[
             { label: "Total stories", value: "9", sub: "written", warn: false },
             { label: "STAR complete", value: "6", sub: "3 in progress", warn: false },
-            { label: "Saved questions", value: "7", sub: "stories linked", warn: false },
             { label: "Category coverage", value: "5/6", sub: "Leadership missing", warn: true },
+            { label: "My questions", value: "7", sub: "stories linked", warn: false },
           ].map(({ label, value, sub, warn }) => (
             <div key={label} className="db-preview-stat">
               <div className="db-preview-stat-label">{label}</div>
@@ -167,7 +167,7 @@ export default function DashboardPreview() {
             <div className="db-preview-card">
               <div className="db-preview-card-head">
                 <span className="db-preview-card-title">Completed</span>
-                <span className="db-preview-card-link">View 6 →</span>
+                <span className="db-preview-card-link">View all →</span>
               </div>
               {SAMPLE.completed.map((s) => (
                 <div key={s.title} className="db-preview-row">
@@ -204,10 +204,10 @@ export default function DashboardPreview() {
               ))}
             </div>
 
-            {/* Saved questions */}
+            {/* My Questions */}
             <div className="db-preview-card">
               <div className="db-preview-card-head">
-                <span className="db-preview-card-title">Saved questions</span>
+                <span className="db-preview-card-title">My questions</span>
                 <span className="db-preview-card-link">View all →</span>
               </div>
               {SAMPLE.questions.map((q) => (

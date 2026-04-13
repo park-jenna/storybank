@@ -92,9 +92,11 @@ export default function NewStoryPage() {
     return () => document.removeEventListener("click", onClickCapture, true);
   }, [isDirty]);
 
-  function toggleCategory(category: string, checked: boolean) {
+  function toggleCategory(category: string) {
     setSelectedCategories((prev) =>
-      checked ? [...prev, category] : prev.filter((c) => c !== category)
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
     );
   }
 
@@ -189,25 +191,19 @@ export default function NewStoryPage() {
               <p className="field-hint">
                 Select one or more categories that best describe your story.
               </p>
-              <div className="chips-row">
+              <div className="chips-row" role="group" aria-label="Story categories">
                 {CATEGORIES.map((category) => {
                   const selected = selectedCategories.includes(category);
                   return (
-                    <label
+                    <button
                       key={category}
+                      type="button"
+                      aria-pressed={selected}
                       className={`chip${selected ? " active" : ""}`}
-                      style={{ cursor: "pointer" }}
+                      onClick={() => toggleCategory(category)}
                     >
-                      <input
-                        type="checkbox"
-                        checked={selected}
-                        onChange={(e) =>
-                          toggleCategory(category, e.target.checked)
-                        }
-                        className="visually-hidden"
-                      />
                       {category}
-                    </label>
+                    </button>
                   );
                 })}
               </div>

@@ -440,6 +440,33 @@
   min-height: 42px;
 }
 
+.story-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-bottom: 6px;
+  min-height: 0;
+}
+
+.story-card-meta time {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-hint);
+}
+
+.story-card-star-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--success-text);
+  background: var(--success-bg);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  border: var(--stroke-1) solid color-mix(in srgb, var(--green-primary) 20%, transparent);
+}
+
 .story-card-situation {
   font-size: var(--text-15);
   color: var(--text-muted);
@@ -476,6 +503,11 @@
   margin-bottom: 8px;
 }
 
+/* Story grid cards: STAR row is last block — tighten bottom spacing */
+.story-card > .star-completion-visual:last-child {
+  margin-bottom: 0;
+}
+
 .star-completion-visual--inline {
   gap: 4px;
   margin-bottom: 0;
@@ -488,7 +520,7 @@
   flex-shrink: 0;
   font-weight: 800;
   line-height: 1;
-  border-radius: 5px;
+  border-radius: var(--radius-md);
   box-sizing: border-box;
   transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease,
     box-shadow 0.12s ease;
@@ -540,6 +572,20 @@
 .story-grid-3 > a {
   height: 100%;
   display: block;
+}
+
+.story-grid-card-link:focus-visible {
+  outline: none;
+  border-radius: var(--radius-lg);
+}
+
+.story-grid-card-link:focus-visible .story-card {
+  background: var(--bg-hover);
+  border-color: var(--border-chip);
+  box-shadow:
+    0 0 0 3px var(--green-dot),
+    var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 /* Carousel card (in-progress) — ~2/3 width of a .story-grid-3 cell.
@@ -606,6 +652,24 @@
   flex-wrap: nowrap;
 }
 
+/* In-progress carousel: STAR + CTA only (no category tags) */
+.carousel-card-footer--solo {
+  justify-content: stretch;
+}
+
+.carousel-card-footer--solo > .carousel-card-footer-actions {
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.carousel-card-footer--solo .carousel-card-footer-actions .star-completion-visual {
+  margin-bottom: 0;
+}
+
 .carousel-card-footer-cats {
   flex: 1;
   min-width: 0;
@@ -670,19 +734,32 @@
 .story-row:first-child { padding-top: 0; }
 .story-row:last-child  { border-bottom: none; padding-bottom: 0; }
 
-/* Dashboard Completed: hover ring inside the row (inset) so the bottom edge isn’t clipped by the card */
+/* Dashboard Completed: dividers like In progress (.story-row) */
 a.story-row.story-row--dashboard {
-  padding: 10px 12px;
-  margin-bottom: 6px;
-  border-radius: var(--radius-md);
+  padding: 8px 0;
+  margin: 0;
+  border-radius: 0;
   border: none;
-  box-shadow: inset 0 0 0 0.5px transparent;
-  transition: box-shadow 0.15s ease;
+  border-bottom: 0.5px solid var(--border-card);
+  box-shadow: none;
+  transition: background var(--transition-fast);
   color: inherit;
 }
 
+a.story-row.story-row--dashboard:last-of-type {
+  border-bottom: none;
+}
+
 a.story-row.story-row--dashboard:hover {
-  box-shadow: inset 0 0 0 0.5px var(--border-chip);
+  background: var(--bg-hover);
+  border-radius: var(--radius-sm);
+}
+
+a.story-row.story-row--dashboard:focus-visible {
+  outline: 2px solid var(--green-primary);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-hover);
 }
 
 .story-row-info {
@@ -697,6 +774,17 @@ a.story-row.story-row--dashboard:hover {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+a.story-row-title--link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+a.story-row-title--link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .story-row-meta {
@@ -1016,7 +1104,7 @@ a.story-row.story-row--dashboard:hover {
   height: 16px;
   margin-top: 2px;
   border: 1.5px solid var(--border-chip);
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1210,7 +1298,7 @@ a.story-row.story-row--dashboard:hover {
   display: inline-block;
   margin-right: 6px;
   padding: 1px 6px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   font-size: 10px;
   font-weight: 600;
   color: var(--warn-badge-text);
@@ -1273,11 +1361,24 @@ a.story-row.story-row--dashboard:hover {
   cursor: pointer;
   background: var(--bg-card);
   border: 0.5px solid transparent;
-  transition: border-color 0.15s;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
 }
 
-.q-row:hover {
-  border-color: var(--border-chip);
+.q-row:hover:not(.active) {
+  border-color: color-mix(in srgb, var(--green-primary) 22%, var(--border-chip));
+  background: var(--bg-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.q-row.active:hover {
+  border-color: var(--green-dot);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .q-row.active {
@@ -1344,13 +1445,37 @@ a.story-row.story-row--dashboard:hover {
   color: var(--warn-text);
 }
 
+/* Dashboard My Questions: dividers like In progress story rows */
+.q-row.q-row--dashboard-line {
+  border-radius: 0;
+  border: none;
+  border-bottom: 0.5px solid var(--border-card);
+  box-shadow: none;
+  background: transparent;
+  padding: 8px 0;
+  margin: 0;
+}
+
+.q-row.q-row--dashboard-line:last-of-type {
+  border-bottom: none;
+}
+
+.q-row.q-row--dashboard-line:hover:not(.active) {
+  transform: none;
+  background: var(--bg-hover);
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+  border-color: transparent;
+  border-bottom-color: var(--border-card);
+}
+
 /* Story detail — question row: plain text until hover / focus (then reads as link) */
 .story-detail-q-link {
   text-decoration: none;
   display: inline-block;
   max-width: 100%;
   margin-bottom: 4px;
-  border-radius: 2px;
+  border-radius: var(--radius-md);
   cursor: default;
 }
 
@@ -1509,6 +1634,39 @@ a.story-row.story-row--dashboard:hover {
   align-items: center;
   gap: 10px;
 }
+
+.rc-row--align-start {
+  align-items: flex-start;
+}
+
+.rc-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rc-expanded-body {
+  margin-top: 8px;
+}
+
+.rec-item--panel {
+  cursor: default;
+  padding: 1rem 1.125rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  background: var(--surface-raised);
+}
+
+.rec-item--panel.selected {
+  background: var(--bg-row-active);
+}
+
+.rec-check--panel {
+  margin-top: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
 .rc-info {
   flex: 1;
   min-width: 0;
@@ -1527,7 +1685,7 @@ a.story-row.story-row--dashboard:hover {
   justify-content: center;
   width: 28px;
   height: 28px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   color: var(--text-hint);
   background: transparent;
   border: 0.5px solid transparent;
@@ -1598,7 +1756,7 @@ a.story-row.story-row--dashboard:hover {
 .rec-check {
   width: 22px;
   height: 22px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   border: 1.5px solid var(--border-chip);
   background: var(--bg-input);
   display: flex;
@@ -1670,7 +1828,7 @@ a.story-row.story-row--dashboard:hover {
   justify-content: center;
   width: 30px;
   height: 30px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: var(--stroke-1) solid transparent;
   background: transparent;
   color: var(--text-hint);
@@ -1711,7 +1869,7 @@ a.story-row.story-row--dashboard:hover {
   justify-content: flex-start;
   gap: 8px;
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
@@ -1876,31 +2034,6 @@ a.story-row.story-row--dashboard:hover {
   }
 }
 
-/* Common questions: empty linked-stories hint */
-.no-stories-callout {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin: 0;
-  padding: 12px 14px;
-  font-size: 13px;
-  font-weight: 400;
-  font-style: normal;
-  line-height: 1.5;
-  color: var(--badge-bg);
-  background: #fff8f1eb;
-  border: 0.5px solid var(--badge-bg);
-  border-radius: var(--radius-md);
-}
-
-.no-stories-callout::before {
-  content: "!";
-  font-weight: 700;
-  line-height: 1.5;
-  flex-shrink: 0;
-}
-
-
 /* ------------------------------------------------------------
    8. MODAL
    ------------------------------------------------------------ */
@@ -1993,7 +2126,6 @@ a.story-row.story-row--dashboard:hover {
 }
 
 .empty-state-icon {
-  font-size: 28px;
   margin-bottom: 16px;
   width: 60px;
   height: 60px;
@@ -2003,6 +2135,13 @@ a.story-row.story-row--dashboard:hover {
   border-radius: 50%;
   background: color-mix(in srgb, var(--green-light) 60%, var(--bg-card));
   border: var(--stroke-1) solid color-mix(in srgb, var(--green-primary) 15%, transparent);
+  color: var(--green-primary);
+}
+
+.empty-state-icon .empty-state-glyph {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
 }
 
 .empty-state-title {
@@ -2020,8 +2159,27 @@ a.story-row.story-row--dashboard:hover {
   margin-bottom: 0;
 }
 
+/* CTAs placed directly after copy (pages that omit .empty-state-action wrapper) */
+.empty-state-desc + .btn-primary,
+.empty-state-desc + .btn-secondary,
+.empty-state-desc + a.btn-primary,
+.empty-state-desc + a.btn-secondary,
+.empty-state-desc + button.btn-primary,
+.empty-state-desc + button.btn-secondary {
+  margin-top: 2rem;
+}
+
 .empty-state-action {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
+}
+
+.empty-state-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 2rem;
 }
 
 
@@ -2109,7 +2267,7 @@ a.story-row.story-row--dashboard:hover {
   gap: 6px;
   width: 32px;
   height: 32px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: 0.5px solid var(--border-chip);
   background: var(--bg-card);
   color: var(--text-hint);
@@ -2126,7 +2284,7 @@ a.story-row.story-row--dashboard:hover {
 .bookmark-btn--list {
   width: 24px;
   height: 24px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   border-color: transparent;
   background: transparent;
   color: rgba(85, 110, 95, 0.55);
@@ -2146,10 +2304,6 @@ a.story-row.story-row--dashboard:hover {
   background: transparent;
   border-color: transparent;
   color: var(--green-primary);
-}
-
-.bookmark-btn--list:focus-visible {
-  box-shadow: 0 0 0 3px var(--green-dot);
 }
 
 .bookmark-btn.saved {
@@ -2222,7 +2376,7 @@ a.story-row.story-row--dashboard:hover {
 
 .skeleton-line {
   height: 13px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   margin-bottom: 8px;
 }
 
@@ -2341,7 +2495,7 @@ a.story-row.story-row--dashboard:hover {
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   gap: 2.25rem;
   background: var(--bg-card);
-  border-radius: 22px;
+  border-radius: var(--radius-md);
   border: var(--stroke-1) solid var(--border-card);
   box-shadow: 0 18px 48px rgba(16, 40, 24, 0.12);
   padding: 2.25rem 2.5rem;
@@ -2358,7 +2512,7 @@ a.story-row.story-row--dashboard:hover {
   align-items: center;
   justify-content: center;
   padding: 5px 12px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -2403,7 +2557,7 @@ a.story-row.story-row--dashboard:hover {
   content: "";
   width: 7px;
   height: 7px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   margin-top: 5px;
   flex-shrink: 0;
   background: var(--green-dot);
@@ -2448,7 +2602,7 @@ a.story-row.story-row--dashboard:hover {
   font-size: 12px;
   color: var(--warn-text);
   background: var(--warn-bg);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   border: 0.5px solid var(--warn-border);
   padding: 7px 10px;
 }
@@ -2649,6 +2803,10 @@ a.story-row.story-row--dashboard:hover {
   width: 75%;
   height: 16px;
   margin-bottom: 12px;
+}
+
+.skeleton-line--w80 {
+  width: 80%;
 }
 
 .skeleton-line--w50-top {
@@ -2979,7 +3137,7 @@ a.story-row.story-row--dashboard:hover {
 .about-feature-trigger:focus-visible {
   outline: 2px solid var(--accent, #5aaa78);
   outline-offset: 2px;
-  border-radius: var(--radius-sm, 6px);
+  border-radius: var(--radius-md);
 }
 
 .about-feature-dot {
@@ -3182,7 +3340,7 @@ a.story-row.story-row--dashboard:hover {
 /* ── Browser Frame (static demo wrapper) ──── */
 .browser-frame {
   background: var(--bg-card);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 0.5px solid var(--border-page);
   overflow: hidden;
   box-shadow:
@@ -3561,14 +3719,14 @@ a.story-row.story-row--dashboard:hover {
 
 .db-preview-prog-bg {
   background: #E0ECE0;
-  border-radius: 20px;
+  border-radius: var(--radius-md);
   height: 4px;
   overflow: hidden;
 }
 
 .db-preview-prog-fill {
   height: 100%;
-  border-radius: 20px;
+  border-radius: var(--radius-md);
   background: var(--green-dot);
 }
 
@@ -3597,12 +3755,58 @@ a.story-row.story-row--dashboard:hover {
   .bookmark-btn,
   .bookmark-btn--list,
   .rec-item,
+  .rc-expand-btn,
   .about-link-card,
   .linked-story-name,
   .landing-about-link,
   .linked-more
 ):focus-visible {
   box-shadow: 0 0 0 3px var(--green-dot);
+}
+
+/* Common questions + chips: match story-link focus (soft ring) */
+.chip:focus-visible,
+.bookmark-btn:focus-visible,
+.bookmark-btn--list:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--green-focus);
+}
+
+.q-row:focus-visible {
+  outline: none;
+}
+
+.q-row:focus-visible:not(.active) {
+  background: var(--bg-hover);
+  border-color: color-mix(in srgb, var(--green-primary) 22%, var(--border-chip));
+  box-shadow:
+    0 0 0 2px var(--green-focus),
+    var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.q-row:focus-visible.active {
+  box-shadow:
+    0 0 0 2px var(--green-focus),
+    var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.q-row.q-row--dashboard-line:focus-visible,
+.q-row.q-row--dashboard-line:focus-visible:not(.active),
+.q-row.q-row--dashboard-line:focus-visible.active {
+  outline: 2px solid var(--green-primary);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-hover);
+  border: none;
+  border-bottom: 0.5px solid var(--border-card);
+  box-shadow: none;
+  transform: none;
+}
+
+.q-row.q-row--dashboard-line:last-of-type:focus-visible {
+  border-bottom: none;
 }
 
 /* Make card focus match hover affordance */
@@ -3744,7 +3948,7 @@ a.story-row.story-row--dashboard:hover {
   width: 13px;
   height: 13px;
   min-width: 13px;
-  border-radius: 3px;
+  border-radius: var(--radius-md);
   background: var(--bg-chip);
   border: 0.5px solid var(--border-chip);
   display: flex;

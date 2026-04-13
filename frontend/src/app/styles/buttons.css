@@ -11,6 +11,16 @@
 .btn-size-md { padding: 10px 20px; }
 .btn-size-lg { padding: 12px 24px; }
 
+.btn-primary.btn-primary--with-icon,
+.btn-secondary.btn-secondary--with-icon {
+  gap: 8px;
+}
+
+.btn-primary.btn-primary--with-icon svg,
+.btn-secondary.btn-secondary--with-icon svg {
+  flex-shrink: 0;
+}
+
 .btn-primary {
   display: inline-flex;
   align-items: center;

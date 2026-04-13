@@ -17,7 +17,7 @@ function storyProgress(s: { situation?: string | null; action?: string | null; r
 
 const PREPARE_ITEMS = [
   { href: "/stories", label: "My Stories", badgeKey: "stories" as const },
-  { href: "/saved-questions", label: "Saved Questions", badgeKey: "questions" as const },
+  { href: "/saved-questions", label: "My Questions", badgeKey: "questions" as const },
 ] as const;
 
 const RESOURCE_ITEMS = [
@@ -158,13 +158,13 @@ export default function Sidebar({ onClose }: SidebarProps) {
               badgeKey === "stories" && badge != null && badge > 0
                 ? `${badge} stories still in progress`
                 : badgeKey === "questions" && badge != null && badge > 0
-                  ? `${badge} saved questions without linked stories`
+                  ? `${badge} questions not linked to a story`
                   : undefined;
             const badgeAriaLabel =
               badgeKey === "stories" && badge != null && badge > 0
                 ? `${badge} stories in progress`
                 : badgeKey === "questions" && badge != null && badge > 0
-                  ? `${badge} saved questions without linked stories`
+                  ? `${badge} questions not linked to a story`
                   : badge != null
                     ? String(badge)
                     : undefined;

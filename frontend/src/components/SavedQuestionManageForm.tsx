@@ -76,9 +76,11 @@ export function SavedQuestionManageForm({
     };
   }, [questionId]);
 
-  function toggleCategory(category: string, checked: boolean) {
+  function toggleCategory(category: string) {
     setSelectedCategories((prev) =>
-      checked ? [...prev, category] : prev.filter((c) => c !== category)
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
     );
   }
 
@@ -153,23 +155,19 @@ export function SavedQuestionManageForm({
         <p className="field-hint">
           Optional. Select one or more categories that match this question.
         </p>
-        <div className="chips-row">
+        <div className="chips-row" role="group" aria-label="Question categories">
           {CATEGORIES.map((category) => {
             const selected = selectedCategories.includes(category);
             return (
-              <label
+              <button
                 key={category}
+                type="button"
+                aria-pressed={selected}
                 className={`chip${selected ? " active" : ""}`}
-                style={{ cursor: "pointer" }}
+                onClick={() => toggleCategory(category)}
               >
-                <input
-                  type="checkbox"
-                  checked={selected}
-                  onChange={(e) => toggleCategory(category, e.target.checked)}
-                  className="visually-hidden"
-                />
                 {category}
-              </label>
+              </button>
             );
           })}
         </div>

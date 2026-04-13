@@ -289,7 +289,7 @@ export default function InterviewTipsPage() {
                 <div className="card star-doc-cta">
                   <p className="star-doc-cta__label">Practice loop</p>
                   <p className="star-doc-cta__p">
-                    Read a saved question out loud. Name which story you would use and which part of STAR
+                    Read a question from My Questions out loud. Name which story you would use and which part of STAR
                     you would lean on. Repeat until the map from prompt to proof feels automatic—not
                     rushed, just familiar.
                   </p>

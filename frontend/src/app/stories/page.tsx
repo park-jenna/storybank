@@ -1,14 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { fetchStories, Story } from "@/lib/stories";
-import { CATEGORIES } from "@/constants/categories";
 import { StarCompletionVisual } from "@/components/StarCompletionVisual";
-
-const ALL = "All" as const;
+import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 
 function storyProgress(s: Story): number {
   let n = 0;
@@ -18,28 +16,13 @@ function storyProgress(s: Story): number {
   return Math.round((n / 3) * 100);
 }
 
-function StoriesPageContent() {
+export default function StoriesPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [internalCategory, setInternalCategory] = useState<string>(ALL);
-
-  const categoryFromUrl = searchParams.get("category");
-  const selectedCategory =
-    categoryFromUrl != null && categoryFromUrl !== ""
-      ? decodeURIComponent(categoryFromUrl)
-      : internalCategory;
-
-  function handleSelectCategory(cat: string) {
-    setInternalCategory(cat);
-    if (cat === ALL) {
-      router.replace("/stories");
-    } else {
-      router.replace(`/stories?category=${encodeURIComponent(cat)}`);
-    }
-  }
+  const [inProgressOpen, setInProgressOpen] = useState(false);
+  const inProgressSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     async function load() {
@@ -64,11 +47,6 @@ function StoriesPageContent() {
     load();
   }, [router]);
 
-  const filteredStories = useMemo(() => {
-    if (selectedCategory === ALL) return stories;
-    return stories.filter((s) => s.categories.includes(selectedCategory));
-  }, [stories, selectedCategory]);
-
   const inProgressStories = useMemo(
     () =>
       [...stories]
@@ -82,276 +60,17 @@ function StoriesPageContent() {
   );
 
   const hasAnyStories = stories.length > 0;
-  const hasFilteredStories = filteredStories.length > 0;
-  const completeCount = stories.filter((s) => storyProgress(s) === 100).length;
 
   return (
     <main className="main-content">
       <div className="page-shell page-shell--wide">
-      {loading && (
-        <div aria-hidden="true" aria-busy="true">
-          {/* Header skeleton */}
-          <div className="page-header mb-5">
-            <div>
-              <div className="skeleton skeleton-line--title" />
-              <div className="skeleton skeleton-line--subtitle" />
-            </div>
-          </div>
-          {/* Category chips skeleton */}
-          <div className="chips-row mb-5">
-            {[60, 40, 75, 55, 65, 50].map((w, i) => (
-              <div key={i} className="skeleton skeleton-chip" style={{ width: w }} />
-            ))}
-          </div>
-          {/* Story cards skeleton */}
-          <div className="story-grid-3">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="skeleton-card">
-                <div className="skeleton skeleton-line skeleton-line--w75-h16" />
-                <div className="skeleton skeleton-line" />
-                <div className="skeleton skeleton-line" />
-                <div className="skeleton skeleton-line skeleton-line--w50-top" />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {error && (
-        <div className="error-banner show mt-5" role="alert">
-          Error: {error}
-        </div>
-      )}
-
-      {!loading && !error && (
-        <>
-          <div className="page-header">
-            <div className="page-header-left">
-              <h1 className="page-title">My Stories</h1>
-              <p className="page-subtitle">
-                {stories.length} stories - {completeCount} complete - {inProgressStories.length} in progress
-              </p>
-            </div>
-            <div className="page-header-actions">
-              <Link href="/stories/new" className="btn-primary">
-                + New story
-              </Link>
-            </div>
-          </div>
-
-          {inProgressStories.length > 0 && (
-            <section
-              className="stories-in-progress-queue card mb-5"
-              aria-labelledby="stories-in-progress-heading"
+        {loading && (
+          <div aria-hidden="true" aria-busy="true">
+            <div
+              className="page-header"
+              style={{ marginBottom: "var(--space-6)" }}
+              aria-hidden
             >
-              <div className="stories-in-progress-queue-head">
-                <p className="dashboard-onboarding-eyebrow">In progress</p>
-                <h2
-                  id="stories-in-progress-heading"
-                  className="stories-in-progress-queue-title"
-                >
-                  Pick up where you left off
-                </h2>
-              </div>
-              <div className="carousel-wrap">
-                <div className="carousel">
-                {inProgressStories.map((s) => {
-                  const situation = !!s.situation?.trim();
-                  const action = !!s.action?.trim();
-                  const result = !!s.result?.trim();
-                  return (
-                    <div
-                      key={s.id}
-                      className="carousel-card"
-                      onClick={() =>
-                        router.push(
-                          `/stories/${s.id}?returnTo=${encodeURIComponent("/stories")}`
-                        )
-                      }
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          router.push(
-                            `/stories/${s.id}?returnTo=${encodeURIComponent("/stories")}`
-                          );
-                        }
-                      }}
-                    >
-                      <div className="story-card-top">
-                        <div className="story-card-title">{s.title}</div>
-                      </div>
-                      <div
-                        className={`story-card-situation${situation ? "" : " empty"}`}
-                      >
-                        {s.situation || "No situation written yet."}
-                      </div>
-                      <div className="carousel-card-footer">
-                        <div className="carousel-card-footer-cats">
-                          <div className="story-card-cats">
-                            {s.categories.slice(0, 2).map((c) => (
-                              <span key={c} className="tag">
-                                {c}
-                              </span>
-                            ))}
-                            {s.categories.length > 2 && (
-                              <span className="tag">
-                                +{s.categories.length - 2}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className="carousel-card-footer-actions">
-                          <StarCompletionVisual
-                            variant="card"
-                            situation={situation}
-                            action={action}
-                            result={result}
-                          />
-                          <button
-                            type="button"
-                            className="btn-row btn-row-sm carousel-card-footer-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              router.push(
-                                `/stories/${s.id}/edit?from=${encodeURIComponent(
-                                  "/stories"
-                                )}`
-                              );
-                            }}
-                          >
-                            {!situation && !action && !result
-                              ? "Start"
-                              : "Edit"}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-                </div>
-              </div>
-            </section>
-          )}
-
-          <div className="chips-row mb-2">
-            {[ALL, ...CATEGORIES].map((cat) => (
-              <div
-                key={cat}
-                role="button"
-                tabIndex={0}
-                className={`chip${selectedCategory === cat ? " active" : ""}`}
-                onClick={() => handleSelectCategory(cat)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    handleSelectCategory(cat);
-                  }
-                }}
-              >
-                {cat}
-              </div>
-            ))}
-          </div>
-          {hasAnyStories && (
-            <p
-              className="text-muted text-13 mb-5"
-              aria-live="polite"
-            >
-              {selectedCategory === ALL
-                ? `Showing all (${stories.length})`
-                : `Showing ${filteredStories.length} in ${selectedCategory}`}
-            </p>
-          )}
-
-          {!hasAnyStories && (
-            <div className="empty-state">
-              <div className="empty-state-icon">📝</div>
-              <h3 className="empty-state-title">No stories yet</h3>
-              <p className="empty-state-desc">
-                Create your first STAR story to get started.
-              </p>
-              <Link href="/stories/new" className="btn-primary">
-                + New story
-              </Link>
-            </div>
-          )}
-
-          {hasAnyStories && !hasFilteredStories && (
-            <div className="empty-state">
-              <div className="empty-state-icon">🔍</div>
-              <h3 className="empty-state-title">No stories found</h3>
-              <p className="empty-state-desc">
-                No stories in the &quot;{selectedCategory}&quot; category.
-              </p>
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => handleSelectCategory(ALL)}
-              >
-                Show all stories
-              </button>
-            </div>
-          )}
-
-          {hasFilteredStories && (
-            <div className="story-grid-3">
-              {filteredStories.map((s) => {
-                const situation = !!s.situation?.trim();
-                const action = !!s.action?.trim();
-                const result = !!s.result?.trim();
-                return (
-                  <Link
-                    key={s.id}
-                    href={`/stories/${s.id}`}
-                    className="link-unstyled"
-                  >
-                    <div className="story-card">
-                      <div className="story-card-top">
-                        <div className="story-card-title">{s.title}</div>
-                      </div>
-                      <div
-                        className={`story-card-situation${!s.situation ? " empty" : ""}`}
-                      >
-                        {s.situation || "No situation written yet."}
-                      </div>
-                      <StarCompletionVisual
-                        variant="card"
-                        situation={situation}
-                        action={action}
-                        result={result}
-                      />
-                      <div className="story-card-cats">
-                        {s.categories.slice(0, 2).map((c) => (
-                          <span key={c} className="tag">
-                            {c}
-                          </span>
-                        ))}
-                        {s.categories.length > 2 && (
-                          <span className="tag">+{s.categories.length - 2}</span>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </>
-      )}
-      </div>
-    </main>
-  );
-}
-
-export default function StoriesPage() {
-  return (
-    <Suspense
-      fallback={
-        <main className="main-content" aria-busy="true">
-          <div className="page-shell page-shell--wide">
-            <div className="page-header mb-5">
               <div>
                 <div className="skeleton skeleton-line--title" />
                 <div className="skeleton skeleton-line--subtitle" />
@@ -363,14 +82,219 @@ export default function StoriesPage() {
                   <div className="skeleton skeleton-line skeleton-line--w75-h16" />
                   <div className="skeleton skeleton-line" />
                   <div className="skeleton skeleton-line" />
+                  <div className="skeleton skeleton-line skeleton-line--w50-top" />
                 </div>
               ))}
             </div>
           </div>
-        </main>
-      }
-    >
-      <StoriesPageContent />
-    </Suspense>
+        )}
+
+        {error && (
+          <div className="error-banner show mt-5" role="alert">
+            Error: {error}
+          </div>
+        )}
+
+        {!loading && !error && (
+          <>
+            <header className="page-header">
+              <div className="page-header-left">
+                <h1 className="page-title">My Stories</h1>
+                <p className="page-subtitle">
+                  Open any STAR story to view or continue editing.
+                </p>
+              </div>
+              <div className="page-header-actions">
+                <Link href="/stories/new" className="btn-primary">
+                  + New story
+                </Link>
+              </div>
+            </header>
+
+            {inProgressStories.length > 0 && (
+              <section
+                ref={inProgressSectionRef}
+                className="stories-in-progress-queue card mb-5"
+                aria-labelledby="stories-in-progress-heading"
+              >
+                <button
+                  type="button"
+                  className="stories-in-progress-queue-toggle"
+                  id="stories-in-progress-trigger"
+                  aria-expanded={inProgressOpen}
+                  aria-controls="stories-in-progress-panel"
+                  onClick={() => setInProgressOpen((v) => !v)}
+                >
+                  <span className="stories-in-progress-queue-toggle-text">
+                    <p className="dashboard-onboarding-eyebrow">In progress</p>
+                    <h2
+                      id="stories-in-progress-heading"
+                      className="stories-in-progress-queue-title"
+                    >
+                      Pick up where you left off
+                    </h2>
+                  </span>
+                  <span
+                    className={`about-feature-chevron${inProgressOpen ? " about-feature-chevron-open" : ""}`}
+                    aria-hidden
+                  >
+                    <svg viewBox="0 0 12 12" width={12} height={12}>
+                      <path
+                        d="M3 4.5L6 7.5L9 4.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
+                <div
+                  id="stories-in-progress-panel"
+                  className="stories-in-progress-queue-panel"
+                  role="region"
+                  aria-labelledby="stories-in-progress-heading"
+                  hidden={!inProgressOpen}
+                >
+                  <div className="carousel-wrap">
+                    <div className="carousel">
+                      {inProgressStories.map((s) => {
+                        const situation = !!s.situation?.trim();
+                        const action = !!s.action?.trim();
+                        const result = !!s.result?.trim();
+                        return (
+                          <div
+                            key={s.id}
+                            className="carousel-card"
+                            onClick={() =>
+                              router.push(
+                                `/stories/${s.id}?returnTo=${encodeURIComponent("/stories")}`
+                              )
+                            }
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                router.push(
+                                  `/stories/${s.id}?returnTo=${encodeURIComponent("/stories")}`
+                                );
+                              }
+                            }}
+                          >
+                            <div className="story-card-top">
+                              <div className="story-card-title">{s.title}</div>
+                            </div>
+                            <div
+                              className={`story-card-situation${situation ? "" : " empty"}`}
+                            >
+                              {s.situation || "No situation written yet."}
+                            </div>
+                            <div className="carousel-card-footer carousel-card-footer--solo">
+                              <div className="carousel-card-footer-actions">
+                                <StarCompletionVisual
+                                  variant="card"
+                                  situation={situation}
+                                  action={action}
+                                  result={result}
+                                />
+                                <button
+                                  type="button"
+                                  className="btn-row btn-row-sm carousel-card-footer-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(
+                                      `/stories/${s.id}/edit?from=${encodeURIComponent(
+                                        "/stories"
+                                      )}`
+                                    );
+                                  }}
+                                >
+                                  {!situation && !action && !result
+                                    ? "Start"
+                                    : "Edit"}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {hasAnyStories && (
+              <div className="card-head stories-library-head">
+                <h2 id="stories-library-heading" className="card-title">
+                  Your stories
+                </h2>
+                <p className="stories-page-results" aria-live="polite">
+                  {stories.length === 1
+                    ? "1 story"
+                    : `${stories.length} stories`}
+                </p>
+              </div>
+            )}
+
+            {!hasAnyStories && (
+              <div className="empty-state">
+                <div className="empty-state-icon">
+                  <EmptyStateGlyph kind="document" />
+                </div>
+                <h3 className="empty-state-title">No stories yet</h3>
+                <p className="empty-state-desc">
+                  Create your first STAR story to get started.
+                </p>
+                <Link href="/stories/new" className="btn-primary">
+                  + New story
+                </Link>
+              </div>
+            )}
+
+            {hasAnyStories && (
+              <section
+                className="stories-page-library-grid"
+                aria-labelledby="stories-library-heading"
+              >
+                <div className="story-grid-3">
+                  {stories.map((s) => {
+                    const situation = !!s.situation?.trim();
+                    const action = !!s.action?.trim();
+                    const result = !!s.result?.trim();
+                    return (
+                      <Link
+                        key={s.id}
+                        href={`/stories/${s.id}`}
+                        className="link-unstyled story-grid-card-link"
+                      >
+                        <article className="story-card">
+                          <div className="story-card-top">
+                            <div className="story-card-title">{s.title}</div>
+                          </div>
+                          <div
+                            className={`story-card-situation${!s.situation ? " empty" : ""}`}
+                          >
+                            {s.situation || "No situation written yet."}
+                          </div>
+                          <StarCompletionVisual
+                            variant="card"
+                            situation={situation}
+                            action={action}
+                            result={result}
+                          />
+                        </article>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+          </>
+        )}
+      </div>
+    </main>
   );
 }

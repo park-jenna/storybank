@@ -178,7 +178,7 @@ export default function SavedQuestionDetailPage({
           >
             <path d="M9 2L4 7l5 5" />
           </svg>
-          Back to Saved Questions
+          Back to My Questions
         </button>
       </main>
     );
@@ -209,7 +209,7 @@ export default function SavedQuestionDetailPage({
           >
             <path d="M9 2L4 7l5 5" />
           </svg>
-          Back to Saved Questions
+          Back to My Questions
         </button>
       </main>
     );
@@ -237,7 +237,7 @@ export default function SavedQuestionDetailPage({
           >
             <path d="M9 2L4 7l5 5" />
           </svg>
-          Back to Saved Questions
+          Back to My Questions
         </button>
         <div className="btn-group">
           <button
@@ -543,7 +543,7 @@ export default function SavedQuestionDetailPage({
             {confirmStep === 1 && !deleting && (
               <>
                 <h3 className="modal-title" id="delete-confirm-title">
-                  Remove this question from your list?
+                  Delete this question from your list?
                 </h3>
                 <p className="modal-subtitle">
                   You can always re-save it from the common questions page.
@@ -560,7 +560,7 @@ export default function SavedQuestionDetailPage({
                     Cancel
                   </button>
                   <button type="button" className="btn-warn" onClick={handleDelete}>
-                    Remove
+                    Delete
                   </button>
                 </div>
               </>
@@ -572,7 +572,7 @@ export default function SavedQuestionDetailPage({
                   This cannot be undone. Really delete?
                 </h3>
                 <p className="modal-subtitle">
-                  Removing this question will also unlink all stories attached to it.
+                  Deleting this question will also unlink all stories attached to it.
                 </p>
                 <div className="modal-actions">
                   <button

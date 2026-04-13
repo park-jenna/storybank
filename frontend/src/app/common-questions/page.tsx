@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -16,6 +16,7 @@ import {
   type UserQuestionItem,
 } from "@/lib/user-questions";
 import { CATEGORIES } from "@/constants/categories";
+import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 
 const ALL = "All" as const;
 
@@ -242,7 +243,7 @@ function CommonQuestionsContent() {
         action: { label: "Undo", kind: "undo-save", questionId: q.id, userQuestionId: res.userQuestion.id },
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update saved state.");
+      setError(err instanceof Error ? err.message : "Failed to update My Questions.");
     } finally {
       setSaving(false);
     }
@@ -277,11 +278,11 @@ function CommonQuestionsContent() {
       await refreshUserQuestions(token);
       showToast({
         open: true,
-        message: "Removed from saved",
+        message: "Deleted from My Questions",
         action: { label: "Undo", kind: "undo-unsave", questionId: q.id, storyIds: prevStoryIds },
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update saved state.");
+      setError(err instanceof Error ? err.message : "Failed to update My Questions.");
     } finally {
       setSaving(false);
     }
@@ -356,7 +357,7 @@ function CommonQuestionsContent() {
         storyIds: Array.from(selectedStoryIds),
       });
       setSaveSuccess(true);
-      setSaveMessage(res.alreadySaved ? "Already in your list. Linked stories updated." : "Saved to your questions!");
+      setSaveMessage(res.alreadySaved ? "Already in My Questions. Linked stories updated." : "Added to My Questions!");
       setShowSavePanel(false);
       setQuestions((prev) =>
         prev.map((q) => (q.id === selectedQuestion.id ? { ...q, alreadySaved: true } : q))
@@ -430,7 +431,7 @@ function CommonQuestionsContent() {
             <svg viewBox="0 0 14 14" className="inline-icon" aria-hidden>
               <path d="M9 2L4 7l5 5" />
             </svg>
-            Saved Questions
+            My Questions
           </button>
         </div>
       </main>
@@ -466,34 +467,33 @@ function CommonQuestionsContent() {
       </div>
 
       {questions.length > 0 && (
-        <div className="chips-row chips-row--section">
-          {[ALL, ...CATEGORIES].map((cat) => (
-            <div
-              key={cat}
-              role="button"
-              tabIndex={0}
-              className={`chip${selectedCategory === cat ? " active" : ""}`}
-              onClick={() => handleSelectCategory(cat)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleSelectCategory(cat);
-                }
-              }}
-            >
-              {cat}
-            </div>
-          ))}
+        <div className="chips-row chips-row--section" role="group" aria-label="Filter by category">
+          {[ALL, ...CATEGORIES].map((cat) => {
+            const selected = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                aria-pressed={selected}
+                className={`chip${selected ? " active" : ""}`}
+                onClick={() => handleSelectCategory(cat)}
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
       )}
 
       {questions.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">❓</div>
+          <div className="empty-state-icon">
+            <EmptyStateGlyph kind="help" />
+          </div>
           <h3 className="empty-state-title">No common questions</h3>
           <p className="empty-state-desc">There are no common questions in the list yet.</p>
           <Link href="/saved-questions" className="btn-secondary">
-            Saved Questions
+            My Questions
           </Link>
         </div>
       ) : (
@@ -522,7 +522,7 @@ function CommonQuestionsContent() {
                     type="button"
                     className={`bookmark-btn bookmark-btn--list${q.alreadySaved ? " saved" : ""}`}
                     aria-pressed={!!q.alreadySaved}
-                    aria-label={q.alreadySaved ? "Remove from saved" : "Save to your list"}
+                    aria-label={q.alreadySaved ? "Delete from My Questions" : "Add to My Questions"}
                     disabled={saving}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -558,7 +558,7 @@ function CommonQuestionsContent() {
                   type="button"
                   className={`bookmark-btn bookmark-btn--header${selectedQuestion.alreadySaved ? " saved" : ""}`}
                   aria-pressed={!!selectedQuestion.alreadySaved}
-                  aria-label={selectedQuestion.alreadySaved ? "Remove from saved" : "Save to your list"}
+                  aria-label={selectedQuestion.alreadySaved ? "Delete from My Questions" : "Add to My Questions"}
                   disabled={saving}
                   onClick={() => handleToggleSaved(selectedQuestion)}
                 >
@@ -571,13 +571,25 @@ function CommonQuestionsContent() {
                 </button>
               </div>
 
-              <div className="common-questions-categories">
-                <span className="section-label">Good categories to highlight:</span>
-                {(selectedQuestion.recommendedCategories ?? []).map((cat) => (
-                  <span key={cat} className="tag tag-highlight">
-                    {cat}
-                  </span>
-                ))}
+              <div className="common-questions-categories-wrap">
+                <div className="common-questions-categories">
+                  <span className="common-questions-section-label">Good categories to highlight</span>
+                  {(selectedQuestion.recommendedCategories ?? []).map((cat) => (
+                    <span key={cat} className="tag tag-highlight">
+                      {cat}
+                    </span>
+                  ))}
+                </div>
+                {(selectedQuestion.recommendedCategories ?? []).length > 0 && (
+                  <p className="common-questions-tag-legend">
+                    <span className="common-questions-tag-legend__sample" aria-hidden="true">
+                      <span className="tag tag-match">Category</span>
+                    </span>
+                    <span>
+                      Tags with a checkmark match this question&apos;s recommended categories.
+                    </span>
+                  </p>
+                )}
               </div>
 
               {!hasToken ? (
@@ -596,23 +608,57 @@ function CommonQuestionsContent() {
               ) : (
                 <>
                   {selectedQuestion.alreadySaved && (
-                    <div className="mb-6" aria-labelledby="linked-stories-heading">
-                      <div className="section-heading-row">
-                        <span className="section-label section-label--inline" id="linked-stories-heading">
-                          LINKED STORIES
+                    <div
+                      className={`common-questions-detail-section common-questions-detail-section--linked${linkedStories.length === 0 ? " common-questions-detail-section--linked-empty" : ""}`}
+                      aria-labelledby="linked-stories-heading"
+                    >
+                      <div className="section-heading-row section-heading-row--common">
+                        <span className="common-questions-section-title" id="linked-stories-heading">
+                          Linked stories
                         </span>
-                        <span className="section-count">{linkedStories.length}</span>
+                        <span
+                          className={`common-questions-count-pill${linkedStories.length === 0 ? " common-questions-count-pill--zero" : " common-questions-count-pill--has-items"}`}
+                        >
+                          {linkedStories.length}
+                        </span>
                       </div>
-                      <p className="section-description">
+                      <p className="section-description common-questions-section-desc">
                         Stories you linked to this question. These are the ones you plan to use when answering.
                       </p>
 
                       {linkedStories.length === 0 ? (
-                        <p className="no-stories-callout">
-                          No stories linked yet. Select stories below to link them to this question.
-                        </p>
+                        <div className="common-questions-linked-empty" role="status" aria-live="polite">
+                          <div className="common-questions-linked-empty-icon" aria-hidden>
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                            </svg>
+                          </div>
+                          <p className="common-questions-linked-empty-title">No stories linked yet</p>
+                          <p className="common-questions-linked-empty-desc">
+                            {recommendedStoriesFiltered.length > 0 ? (
+                              <>
+                                Go to <strong>More stories to link</strong> and use{" "}
+                                <strong>Change linked stories</strong> to attach them here.
+                              </>
+                            ) : (
+                              <>
+                                <strong>More stories to link</strong> is empty—tag your stories with
+                                this question&apos;s categories or add a new story (see below).
+                                Matching stories will appear there when you can link them.
+                              </>
+                            )}
+                          </p>
+                        </div>
                       ) : (
-                        <div className="story-grid-2">
+                        <div className="common-questions-story-grid">
                           {linkedStories.map((s) => {
                             return (
                               <Link
@@ -646,28 +692,33 @@ function CommonQuestionsContent() {
                     </div>
                   )}
 
-                  <div aria-labelledby="recommended-stories-heading">
-                    <div className="section-heading-row">
-                      <span className="section-label section-label--inline" id="recommended-stories-heading">
+                  <div
+                    className="common-questions-detail-section"
+                    aria-labelledby="recommended-stories-heading"
+                  >
+                    <div className="section-heading-row section-heading-row--common">
+                      <span className="common-questions-section-title" id="recommended-stories-heading">
                         {selectedQuestion.alreadySaved
-                          ? "MORE STORIES TO LINK"
-                          : "RECOMMENDED STORIES"}
+                          ? "More stories to link"
+                          : "Recommended stories"}
                       </span>
-                      <span className="section-count">{recommendedStoriesFiltered.length}</span>
+                      <span className="common-questions-count-pill">
+                        {recommendedStoriesFiltered.length}
+                      </span>
                     </div>
-                    <p className="section-description">
+                    <p className="section-description common-questions-section-desc">
                       {selectedQuestion.alreadySaved
                         ? "Other stories that match this question's categories. Link more to use when answering."
                         : "Your stories that match this question's categories. Link the ones you want to use when answering."}
                     </p>
 
                     {loadingRecommendations && (
-                      <div className="story-grid-2" aria-hidden>
+                      <div className="common-questions-story-grid" aria-hidden>
                         {[1, 2, 3, 4].map((i) => (
                           <div key={i} className="skeleton-card">
-                            <div className="skeleton skeleton-line" style={{ width: "80%" }} />
+                            <div className="skeleton skeleton-line skeleton-line--w80" />
                             <div className="skeleton skeleton-line" />
-                            <div className="skeleton skeleton-line" style={{ width: "50%" }} />
+                            <div className="skeleton skeleton-line skeleton-line--w45" />
                           </div>
                         ))}
                       </div>
@@ -675,7 +726,9 @@ function CommonQuestionsContent() {
 
                     {!loadingRecommendations && recommendedStoriesFiltered.length === 0 && (
                       <div className="empty-state">
-                        <div className="empty-state-icon">📚</div>
+                        <div className="empty-state-icon">
+                          <EmptyStateGlyph kind="books" />
+                        </div>
                         <h3 className="empty-state-title">
                           {selectedQuestion.alreadySaved
                             ? "No other matching stories"
@@ -696,14 +749,7 @@ function CommonQuestionsContent() {
 
                     {!loadingRecommendations && recommendedStoriesFiltered.length > 0 && (
                       <>
-                        <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                            gap: 10,
-                            marginTop: 8,
-                          }}
-                        >
+                        <div className="common-questions-story-grid">
                           {(showSavePanel && selectedQuestion.alreadySaved
                             ? [...linkedStories, ...recommendedStoriesFiltered]
                             : recommendedStoriesFiltered
@@ -712,22 +758,24 @@ function CommonQuestionsContent() {
                               <div key={s.id}>
                                 {showSavePanel ? (
                                   <div
-                                    className={`rec-item${selectedStoryIds.has(s.id) ? " selected" : ""}`}
-                                    style={{ cursor: "default" }}
+                                    className={`rec-item rec-item--panel${
+                                      selectedStoryIds.has(s.id) ? " selected" : ""
+                                    }`}
                                   >
-                                    <div
-                                      className="rc-row"
-                                      style={{ alignItems: "flex-start" }}
-                                    >
+                                    <div className="rc-row rc-row--align-start">
                                       <div
-                                        className={`rec-check${selectedStoryIds.has(s.id) ? " selected" : ""}`}
-                                        style={{
-                                          marginTop: 3,
-                                          cursor: "pointer",
-                                          flexShrink: 0,
-                                        }}
+                                        className={`rec-check rec-check--panel${
+                                          selectedStoryIds.has(s.id) ? " selected" : ""
+                                        }`}
                                         onClick={() => toggleStorySelection(s.id)}
+                                        onKeyDown={(e) => {
+                                          if (e.key === "Enter" || e.key === " ") {
+                                            e.preventDefault();
+                                            toggleStorySelection(s.id);
+                                          }
+                                        }}
                                         role="checkbox"
+                                        tabIndex={0}
                                         aria-checked={selectedStoryIds.has(s.id)}
                                         aria-label={
                                           selectedStoryIds.has(s.id)
@@ -738,38 +786,28 @@ function CommonQuestionsContent() {
                                         {selectedStoryIds.has(s.id) ? "✓" : ""}
                                       </div>
                                       <div className="rc-info">
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            gap: 8,
-                                          }}
-                                        >
+                                        <div className="rc-head-row">
                                           <div className="rc-title">{s.title}</div>
                                           <button
                                             type="button"
+                                            className="rc-expand-btn"
                                             onClick={() => toggleStoryExpanded(s.id)}
                                             aria-expanded={expandedStoryIds.has(s.id)}
-                                            style={{
-                                              fontSize: 12,
-                                              color: "var(--text-hint)",
-                                              background: "none",
-                                              border: "none",
-                                              cursor: "pointer",
-                                              flexShrink: 0,
-                                            }}
+                                            aria-label={
+                                              expandedStoryIds.has(s.id)
+                                                ? "Collapse story details"
+                                                : "Expand story details"
+                                            }
                                           >
                                             {expandedStoryIds.has(s.id) ? "▼" : "▶"}
                                           </button>
                                         </div>
-                                        {/* Matches text removed; tags below show ✓ for matches */}
                                         {expandedStoryIds.has(s.id) && (
-                                          <div style={{ marginTop: 8 }}>
+                                          <div className="rc-expanded-body">
                                             <p className="rc-sit">
                                               {s.result || s.situation || "No summary"}
                                             </p>
-                                            <div className="rc-cats" style={{ marginBottom: 6 }}>
+                                            <div className="rc-cats">
                                               <StoryCategoryTagsAll
                                                 categories={s.categories}
                                                 recommendedCategories={
@@ -819,13 +857,7 @@ function CommonQuestionsContent() {
                           })}
                         </div>
 
-                        <div
-                          style={{
-                            borderTop: "0.5px solid var(--border-card)",
-                            paddingTop: 14,
-                            marginTop: 14,
-                          }}
-                        >
+                        <div className="common-questions-panel-footer">
                           {!showSavePanel ? (
                             <button
                               type="button"
@@ -868,11 +900,7 @@ function CommonQuestionsContent() {
                             </div>
                           )}
                           {saveSuccess && saveMessage && (
-                            <div
-                              className="success-msg show"
-                              role="status"
-                              style={{ marginTop: 10 }}
-                            >
+                            <div className="success-msg success-msg--spaced show" role="status">
                               {saveMessage}
                             </div>
                           )}

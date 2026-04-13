@@ -17,31 +17,31 @@
   --bg-chip-hover:  #E3EBE1;
   --bg-hover:       #F6FAF6;
 
-  /* Borders */
-  --border-page:    #D7E0D3;
-  --border-card:    #E3E9DE;
-  --border-input:   #CDD8CB;
-  --border-chip:    #C2D0C0;
+  /* Borders — slightly stronger vs page/card for control boundaries (non-text UI ~3:1) */
+  --border-page:    #d7e0d3;
+  --border-card:    #e3e9de;
+  --border-input:   #cdd8cb;
+  --border-chip:    #c2d0c0;
 
   /* Border widths (standardize stroke weights) */
   --stroke-1: 1px;
   --stroke-2: 2px;
 
-  /* Text */
-  --text-primary:   #14261A;
-  --text-dark:      #21392A;
-  --text-secondary: #4A6754;
-  --text-muted:     #5A6E61;
-  --text-hint:      #6E8073;
-  --text-faint:     #859487;
-  --input-placeholder: #748578;
+  /* Text — tuned for ~WCAG 2.1 AA 4.5:1 vs --bg-page / white surfaces at body & small sizes */
+  --text-primary:   #212b25;
+  --text-dark:      #272a28;
+  --text-secondary: #494949;
+  --text-muted:     #5b5c5b;
+  --text-hint:      #5b5c5b;
+  --text-faint:     #9d9c9c;
+  --input-placeholder: #9a9b9a;
 
   /* Brand */
   --green-primary:  #2F6B45;
   --green-hover:    #255A39;
   --green-light:    #D9EADB;
   --green-dot:      #4C8A62;
-  --green-focus:    rgba(76, 138, 98, 0.16);
+  --green-focus:    rgba(47, 107, 69, 0.22);
 
   /* Warning */
   --warn-text:       #B7502D;
@@ -51,7 +51,7 @@
   --warn-border:     #E6BE9E;
   --warn-dot:        #DAA24A;
   --warn-badge-bg:   #F8EDC8;
-  --warn-badge-text: #7D5A16;
+  --warn-badge-text: #5c430f;
 
   /* Danger */
   --danger-bg:       #BF6A4C;
@@ -72,7 +72,7 @@
   --btn-primary-disabled-bg: #B9CABB;
 
   --tag-bg:          #F3F6F1; /* used by .tag */
-  --tag-border:     #D7E0D3;
+  --tag-border:     var(--border-page);
 
   --warn-hover-bg:  #F7E1D5;
 
@@ -81,15 +81,15 @@
 
   --star-tip-bg:    #EFF4EA;
   --q-row-num:      var(--text-hint);
-  --dot-empty:      #8A9B8E;
+  --dot-empty:      #6f7f72;
 
   --warn-progress-fill-bg: var(--badge-bg); /* used by warn progress */
 
-  /* Border radius */
-  --radius-sm:   8px;
-  --radius-md:   12px;
-  --radius-lg:   16px;
-  --radius-xl:   20px;
+  /* Border radius — box corners unified; pill = full capsule / circular-on-small */
+  --radius-sm:   0.4rem;
+  --radius-md:   0.4rem;
+  --radius-lg:   0.4rem;
+  --radius-xl:   0.4rem;
   --radius-pill: 999px;
 
   /* Spacing scale */
@@ -107,8 +107,11 @@
   --space-lg:  16px;
   --space-xl:  24px;
 
-  /* Sidebar */
-  --sidebar-width: 200px;
+  /* Sidebar — wide enough for “My Questions” + icon + badge on one line */
+  --sidebar-width: 220px;
+
+  /* Main column gutter (sidebar → content); pair with .main-content padding-inline */
+  --layout-content-inline: var(--space-10);
 
   /* One stack for everything — avoids serif fatigue in dense UI */
   --font-sans: var(--font-source-sans, ui-sans-serif), system-ui, -apple-system,
@@ -142,7 +145,7 @@
   /* Aliases for UI components (FormField, Input, Button, StarSection) */
   --foreground:           var(--text-primary);
   --muted:                var(--text-muted);
-  --muted-foreground:     var(--text-hint);
+  --muted-foreground:     var(--text-muted);
   --card:                 var(--bg-card);
   --border:               var(--border-input);
   --radius:               var(--radius-md);
@@ -181,28 +184,28 @@
   --border-input:   #36453A;
   --border-chip:    #455748;
 
-  /* Text */
-  --text-primary:   #E6F0E8;
-  --text-dark:      #D4E6D8;
-  --text-secondary: #A1BDA8;
-  --text-muted:     #8EA594;
-  --text-hint:      #78907E;
-  --text-faint:     #627567;
-  --input-placeholder: #748B79;
+  /* Text — higher luminance vs dark surfaces for ~AA body & helper text */
+  --text-primary:   #E8F1EA;
+  --text-dark:      #D8E8DC;
+  --text-secondary: #B4CABA;
+  --text-muted:     #A3B9AA;
+  --text-hint:      #92AA9C;
+  --text-faint:     #7F9688;
+  --input-placeholder: #8FA99A;
 
   /* Brand */
   --green-primary:  #66A37C;
   --green-hover:    #78B08D;
   --green-light:    #203428;
   --green-dot:      #5F9B75;
-  --green-focus:    rgba(102, 163, 124, 0.2);
+  --green-focus:    rgba(120, 176, 141, 0.28);
 
   /* Warning */
   --warn-text:       #E08C69;
   --warn-bg:         #39241C;
   --warn-border:     #754C37;
   --warn-badge-bg:   #382C18;
-  --warn-badge-text: #D6AF72;
+  --warn-badge-text: #e4cf94;
 
   /* Danger */
   --danger-bg:       #A76856;
@@ -230,8 +233,31 @@
   --bg-row-active:  #1D2F24;
   --star-tip-bg:    #1A2B20;
   --progress-bg:    #263229;
-  --dot-empty:      #577060;
+  --dot-empty:      #6d8576;
   --btn-primary-disabled-bg: #35453A;
+}
+
+/* Stronger defaults when the user asks OS/browser for higher contrast */
+@media (prefers-contrast: more) {
+  :root {
+    --text-muted: var(--text-secondary);
+    --text-hint: var(--text-secondary);
+    --text-faint: var(--text-muted);
+    --border-input: #7a8c74;
+    --border-card: #c2cfc0;
+    --input-placeholder: var(--text-muted);
+    --green-focus: rgba(37, 90, 57, 0.45);
+  }
+
+  .dark {
+    --text-muted: var(--text-secondary);
+    --text-hint: var(--text-secondary);
+    --text-faint: var(--text-muted);
+    --border-input: #4f6256;
+    --border-card: #3a4d42;
+    --input-placeholder: var(--text-muted);
+    --green-focus: rgba(140, 190, 155, 0.42);
+  }
 }
 
 /* ------------------------------------------------------------
@@ -418,7 +444,7 @@ ol {
 
 ::-webkit-scrollbar-thumb {
   background: var(--border-page);
-  border-radius: 4px;
+  border-radius: var(--radius-md);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -430,8 +456,8 @@ ol {
    9. FOCUS VISIBLE (accessibility)
    ------------------------------------------------------------ */
 :focus-visible {
-  outline: 2px solid var(--green-dot);
-  outline-offset: 3px;
+  outline: 2px solid var(--green-primary);
+  outline-offset: 2px;
 }
 
 

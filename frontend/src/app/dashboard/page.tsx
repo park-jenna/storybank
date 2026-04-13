@@ -1,4 +1,4 @@
-// Dashboard — Welcome, stats, in-progress / completed stories, category coverage, saved questions
+// Dashboard — Welcome, stats, in-progress / completed stories, category coverage, My Questions
 
 "use client";
 
@@ -345,7 +345,7 @@ export default function DashboardPage() {
                       </p>
                       <p className="dashboard-onboarding-item-text">
                         In <strong>Common Questions</strong>, save prompts you want
-                        to practice. Open <strong>Saved Questions</strong> and
+                        to practice. Open <strong>My Questions</strong> and
                         link each prompt to the stories that answer it.
                       </p>
                       <div className="dashboard-onboarding-cta dashboard-onboarding-cta--split">
@@ -366,7 +366,7 @@ export default function DashboardPage() {
                           href="/saved-questions"
                           className="dashboard-onboarding-link"
                         >
-                          Saved Questions
+                          My Questions
                           <span aria-hidden> →</span>
                         </Link>
                       </div>
@@ -389,7 +389,7 @@ export default function DashboardPage() {
                         See <strong>STAR</strong> completion, how many questions
                         are linked to stories, and <strong>category</strong> gaps
                         below. Refine stories or links anytime from{" "}
-                        <strong>My Stories</strong> or <strong>Saved Questions</strong>.
+                        <strong>My Stories</strong> or <strong>My Questions</strong>.
                       </p>
                       <div className="dashboard-onboarding-cta">
                         <Link href="/stories" className="dashboard-onboarding-link">
@@ -437,18 +437,6 @@ export default function DashboardPage() {
               </div>
               <div className="stat-card">
                 <div className="stat-card-top">
-                  <div className="stat-label">Saved questions</div>
-                  <div className="stat-icon" aria-hidden>
-                    <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="stat-value">{userQuestions.length}</div>
-                <div className="stat-sub">stories linked</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-card-top">
                   <div className="stat-label">Category coverage</div>
                   <div className={`stat-icon${missingCategorySummary ? " stat-icon--warn" : ""}`} aria-hidden>
                     <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -466,9 +454,21 @@ export default function DashboardPage() {
                   {missingCategorySummary ?? "All covered"}
                 </div>
               </div>
+              <div className="stat-card">
+                <div className="stat-card-top">
+                  <div className="stat-label">My questions</div>
+                  <div className="stat-icon" aria-hidden>
+                    <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="stat-value">{userQuestions.length}</div>
+                <div className="stat-sub">stories linked</div>
+              </div>
             </div>
 
-            {/* Two columns: Stories (left) | Coverage & Saved questions (right) */}
+            {/* Two columns: Stories (left) | Coverage & My Questions (right) */}
             <div className="dashboard-grid">
               <div className="col-stack">
                 {/* In progress card */}
@@ -494,7 +494,12 @@ export default function DashboardPage() {
                       <div key={s.id} className="story-row">
                         <div className={`dot ${dotClass}`} aria-hidden />
                         <div className="story-row-info">
-                          <div className="story-row-title">{s.title}</div>
+                          <Link
+                            href={`/stories/${s.id}`}
+                            className="story-row-title story-row-title--link"
+                          >
+                            {s.title}
+                          </Link>
                           <div className={`story-row-meta${isNotStarted ? " text-warn" : ""}`}>
                             {isNotStarted ? "Not started" : missingLabel}
                           </div>
@@ -514,7 +519,7 @@ export default function DashboardPage() {
                 <div className="card">
                   <div className="card-head">
                     <h2 className="card-title">Completed</h2>
-                    <SeeAllLink href="/stories" label={completedCount > 0 ? `View ${completedCount}` : "View all"} />
+                    <SeeAllLink href="/stories" label="View all" />
                   </div>
                   {completedStories.length === 0 ? (
                     <p className="card-empty-hint">Complete a STAR story to see it here.</p>
@@ -540,7 +545,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Right column: Category coverage + Saved questions */}
+              {/* Right column: Category coverage + My Questions */}
               <div className="col-stack">
                 {/* Category coverage card */}
                 <div className="card">
@@ -563,10 +568,7 @@ export default function DashboardPage() {
                           }`}
                         >
                           <div className="progress-label">
-                            <Link
-                              href={`/stories?category=${encodeURIComponent(cat)}`}
-                              className="progress-label-text"
-                            >
+                            <Link href="/stories" className="progress-label-text">
                               {cat}
                             </Link>
                             <span className="progress-label-count">{count}</span>
@@ -585,10 +587,10 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                {/* Saved questions card */}
+                {/* My Questions card */}
                 <div className="card">
                   <div className="card-head">
-                    <h2 className="card-title">Saved questions</h2>
+                    <h2 className="card-title">My questions</h2>
                     <SeeAllLink href="/saved-questions" label="View all" />
                   </div>
                   {userQuestions.length === 0 ? (
@@ -605,7 +607,7 @@ export default function DashboardPage() {
                         <Link
                           key={uq.id}
                           href={`/saved-questions/${uq.id}`}
-                          className="q-row"
+                          className="q-row q-row--dashboard-line"
                         >
                           <div className={`q-icon ${hasStory ? "q-done" : "q-empty"}`} />
                           <div className="q-txt">{uq.question.content}</div>

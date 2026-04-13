@@ -1,17 +1,28 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { fetchUserQuestions, deleteUserQuestion, UserQuestionItem } from "@/lib/user-questions";
 import { CATEGORIES } from "@/constants/categories";
 import { useToast } from "@/contexts/ToastContext";
+import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 
 const ALL = "All" as const;
+const CATEGORY_QUERY = "category";
+
+function categoryFromSearchParams(searchParams: URLSearchParams): string {
+  const raw = searchParams.get(CATEGORY_QUERY);
+  if (!raw) return ALL;
+  if (raw === ALL || (CATEGORIES as readonly string[]).includes(raw)) return raw;
+  return ALL;
+}
 
 export default function SavedQuestionsPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [userQuestions, setUserQuestions] = useState<UserQuestionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,8 +30,25 @@ export default function SavedQuestionsPage() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [confirmStep, setConfirmStep] = useState<1 | 2>(1);
 
-  const [selectedCategory, setSelectedCategory] = useState<string>(ALL);
+  const selectedCategory = useMemo(
+    () => categoryFromSearchParams(searchParams),
+    [searchParams]
+  );
   const { showToast } = useToast();
+
+  useEffect(() => {
+    const raw = searchParams.get(CATEGORY_QUERY);
+    if (!raw) return;
+    const validCategory = (CATEGORIES as readonly string[]).includes(raw);
+    const shouldStrip =
+      raw === ALL || !validCategory;
+    if (shouldStrip) {
+      const next = new URLSearchParams(searchParams.toString());
+      next.delete(CATEGORY_QUERY);
+      const q = next.toString();
+      router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
+    }
+  }, [searchParams, pathname, router]);
 
   useEffect(() => {
     async function load() {
@@ -35,7 +63,7 @@ export default function SavedQuestionsPage() {
         const data = await fetchUserQuestions(token);
         setUserQuestions(data.userQuestions);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load saved questions.");
+        setError(err instanceof Error ? err.message : "Failed to load questions.");
       } finally {
         setLoading(false);
       }
@@ -50,9 +78,19 @@ export default function SavedQuestionsPage() {
     );
   }, [userQuestions, selectedCategory]);
 
-  const handleSelectCategory = (cat: string) => {
-    setSelectedCategory(cat);
-  };
+  const handleSelectCategory = useCallback(
+    (cat: string) => {
+      const next = new URLSearchParams(searchParams.toString());
+      if (cat === ALL) {
+        next.delete(CATEGORY_QUERY);
+      } else {
+        next.set(CATEGORY_QUERY, cat);
+      }
+      const q = next.toString();
+      router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
+    },
+    [pathname, router, searchParams]
+  );
 
   const openDeleteConfirm = (questionId: string) => {
     setConfirmDeleteId(questionId);
@@ -80,7 +118,7 @@ export default function SavedQuestionsPage() {
       await deleteUserQuestion(token, confirmDeleteId);
       setUserQuestions((prev) => prev.filter((uq) => uq.id !== confirmDeleteId));
       closeDeleteConfirm();
-      showToast("Question removed");
+      showToast("Question deleted");
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to delete question.");
     } finally {
@@ -105,9 +143,9 @@ export default function SavedQuestionsPage() {
       <div className="page-shell page-shell--wide">
       <div className="page-header">
         <div className="page-header-left">
-          <h1 className="page-title">Saved Questions</h1>
+          <h1 className="page-title">My Questions</h1>
           <p className="page-subtitle">
-            Questions you saved and the stories you linked to answer them.
+            Questions you added from the bank and the stories you linked to answer them.
           </p>
         </div>
         <Link
@@ -122,24 +160,21 @@ export default function SavedQuestionsPage() {
       </div>
 
       {userQuestions.length > 0 && (
-        <div className="chips-row chips-row--section">
-          {[ALL, ...CATEGORIES].map((cat) => (
-            <div
-              key={cat}
-              role="button"
-              tabIndex={0}
-              className={`chip${selectedCategory === cat ? " active" : ""}`}
-              onClick={() => handleSelectCategory(cat)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleSelectCategory(cat);
-                }
-              }}
-            >
-              {cat}
-            </div>
-          ))}
+        <div className="chips-row chips-row--section" role="group" aria-label="Filter by category">
+          {[ALL, ...CATEGORIES].map((cat) => {
+            const selected = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                aria-pressed={selected}
+                className={`chip${selected ? " active" : ""}`}
+                onClick={() => handleSelectCategory(cat)}
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
       )}
 
@@ -162,8 +197,10 @@ export default function SavedQuestionsPage() {
 
       {!loading && !error && userQuestions.length === 0 && (
         <div className="empty-state">
-          <div className="empty-state-icon">📋</div>
-          <h3 className="empty-state-title">No saved questions yet</h3>
+          <div className="empty-state-icon">
+            <EmptyStateGlyph kind="clipboard" />
+          </div>
+          <h3 className="empty-state-title">No questions yet</h3>
           <p className="empty-state-desc">
             Browse the question bank, save the ones you want to practice,
             and link your STAR stories so you&apos;re ready for any interview.
@@ -185,7 +222,7 @@ export default function SavedQuestionsPage() {
             {confirmStep === 1 && deletingId !== confirmDeleteId && (
               <>
                 <h3 className="modal-title" id="delete-confirm-title">
-                  Remove this question from your list?
+                  Delete this question from your list?
                 </h3>
                 <p className="modal-subtitle">
                   You can always re-save it from the common questions page.
@@ -203,7 +240,7 @@ export default function SavedQuestionsPage() {
                     className="btn-warn"
                     onClick={handleConfirmDelete}
                   >
-                    Remove
+                    Delete
                   </button>
                 </div>
               </>
@@ -215,7 +252,7 @@ export default function SavedQuestionsPage() {
                   This cannot be undone. Really delete?
                 </h3>
                 <p className="modal-subtitle">
-                  Removing this question will also unlink all stories attached to it.
+                  Deleting this question will also unlink all stories attached to it.
                 </p>
                 <div className="modal-actions">
                   <button
@@ -290,7 +327,7 @@ export default function SavedQuestionsPage() {
                           openDeleteConfirm(uq.id);
                         }}
                       >
-                        {deletingId === uq.id ? "Deleting..." : "Remove"}
+                        {deletingId === uq.id ? "Deleting..." : "Delete"}
                       </button>
                     </div>
                   </details>
@@ -306,10 +343,12 @@ export default function SavedQuestionsPage() {
         userQuestions.length > 0 &&
         filteredUserQuestions.length === 0 && (
         <div className="empty-state empty-state--spaced">
-            <div className="empty-state-icon">🔍</div>
+            <div className="empty-state-icon">
+              <EmptyStateGlyph kind="search" />
+            </div>
             <h3 className="empty-state-title">No questions in this category</h3>
             <p className="empty-state-desc">
-              You don&apos;t have any saved questions tagged with &quot;{selectedCategory}&quot; yet.
+              You don&apos;t have any questions tagged with &quot;{selectedCategory}&quot; in My Questions yet.
               Try another category or save more questions from the common questions page.
             </p>
             <Link href="/common-questions" className="btn-secondary">
