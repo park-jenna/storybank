@@ -1,5 +1,5 @@
 // frontend/src/lib/session.ts
-// 브라우저 세션 계층
+// 브라우저 세션 계층 )
 // 토큰 저장/삭제, 로그인 리다이렉트, 세션 상태 구독 담당
 import { useSyncExternalStore } from "react";
 

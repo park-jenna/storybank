@@ -1,36 +1,20 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createStory } from "@/lib/stories";
-import { CATEGORIES } from "@/constants/categories";
-import { StarWritingTips } from "@/components/StarWritingTips";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
+import { StoryForm, type StoryFormValues } from "@/components/StoryForm";
 
 export default function NewStoryPage() {
   const router = useRouter();
 
-  const [title, setTitle] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [situation, setSituation] = useState("");
-  const [action, setAction] = useState("");
-  const [result, setResult] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDirty, setIsDirty] = useState(false);
   const [leaveConfirmHref, setLeaveConfirmHref] = useState<string | null>(null);
 
   const skipLeaveGuardRef = useRef(false);
-
-  const isDirty = useMemo(
-    () =>
-      title.trim().length > 0 ||
-      selectedCategories.length > 0 ||
-      situation.trim().length > 0 ||
-      action.trim().length > 0 ||
-      result.trim().length > 0,
-    [title, selectedCategories, situation, action, result]
-  );
 
   const requestNavigate = useCallback(
     (href: string) => {
@@ -91,16 +75,7 @@ export default function NewStoryPage() {
     return () => document.removeEventListener("click", onClickCapture, true);
   }, [isDirty]);
 
-  function toggleCategory(category: string) {
-    setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((c) => c !== category)
-        : [...prev, category]
-    );
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(values: StoryFormValues) {
     setError(null);
     setLoading(true);
 
@@ -110,18 +85,12 @@ export default function NewStoryPage() {
         throw new Error("No token found. Please log in again.");
       }
 
-      const cleanTitle = title.trim();
-      if (!cleanTitle) throw new Error("Title is required.");
-      if (selectedCategories.length === 0) {
-        throw new Error("At least one category is required.");
-      }
-
       await createStory(token, {
-        title: cleanTitle,
-        categories: selectedCategories,
-        situation: situation.trim(),
-        action: action.trim(),
-        result: result.trim(),
+        title: values.title,
+        categories: values.categories,
+        situation: values.situation,
+        action: values.action,
+        result: values.result,
       });
       skipLeaveGuardRef.current = true;
       router.push("/dashboard");
@@ -166,129 +135,15 @@ export default function NewStoryPage() {
         </p>
       </div>
 
-      <div className="form-grid">
-        <form onSubmit={handleSubmit}>
-          <div className="card">
-            <div className="field">
-              <label className="field-label">
-                Title <span className="field-required">*</span>
-              </label>
-              <input
-                className="input"
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="E.g., Leading a team project"
-                required
-              />
-            </div>
-
-            <div className="field">
-              <label className="field-label">
-                Categories <span className="field-required">*</span>
-              </label>
-              <p className="field-hint">
-                Select one or more categories that best describe your story.
-              </p>
-              <div className="chips-row" role="group" aria-label="Story categories">
-                {CATEGORIES.map((category) => {
-                  const selected = selectedCategories.includes(category);
-                  return (
-                    <button
-                      key={category}
-                      type="button"
-                      aria-pressed={selected}
-                      className={`chip${selected ? " active" : ""}`}
-                      onClick={() => toggleCategory(category)}
-                    >
-                      {category}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="star-section-title">✦ STAR breakdown</div>
-
-            <div className="star-field">
-              <div className="star-field-label">Situation & Task</div>
-              <div className="star-field-sublabel">Context & goal</div>
-              <textarea
-                className="textarea"
-                value={situation}
-                onChange={(e) => setSituation(e.target.value)}
-                placeholder="What was the context? What was your goal or role?"
-                rows={3}
-              />
-            </div>
-
-            <div className="star-field">
-              <div className="star-field-label">Action</div>
-              <div className="star-field-sublabel">What you did</div>
-              <textarea
-                className="textarea"
-                value={action}
-                onChange={(e) => setAction(e.target.value)}
-                placeholder="What did you do? Describe concrete steps."
-                rows={3}
-              />
-            </div>
-
-            <div className="star-field">
-              <div className="star-field-label">Result</div>
-              <div className="star-field-sublabel">Impact & learning</div>
-              <textarea
-                className="textarea"
-                value={result}
-                onChange={(e) => setResult(e.target.value)}
-                placeholder="What was the outcome? What did you learn?"
-                rows={3}
-              />
-            </div>
-
-            {error && (
-              <div
-                className="error-banner show"
-                role="alert"
-                style={{ marginBottom: 12 }}
-              >
-                {error}
-              </div>
-            )}
-
-            <div
-              style={{
-                marginTop: "1.25rem",
-                paddingTop: "1.25rem",
-                borderTop: "0.5px solid var(--border-card)",
-              }}
-            >
-              <div className="btn-group" style={{ marginBottom: 10 }}>
-                <button
-                  type="submit"
-                  className="btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? "Saving..." : "Create Story"}
-                </button>
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={() => requestNavigate("/stories")}
-                  disabled={loading}
-                >
-                  Cancel
-                </button>
-              </div>
-              <p className="field-hint">
-                After creating the story, you can edit and refine it from the dashboard.
-              </p>
-            </div>
-          </div>
-        </form>
-
-        <StarWritingTips />
-      </div>
+      <StoryForm
+        submitLabel="Create Story"
+        submitting={loading}
+        externalError={error}
+        footerHint="After creating the story, you can edit and refine it from the dashboard."
+        onCancel={() => requestNavigate("/stories")}
+        onDirtyChange={setIsDirty}
+        onSubmit={handleSubmit}
+      />
 
       {leaveConfirmHref && (
         <div

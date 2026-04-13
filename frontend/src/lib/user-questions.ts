@@ -28,6 +28,14 @@ export type UserQuestionItem = {
   stories: Story[];
 };
 
+export type UserQuestionRecord = {
+  id: string;
+  userId: string;
+  content: string;
+  recommendedCategories: string[];
+  createdAt: string;
+};
+
 export type UserQuestionsResponse = {
   userQuestions: UserQuestionItem[];
 };
@@ -52,8 +60,8 @@ export async function fetchQuestionRecommendations(token: string, questionId: st
 // 질문 보관함에 저장 (commonQuestionId = 상수 id, storyIds = 연결할 스토리)
 export type CreateUserQuestionInput = { commonQuestionId: string; storyIds?: string[] };
 export type CreateUserQuestionResponse = {
-  userQuestion: { id: string; userId: string; content: string; recommendedCategories: string[]; createdAt: string };
-  alreadySaved?: boolean;
+  userQuestion: UserQuestionRecord;
+  alreadySaved: boolean;
 };
 export async function createUserQuestion(token: string, input: CreateUserQuestionInput) {
   return apiPost<CreateUserQuestionResponse>("/user-questions", input, { token });

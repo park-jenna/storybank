@@ -40,7 +40,7 @@ export type CreateStoryInput = {
 };
 // 스토리 생성 함수
 export async function createStory(token: string, input: CreateStoryInput) {
-    return apiPost<Story>("/stories", input, { token });
+    return apiPost<StoryResponse>("/stories", input, { token });
 }
 
 /////////////////////////////////////////////
