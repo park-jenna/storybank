@@ -34,7 +34,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const themeScript = `
+  const themeScript =
+    process.env.NODE_ENV === "production"
+      ? `(function(){try{document.documentElement.classList.remove("dark");}catch(e){}})();`
+      : `
     (function() {
       try {
         var stored = localStorage.getItem('storybank-theme');

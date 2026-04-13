@@ -9,6 +9,9 @@ import {
 
 const THEME_KEY = "storybank-theme";
 
+/** Temporarily force light theme in production (hide toggle + ignore stored/system dark). */
+export const THEME_FORCE_LIGHT = process.env.NODE_ENV === "production";
+
 export type Theme = "light" | "dark";
 
 type ThemeContextValue = {
@@ -34,12 +37,18 @@ function getStoredTheme(): Theme | null {
 }
 
 function applyTheme(next: Theme) {
+  if (THEME_FORCE_LIGHT) {
+    document.documentElement.classList.remove("dark");
+    localStorage.setItem(THEME_KEY, "light");
+    return;
+  }
   document.documentElement.classList.toggle("dark", next === "dark");
   localStorage.setItem(THEME_KEY, next);
 }
 
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") return "light";
+  if (THEME_FORCE_LIGHT) return "light";
   return getStoredTheme() ?? getSystemTheme();
 }
 
@@ -47,11 +56,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(getInitialTheme);
 
   const setTheme = useCallback((next: Theme) => {
+    if (THEME_FORCE_LIGHT) {
+      setThemeState("light");
+      applyTheme("light");
+      return;
+    }
     setThemeState(next);
     applyTheme(next);
   }, []);
 
   const toggleTheme = useCallback(() => {
+    if (THEME_FORCE_LIGHT) return;
     setThemeState((prev) => {
       const next = prev === "light" ? "dark" : "light";
       applyTheme(next);
