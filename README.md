@@ -1,6 +1,7 @@
 # StoryBank
 
 A full-stack web app for preparing behavioral interviews. Create and organize STAR-method stories (Situation/Task, Action, Result).
+
 ## Features
 
 - **User accounts** — Sign up and log in with email; JWT-based authentication
@@ -10,6 +11,8 @@ A full-stack web app for preparing behavioral interviews. Create and organize ST
 - **Common questions** — Browse a curated list of interview questions with recommended categories; save any question to My Questions and link one or more stories as answers
 - **My Questions** — Manage the questions you saved and their story mappings in one place
 - **Dashboard** — Overview of story completion, My Questions progress, category breakdown, and a “stories to complete” list for quick follow-up
+- **Interview tips** — STAR explained in plain language and how it maps to StoryBank’s workflow
+- **About** — In-app product overview with screenshots
 
 ## Live Demo & Test Account
 
@@ -22,21 +25,24 @@ A full-stack web app for preparing behavioral interviews. Create and organize ST
 
 **Dashboard** — Stories and My Questions at a glance, with completion progress and category breakdown.
 
-<img src="img/dashboard.png" width="600" alt="Dashboard" />
+
 
 **Stories** — List, create, and manage your STAR stories.
 
-<img src="img/stories.png" width="500" alt="Stories" />
+
 
 ## Tech Stack
 
-| Layer       | Tech                                              |
-|------------|----------------------------------------------------|
-| Frontend   | Next.js 16, React 19, TypeScript, Tailwind CSS     |
-| Backend    | Express 5, Node.js                                |
-| Database   | PostgreSQL, Prisma ORM                            |
-| Auth       | JWT, bcrypt                                       |
-| Validation | Zod                                               |
+
+| Layer      | Tech                                           |
+| ---------- | ---------------------------------------------- |
+| Frontend   | Next.js 16, React 19, TypeScript, Tailwind CSS |
+| Backend    | Express 5, Node.js                             |
+| Database   | PostgreSQL, Prisma ORM                         |
+| Auth       | JWT, bcrypt                                    |
+| Validation | Zod                                            |
+| Testing    | Vitest, Supertest (API integration tests)      |
+
 
 ## Database Schema (Prisma)
 
@@ -62,10 +68,11 @@ storybank/
 │   ├── src/
 │   │   ├── app/              # Routes & pages
 │   │   │   ├── dashboard/    # Overview, progress, stories to complete
-│   │   │   ├── questions/    # Browse questions by category (interview prep)
 │   │   │   ├── common-questions/  # Browse & save questions, link stories
 │   │   │   ├── saved-questions/   # User `Question` rows & story links (UI: My Questions)
 │   │   │   ├── stories/      # List, new, edit, detail
+│   │   │   ├── interview-tips/    # STAR guide
+│   │   │   ├── about/        # In-app overview
 │   │   │   ├── login/, signup/
 │   │   │   ├── styles/       # CSS styles
 │   │   │   └── page.tsx      # Landing
@@ -110,7 +117,7 @@ JWT_SECRET="your-secret-key"
 PORT=4000
 ```
 
-For **production**, set `NODE_ENV=production` and **`CORS_ORIGINS`** to a comma-separated list of allowed browser origins (for example your Vercel frontend URL). If `CORS_ORIGINS` is empty in production, cross-origin browser requests are denied. Local dev allows `localhost` / `127.0.0.1` without extra config.
+For **production**, set `NODE_ENV=production` and `**CORS_ORIGINS`** to a comma-separated list of allowed browser origins (for example your Vercel frontend URL). If `CORS_ORIGINS` is empty in production, cross-origin browser requests are denied. Local dev allows `localhost` / `127.0.0.1` without extra config.
 
 The API uses **Helmet** for security headers and **rate limits** signup/login (skipped when `NODE_ENV=test`).
 
@@ -183,23 +190,25 @@ App: `http://localhost:3000`.
 
 ## API Overview
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/health` | No | Health check |
-| POST | `/auth/signup` | No | Register (email, password) |
-| POST | `/auth/login` | No | Login (email, password) |
-| GET | `/stories` | Yes | List current user's stories |
-| GET | `/stories/:id` | Yes | Get one story |
-| POST | `/stories` | Yes | Create story |
-| PATCH | `/stories/:id` | Yes | Update story |
-| DELETE | `/stories/:id` | Yes | Delete story |
-| GET | `/questions/common` | Yes | List common questions (with `alreadySaved` per question) |
-| GET | `/questions/:id/recommendations` | Yes | Recommended stories for a common question (by category) |
-| GET | `/user-questions` | Yes | List user's saved questions (`Question`) and linked stories |
-| GET | `/user-questions/:id` | Yes | Get one saved question and its linked stories |
-| POST | `/user-questions` | Yes | Save a common question (by `commonQuestionId`) and optionally link `storyIds` |
-| PATCH | `/user-questions/:id` | Yes | Update a saved question (`content`, `recommendedCategories`, `storyIds`) |
-| DELETE | `/user-questions/:id` | Yes | Delete a saved question and its story links |
+
+| Method | Endpoint                         | Auth | Description                                                                   |
+| ------ | -------------------------------- | ---- | ----------------------------------------------------------------------------- |
+| GET    | `/health`                        | No   | Health check                                                                  |
+| POST   | `/auth/signup`                   | No   | Register (email, password)                                                    |
+| POST   | `/auth/login`                    | No   | Login (email, password)                                                       |
+| GET    | `/stories`                       | Yes  | List current user's stories                                                   |
+| GET    | `/stories/:id`                   | Yes  | Get one story                                                                 |
+| POST   | `/stories`                       | Yes  | Create story                                                                  |
+| PATCH  | `/stories/:id`                   | Yes  | Update story                                                                  |
+| DELETE | `/stories/:id`                   | Yes  | Delete story                                                                  |
+| GET    | `/questions/common`              | Yes  | List common questions (with `alreadySaved` per question)                      |
+| GET    | `/questions/:id/recommendations` | Yes  | Recommended stories for a common question (by category)                       |
+| GET    | `/user-questions`                | Yes  | List user's saved questions (`Question`) and linked stories                   |
+| GET    | `/user-questions/:id`            | Yes  | Get one saved question and its linked stories                                 |
+| POST   | `/user-questions`                | Yes  | Save a common question (by `commonQuestionId`) and optionally link `storyIds` |
+| PATCH  | `/user-questions/:id`            | Yes  | Update a saved question (`content`, `recommendedCategories`, `storyIds`)      |
+| DELETE | `/user-questions/:id`            | Yes  | Delete a saved question and its story links                                   |
+
 
 Stories request body: `title`, `categories`, `situation`, `action`, `result`.  
 Saved question (PATCH) body: `content?`, `recommendedCategories?`, `storyIds?`.
