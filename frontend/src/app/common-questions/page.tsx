@@ -17,6 +17,7 @@ import {
 } from "@/lib/user-questions";
 import { CATEGORIES } from "@/constants/categories";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
+import { StoryPreviewCard } from "@/components/StoryPreviewCard";
 import { getSessionToken, redirectToLogin, useSessionToken } from "@/lib/session";
 import { Badge, Chip, Tag } from "@/components/ui";
 
@@ -34,37 +35,6 @@ function orderedStoryCategories(categories: string[], recommended: string[]): st
   const matches = categories.filter((c) => rec.has(c));
   const rest = categories.filter((c) => !rec.has(c));
   return [...matches, ...rest];
-}
-
-function StoryCategoryTagsRow({
-  categories,
-  recommendedCategories,
-  maxVisible,
-}: {
-  categories: string[];
-  recommendedCategories: string[];
-  maxVisible: number;
-}) {
-  const ordered = orderedStoryCategories(categories, recommendedCategories);
-  const visible = ordered.slice(0, maxVisible);
-  const moreCount = Math.max(0, ordered.length - maxVisible);
-  return (
-    <>
-      {visible.map((c) => (
-        <Tag
-          key={c}
-          tone={recommendedCategories.includes(c) ? "match" : "default"}
-        >
-          {c}
-        </Tag>
-      ))}
-      {moreCount > 0 && (
-        <Tag tone="more" aria-label={`${moreCount} more categories`}>
-          +{moreCount}
-        </Tag>
-      )}
-    </>
-  );
 }
 
 /** Full ordered list (e.g. expanded detail) — no +N truncation. */
@@ -659,30 +629,15 @@ function CommonQuestionsContent() {
                         <div className="common-questions-story-grid">
                           {linkedStories.map((s) => {
                             return (
-                              <Link
+                              <StoryPreviewCard
                                 key={s.id}
+                                story={s}
                                 href={storyDetailHref(s.id)}
-                                className="link-unstyled"
-                              >
-                                <div className="story-card">
-                                  <div className="story-card-top">
-                                    <div className="story-card-title">{s.title}</div>
-                                  </div>
-                                  <div className="story-card-situation">
-                                    {s.result || s.situation || "No summary"}
-                                  </div>
-                                  <div className="story-card-missing" />
-                                  <div className="story-card-cats">
-                                    <StoryCategoryTagsRow
-                                      categories={s.categories}
-                                      recommendedCategories={
-                                        selectedQuestion?.recommendedCategories ?? []
-                                      }
-                                      maxVisible={MAX_CATEGORY_TAGS_ON_CARD}
-                                    />
-                                  </div>
-                                </div>
-                              </Link>
+                                matchedCategories={
+                                  selectedQuestion?.recommendedCategories ?? []
+                                }
+                                maxCategories={MAX_CATEGORY_TAGS_ON_CARD}
+                              />
                             );
                           })}
                         </div>
@@ -826,29 +781,15 @@ function CommonQuestionsContent() {
                                     </div>
                                   </div>
                                 ) : (
-                                  <Link
+                                  <StoryPreviewCard
+                                    key={s.id}
+                                    story={s}
                                     href={storyDetailHref(s.id)}
-                                    className="link-unstyled"
-                                  >
-                                    <div className="story-card">
-                                      <div className="story-card-top">
-                                        <div className="story-card-title">{s.title}</div>
-                                      </div>
-                                      <div className="story-card-situation">
-                                        {s.result || s.situation || "No summary"}
-                                      </div>
-                                      <div className="story-card-missing" />
-                                      <div className="story-card-cats">
-                                        <StoryCategoryTagsRow
-                                          categories={s.categories}
-                                          recommendedCategories={
-                                            selectedQuestion?.recommendedCategories ?? []
-                                          }
-                                          maxVisible={MAX_CATEGORY_TAGS_ON_CARD}
-                                        />
-                                      </div>
-                                    </div>
-                                  </Link>
+                                    matchedCategories={
+                                      selectedQuestion?.recommendedCategories ?? []
+                                    }
+                                    maxCategories={MAX_CATEGORY_TAGS_ON_CARD}
+                                  />
                                 )}
                               </div>
                             );

@@ -576,20 +576,6 @@
   display: block;
 }
 
-.story-grid-card-link:focus-visible {
-  outline: none;
-  border-radius: var(--radius-lg);
-}
-
-.story-grid-card-link:focus-visible .story-card {
-  background: var(--bg-hover);
-  border-color: var(--border-chip);
-  box-shadow:
-    0 0 0 3px var(--green-dot),
-    var(--shadow-md);
-  transform: translateY(-1px);
-}
-
 /* Carousel card (in-progress) — ~2/3 width of a .story-grid-2 cell.
    Base cell ≈ (100% + 52px) / 2; 2/3 of that → (100% + 52px) / 3. */
 .carousel-card {

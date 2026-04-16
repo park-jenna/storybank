@@ -15,6 +15,7 @@ import { fetchStories, Story } from "@/lib/stories";
 import { CATEGORIES } from "@/constants/categories";
 import { StarCompletionVisual } from "@/components/StarCompletionVisual";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
+import { StoryPreviewCard } from "@/components/StoryPreviewCard";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
 import { Chip } from "@/components/ui";
 
@@ -451,35 +452,13 @@ export default function StoriesPage() {
                     aria-labelledby="stories-library-heading"
                   >
                     <div className="story-grid-2">
-                      {filteredStories.map((s) => {
-                        const situation = !!s.situation?.trim();
-                        const action = !!s.action?.trim();
-                        const result = !!s.result?.trim();
-                        return (
-                          <Link
-                            key={s.id}
-                            href={`/stories/${s.id}`}
-                            className="link-unstyled story-grid-card-link"
-                          >
-                            <article className="story-card">
-                              <div className="story-card-top">
-                                <div className="story-card-title">{s.title}</div>
-                              </div>
-                              <div
-                                className={`story-card-situation${!s.situation ? " empty" : ""}`}
-                              >
-                                {s.situation || "No situation written yet."}
-                              </div>
-                              <StarCompletionVisual
-                                variant="card"
-                                situation={situation}
-                                action={action}
-                                result={result}
-                              />
-                            </article>
-                          </Link>
-                        );
-                      })}
+                      {filteredStories.map((s) => (
+                        <StoryPreviewCard
+                          key={s.id}
+                          story={s}
+                          href={`/stories/${s.id}`}
+                        />
+                      ))}
                     </div>
                   </section>
                 )}
