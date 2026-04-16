@@ -4,18 +4,12 @@ import { use, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { SavedQuestionManageForm } from "@/components/SavedQuestionManageForm";
+import { StoryAnswerCard } from "@/components/StoryAnswerCard";
 import { fetchUserQuestionById, deleteUserQuestion, UserQuestionItem } from "@/lib/user-questions";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
 import { Tag } from "@/components/ui";
 
 const MAX_STORY_TAGS_ON_SLIDE = 3;
-
-function orderedStoryCategories(categories: string[], recommended: string[]): string[] {
-  const rec = new Set(recommended);
-  const matches = categories.filter((c) => rec.has(c));
-  const rest = categories.filter((c) => !rec.has(c));
-  return [...matches, ...rest];
-}
 
 type SavedQuestionDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -375,82 +369,14 @@ export default function SavedQuestionDetailPage({
                   >
                   {userQuestion.stories.map((s) => {
                     const questionCats = userQuestion.question.recommendedCategories ?? [];
-                    const orderedCats = orderedStoryCategories(s.categories, questionCats);
-                    const highlight = questionCats.length > 0;
-                    const visibleCats = orderedCats.slice(0, MAX_STORY_TAGS_ON_SLIDE);
-                    const moreCount = Math.max(0, orderedCats.length - MAX_STORY_TAGS_ON_SLIDE);
                     return (
-                    <div
-                      key={s.id}
-                      data-carousel-item="story"
-                      className="saved-question-detail__story-slide"
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Open story: ${s.title}`}
-                      onClick={() => router.push(`/stories/${s.id}`)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          router.push(`/stories/${s.id}`);
-                        }
-                      }}
-                    >
-                      <div className="saved-question-detail__story-slide-head">
-                        <div style={{ minWidth: 0 }}>
-                          <div className="story-card-title">{s.title}</div>
-                          {s.categories.length > 0 && (
-                            <div className="story-card-cats" style={{ marginTop: 6 }}>
-                              {visibleCats.map((cat) => (
-                                <Tag
-                                  key={cat}
-                                  tone={highlight && questionCats.includes(cat) ? "match" : "default"}
-                                >
-                                  {cat}
-                                </Tag>
-                              ))}
-                              {moreCount > 0 && (
-                                <Tag tone="more" aria-label={`${moreCount} more categories`}>
-                                  +{moreCount}
-                                </Tag>
-                              )}
-                            </div>
-                          )}
-                        </div>
-
-                        <button
-                          type="button"
-                          className="btn-secondary btn-size-sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(`/stories/${s.id}`);
-                          }}
-                        >
-                          Open
-                        </button>
-                      </div>
-
-                      <div className="saved-question-detail__story-slide-body">
-                        <div className="saved-question-detail__story-star">
-                          <div className="saved-question-detail__story-star-label">Situation</div>
-                          <div className="saved-question-detail__story-star-text">
-                            {s.situation?.trim() ? s.situation : "No situation written yet."}
-                          </div>
-                        </div>
-                        <div className="saved-question-detail__story-star">
-                          <div className="saved-question-detail__story-star-label">Action</div>
-                          <div className="saved-question-detail__story-star-text">
-                            {s.action?.trim() ? s.action : "No action written yet."}
-                          </div>
-                        </div>
-                        <div className="saved-question-detail__story-star">
-                          <div className="saved-question-detail__story-star-label">Result</div>
-                          <div className="saved-question-detail__story-star-text">
-                            {s.result?.trim() ? s.result : "No result written yet."}
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
+                      <StoryAnswerCard
+                        key={s.id}
+                        story={s}
+                        matchedCategories={questionCats}
+                        maxCategories={MAX_STORY_TAGS_ON_SLIDE}
+                        onOpen={() => router.push(`/stories/${s.id}`)}
+                      />
                     );
                   })}
 
