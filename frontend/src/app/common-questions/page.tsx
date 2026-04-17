@@ -19,7 +19,7 @@ import { CATEGORIES } from "@/constants/categories";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 import { StoryPreviewCard } from "@/components/StoryPreviewCard";
 import { getSessionToken, redirectToLogin, useSessionToken } from "@/lib/session";
-import { Badge, Chip, PageHeader, Tag } from "@/components/ui";
+import { Badge, Chip, EmptyState, PageHeader, Tag } from "@/components/ui";
 
 const ALL = "All" as const;
 
@@ -456,16 +456,16 @@ function CommonQuestionsContent() {
       )}
 
       {questions.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-state-icon">
-            <EmptyStateGlyph kind="help" />
-          </div>
-          <h3 className="empty-state-title">No common questions</h3>
-          <p className="empty-state-desc">There are no common questions in the list yet.</p>
-          <Link href="/saved-questions" className="btn-secondary">
-            My Questions
-          </Link>
-        </div>
+        <EmptyState
+          icon={<EmptyStateGlyph kind="help" />}
+          title="No common questions"
+          description="There are no common questions in the list yet."
+          action={
+            <Link href="/saved-questions" className="btn-secondary">
+              My Questions
+            </Link>
+          }
+        />
       ) : (
         <div className="common-questions-layout">
           <aside className="common-questions-list" aria-label="Question list">
@@ -678,26 +678,26 @@ function CommonQuestionsContent() {
                     )}
 
                     {!loadingRecommendations && recommendedStoriesFiltered.length === 0 && (
-                      <div className="empty-state">
-                        <div className="empty-state-icon">
-                          <EmptyStateGlyph kind="books" />
-                        </div>
-                        <h3 className="empty-state-title">
-                          {selectedQuestion.alreadySaved
+                      <EmptyState
+                        icon={<EmptyStateGlyph kind="books" />}
+                        title={
+                          selectedQuestion.alreadySaved
                             ? "No other matching stories"
-                            : "No matching stories"}
-                        </h3>
-                        <p className="empty-state-desc">
-                          {selectedQuestion.alreadySaved
+                            : "No matching stories"
+                        }
+                        description={
+                          selectedQuestion.alreadySaved
                             ? "You've linked all matching stories, or no other stories match these categories yet."
-                            : "You don't have any stories tagged with these categories yet. Add categories to your stories to see them here."}
-                        </p>
-                        {!selectedQuestion.alreadySaved && (
-                          <Link href="/stories/new" className="btn-primary">
-                            + New story
-                          </Link>
-                        )}
-                      </div>
+                            : "You don't have any stories tagged with these categories yet. Add categories to your stories to see them here."
+                        }
+                        action={
+                          !selectedQuestion.alreadySaved ? (
+                            <Link href="/stories/new" className="btn-primary">
+                              + New story
+                            </Link>
+                          ) : null
+                        }
+                      />
                     )}
 
                     {!loadingRecommendations && recommendedStoriesFiltered.length > 0 && (

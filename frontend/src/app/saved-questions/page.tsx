@@ -9,7 +9,7 @@ import { CATEGORIES } from "@/constants/categories";
 import { useToast } from "@/contexts/ToastContext";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
-import { Chip, PageHeader } from "@/components/ui";
+import { Chip, EmptyState, PageHeader } from "@/components/ui";
 
 const ALL = "All" as const;
 const CATEGORY_QUERY = "category";
@@ -195,19 +195,21 @@ export default function SavedQuestionsPage() {
       )}
 
       {!loading && !error && userQuestions.length === 0 && (
-        <div className="empty-state">
-          <div className="empty-state-icon">
-            <EmptyStateGlyph kind="clipboard" />
-          </div>
-          <h3 className="empty-state-title">No questions yet</h3>
-          <p className="empty-state-desc">
-            Browse the question bank, save the ones you want to practice,
-            and link your STAR stories so you&apos;re ready for any interview.
-          </p>
-          <Link href="/common-questions" className="btn-primary">
-            Browse common questions
-          </Link>
-        </div>
+        <EmptyState
+          icon={<EmptyStateGlyph kind="clipboard" />}
+          title="No questions yet"
+          description={
+            <>
+              Browse the question bank, save the ones you want to practice,
+              and link your STAR stories so you&apos;re ready for any interview.
+            </>
+          }
+          action={
+            <Link href="/common-questions" className="btn-primary">
+              Browse common questions
+            </Link>
+          }
+        />
       )}
 
       {confirmDeleteId && (
@@ -341,20 +343,23 @@ export default function SavedQuestionsPage() {
         !error &&
         userQuestions.length > 0 &&
         filteredUserQuestions.length === 0 && (
-        <div className="empty-state empty-state--spaced">
-            <div className="empty-state-icon">
-              <EmptyStateGlyph kind="search" />
-            </div>
-            <h3 className="empty-state-title">No questions in this category</h3>
-            <p className="empty-state-desc">
-              You don&apos;t have any questions tagged with &quot;{selectedCategory}&quot; in My Questions yet.
-              Try another category or save more questions from the common questions page.
-            </p>
-            <Link href="/common-questions" className="btn-secondary">
-              Browse more questions
-            </Link>
-          </div>
-        )}
+          <EmptyState
+            spaced
+            icon={<EmptyStateGlyph kind="search" />}
+            title="No questions in this category"
+            description={
+              <>
+                You don&apos;t have any questions tagged with &quot;{selectedCategory}&quot; in My Questions yet.
+                Try another category or save more questions from the common questions page.
+              </>
+            }
+            action={
+              <Link href="/common-questions" className="btn-secondary">
+                Browse more questions
+              </Link>
+            }
+          />
+      )}
 
       </div>
     </main>

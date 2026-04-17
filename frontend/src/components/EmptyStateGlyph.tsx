@@ -11,7 +11,7 @@ const svgBase = {
   "aria-hidden": true as const,
 };
 
-/** Monochrome stroke icons for `.empty-state-icon` (replaces emoji). */
+/** Monochrome stroke icons for the shared empty-state component. */
 export function EmptyStateGlyph({ kind }: { kind: EmptyStateGlyphKind }) {
   switch (kind) {
     case "help":

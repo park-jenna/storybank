@@ -17,7 +17,7 @@ import { StarCompletionVisual } from "@/components/StarCompletionVisual";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 import { StoryPreviewCard } from "@/components/StoryPreviewCard";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
-import { Chip, PageHeader } from "@/components/ui";
+import { Chip, EmptyState, PageHeader } from "@/components/ui";
 
 const ALL = "All" as const;
 const CATEGORY_QUERY = "category";
@@ -393,18 +393,18 @@ export default function StoriesPage() {
             )}
 
             {!hasAnyStories && (
-              <div className="empty-state stories-page-empty">
-                <div className="empty-state-icon">
-                  <EmptyStateGlyph kind="document" />
-                </div>
-                <h3 className="empty-state-title">No stories yet</h3>
-                <p className="empty-state-desc">
-                  Create your first STAR story to get started.
-                </p>
-                <Link href="/stories/new" className="btn-primary">
-                  + New story
-                </Link>
-              </div>
+              <EmptyState
+                variant="solid"
+                centered
+                icon={<EmptyStateGlyph kind="document" />}
+                title="No stories yet"
+                description="Create your first STAR story to get started."
+                action={
+                  <Link href="/stories/new" className="btn-primary">
+                    + New story
+                  </Link>
+                }
+              />
             )}
 
             {hasAnyStories && (
@@ -431,19 +431,25 @@ export default function StoriesPage() {
                 </div>
 
                 {!hasFilteredResults ? (
-                  <div className="empty-state stories-filter-empty" role="status">
-                    <p className="empty-state-desc stories-filter-empty__text">
-                      No stories match these filters. Try another category or
-                      turn off &quot;STAR complete only&quot;.
-                    </p>
-                    <button
-                      type="button"
-                      className="btn-inline"
-                      onClick={() => router.replace(pathname, { scroll: false })}
-                    >
-                      Clear filters
-                    </button>
-                  </div>
+                  <EmptyState
+                    size="compact"
+                    role="status"
+                    description={
+                      <>
+                        No stories match these filters. Try another category or
+                        turn off &quot;STAR complete only&quot;.
+                      </>
+                    }
+                    action={
+                      <button
+                        type="button"
+                        className="btn-inline"
+                        onClick={() => router.replace(pathname, { scroll: false })}
+                      >
+                        Clear filters
+                      </button>
+                    }
+                  />
                 ) : (
                   <section
                     className="stories-page-library-grid"
