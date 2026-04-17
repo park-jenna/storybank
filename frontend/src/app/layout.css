@@ -945,36 +945,6 @@
   }
 }
 
-/* Saved questions: 2-col card grid */
-.q-card-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
-}
-
-@media (max-width: 520px) {
-  .q-card-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Recommended stories picker (common questions) — 2 cols on tablet, 1 on narrow phones */
-.rec-stories-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
-}
-
-.rec-stories-grid--mt {
-  margin-top: 8px;
-}
-
-@media (max-width: 520px) {
-  .rec-stories-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* New / Edit story: form (left) + tips (right) */
 .form-grid {
   display: grid;
@@ -1334,20 +1304,6 @@
   flex-direction: column;
   gap: 3px;
   margin-bottom: 1.5rem;
-}
-
-/* Common questions detail: linked (left) + recommended (right) */
-.q-detail-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--space-4);
-  align-items: start;
-}
-
-@media (max-width: 768px) {
-  .q-detail-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* Stat cards row */

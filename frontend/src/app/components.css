@@ -44,79 +44,6 @@
   line-height: 1.5;
 }
 
-.saved-question-detail__story-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.saved-question-detail__story {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px 16px;
-  padding: 14px 16px;
-  text-decoration: none;
-  color: inherit;
-  border: var(--stroke-1) solid var(--border-chip);
-  border-radius: var(--radius-md);
-  background: var(--surface-raised);
-  box-shadow: var(--shadow);
-  transition:
-    background var(--transition-fast),
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast),
-    transform var(--transition-fast);
-}
-
-.saved-question-detail__story:hover {
-  background: var(--bg-chip-hover);
-  border-color: color-mix(in srgb, var(--green-primary) 20%, var(--border-chip));
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-}
-
-.saved-question-detail__story-main {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-  flex: 1;
-}
-
-.saved-question-detail__story-title {
-  color: var(--text-primary);
-  font-size: var(--text-15);
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-.saved-question-detail__story:hover .saved-question-detail__story-title {
-  color: var(--green-primary);
-}
-
-.saved-question-detail__story-cta {
-  flex-shrink: 0;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.saved-question-detail__story:hover .saved-question-detail__story-cta {
-  color: var(--green-primary);
-}
-
-@media (max-width: 480px) {
-  .saved-question-detail__story {
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-
-  .saved-question-detail__story-cta {
-    margin-left: auto;
-  }
-}
-
 .card-head {
   display: flex;
   align-items: center;
@@ -137,7 +64,7 @@
 .saved-question-detail__carousel-row {
   display: flex;
   align-items: stretch;
-  gap: 10px;
+  gap: 20px;
   margin-bottom: 0.25rem;
 }
 
@@ -363,31 +290,6 @@
   color: var(--warn-text);
 }
 
-/* Story card (grid) */
-.story-card {
-  background: var(--surface-raised);
-  border-radius: var(--radius-lg);
-  padding: 1rem 1.125rem;
-  cursor: pointer;
-  border: var(--stroke-1) solid var(--border-card);
-  box-shadow: var(--shadow);
-  transition:
-    background var(--transition-fast),
-    box-shadow var(--transition-fast),
-    transform var(--transition-fast),
-    border-color var(--transition-fast);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.story-card:hover {
-  background: var(--bg-hover);
-  box-shadow: var(--shadow-md);
-  border-color: color-mix(in srgb, var(--green-primary) 22%, var(--border-chip));
-  transform: translateY(-1px);
-}
-
 .story-card-top {
   display: flex;
   justify-content: space-between;
@@ -413,33 +315,6 @@
   min-height: 42px;
 }
 
-.story-card-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 10px;
-  margin-bottom: 6px;
-  min-height: 0;
-}
-
-.story-card-meta time {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-hint);
-}
-
-.story-card-star-badge {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--success-text);
-  background: var(--success-bg);
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  border: var(--stroke-1) solid color-mix(in srgb, var(--green-primary) 20%, transparent);
-}
-
 .story-card-situation {
   font-size: var(--text-15);
   color: var(--text-muted);
@@ -458,15 +333,6 @@
   font-style: normal;
 }
 
-.story-card-missing {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  flex-wrap: wrap;
-  min-height: 18px;
-  margin-bottom: 8px;
-}
-
 /* STAR — letter tiles (sizes + colors from your inspector spec) */
 .star-completion-visual {
   display: flex;
@@ -474,11 +340,6 @@
   justify-content: flex-start;
   gap: 5px;
   margin-bottom: 8px;
-}
-
-/* Story grid cards: STAR row is last block — tighten bottom spacing */
-.story-card > .star-completion-visual:last-child {
-  margin-bottom: 0;
 }
 
 .star-completion-visual--inline {
@@ -526,25 +387,6 @@
   background: #62776bcc;
   border: 1px solid var(--text-muted);
   box-shadow: 0 1px 2px #3a805047;
-}
-
-.story-card-cats {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-
-/* Story card matches line (e.g. "Matches: Conflict Resolution") */
-.story-card-matches {
-  font-size: var(--text-xs);
-  color: var(--green-primary);
-  margin-bottom: 4px;
-}
-
-/* Ensure story grid links stretch so cards align in height */
-.story-grid-2 > a {
-  height: 100%;
-  display: block;
 }
 
 /* Carousel card (in-progress) — ~2/3 width of a .story-grid-2 cell.
@@ -626,16 +468,6 @@
 }
 
 .carousel-card-footer--solo .carousel-card-footer-actions .star-completion-visual {
-  margin-bottom: 0;
-}
-
-.carousel-card-footer-cats {
-  flex: 1;
-  min-width: 0;
-  align-self: flex-end;
-}
-
-.carousel-card-footer-cats .story-card-cats {
   margin-bottom: 0;
 }
 
@@ -1709,42 +1541,6 @@ a.story-row-title--link:hover {
   border-color: var(--green-dot);
 }
 
-/* Saved question card */
-.q-card {
-  background: var(--surface-raised);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
-  border: var(--stroke-1) solid var(--border-card);
-  box-shadow: var(--shadow);
-  transition:
-    background var(--transition-fast),
-    box-shadow var(--transition-fast),
-    transform var(--transition-fast),
-    border-color var(--transition-fast);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.q-card:hover {
-  background: var(--bg-hover);
-  box-shadow: var(--shadow-md);
-  border-color: color-mix(in srgb, var(--green-primary) 22%, var(--border-chip));
-  transform: translateY(-1px);
-}
-
-.q-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.q-card-date {
-  font-size: var(--text-xs);
-  color: var(--text-hint);
-}
-
 /* Saved question card — kebab menu (⋯) */
 .q-card-menu {
   position: relative;
@@ -1834,54 +1630,6 @@ a.story-row-title--link:hover {
 .q-card-menu-item:disabled {
   cursor: not-allowed;
   opacity: 0.55;
-}
-
-.q-card-title {
-  font-size: var(--text-base);
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.45;
-  margin-bottom: 10px;
-  cursor: pointer;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.q-card-title:hover {
-  color: var(--green-primary);
-}
-
-.linked-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.linked-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.linked-count {
-  font-size: 12px;
-  color: var(--text-hint);
-  font-weight: 400;
-}
-
-.no-stories-text {
-  font-size: 13px;
-  color: var(--text-hint);
-  margin: 0;
 }
 
 /* Saved questions — list (full main width; grid avoids huge gap between text and actions) */
@@ -3671,7 +3419,6 @@ a.story-row-title--link:hover {
 
 /* Consistent focus ring for custom clickable components */
 :is(
-  .story-card,
   .carousel-card,
   .q-row,
   .btn-primary,
@@ -3738,16 +3485,6 @@ a.story-row-title--link:hover {
   border-bottom: none;
 }
 
-/* Make card focus match hover affordance */
-.story-card:focus-visible {
-  background: var(--bg-hover);
-  border-color: var(--border-chip);
-  box-shadow:
-    0 0 0 3px var(--green-dot),
-    var(--shadow-md);
-  transform: translateY(-1px);
-}
-
 .carousel-card:focus-visible {
   background: var(--bg-hover);
   border-color: var(--border-chip);
@@ -3757,8 +3494,6 @@ a.story-row-title--link:hover {
   transform: translateY(-1px);
 }
 
-.q-card:focus-visible,
-.saved-question-detail__story:focus-visible,
 .about-link-card:focus-visible {
   background: var(--bg-hover);
   border-color: var(--border-chip);
@@ -3826,11 +3561,8 @@ a.story-row-title--link:hover {
   transform: translateY(1px);
 }
 
-.story-card:active,
 .carousel-card:active,
-.q-card:active,
-.about-link-card:active,
-.saved-question-detail__story:active {
+.about-link-card:active {
   transform: translateY(0);
   box-shadow: var(--shadow);
 }
@@ -3850,7 +3582,6 @@ a.story-row-title--link:hover {
     scroll-behavior: auto !important;
   }
 
-  .story-card,
   .carousel-card {
     transform: none !important;
   }
