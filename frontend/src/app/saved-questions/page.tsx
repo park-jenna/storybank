@@ -9,7 +9,7 @@ import { CATEGORIES } from "@/constants/categories";
 import { useToast } from "@/contexts/ToastContext";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
-import { Chip } from "@/components/ui";
+import { Chip, PageHeader } from "@/components/ui";
 
 const ALL = "All" as const;
 const CATEGORY_QUERY = "category";
@@ -144,23 +144,21 @@ export default function SavedQuestionsPage() {
   return (
     <main className="main-content">
       <div className="page-shell page-shell--wide">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 className="page-title">My Questions</h1>
-          <p className="page-subtitle">
-            Questions you added from the bank and the stories you linked to answer them.
-          </p>
-        </div>
-        <Link
-          href="/common-questions"
-          className="btn-inline btn-inline--with-icon text-12"
-        >
-          Browse common questions
-          <svg viewBox="0 0 14 14" className="inline-icon inline-icon--sm" aria-hidden>
-            <path d="M3 7h8M7 3l4 4-4 4" />
-          </svg>
-        </Link>
-      </div>
+      <PageHeader
+        title="My Questions"
+        description="Questions you added from the bank and the stories you linked to answer them."
+        action={
+          <Link
+            href="/common-questions"
+            className="btn-inline btn-inline--with-icon text-12"
+          >
+            Browse common questions
+            <svg viewBox="0 0 14 14" className="inline-icon inline-icon--sm" aria-hidden>
+              <path d="M3 7h8M7 3l4 4-4 4" />
+            </svg>
+          </Link>
+        }
+      />
 
       {userQuestions.length > 0 && (
         <div className="chips-row chips-row--section" role="group" aria-label="Filter by category">

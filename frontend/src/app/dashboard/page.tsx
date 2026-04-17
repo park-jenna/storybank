@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CATEGORIES } from "@/constants/categories";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
+import { PageHeader } from "@/components/ui";
 
 function storyProgress(s: Story): number {
   let n = 0;
@@ -260,20 +261,21 @@ export default function DashboardPage() {
 
       {!loading && !error && (
           <>
-            {/* Page header: Welcome + subtitle + New story */}
-            <header className="page-header">
-              <div className="page-header-left">
-                <h1 className="page-title">{hasAnyStories ? "Welcome back" : "Welcome"}</h1>
-                <p className="page-subtitle">
+            <PageHeader
+              title={hasAnyStories ? "Welcome back" : "Welcome"}
+              description={
+                <>
                   {inProgressStories.length} stories in progress
                   {" · "}
                   {unlinkedCount} questions unlinked
-                </p>
-              </div>
-              <Link href="/stories/new" className="btn-primary">
-                + New story
-              </Link>
-            </header>
+                </>
+              }
+              action={
+                <Link href="/stories/new" className="btn-primary">
+                  + New story
+                </Link>
+              }
+            />
 
             {!hasAnyStories && (
               <section

@@ -17,7 +17,7 @@ import { StarCompletionVisual } from "@/components/StarCompletionVisual";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 import { StoryPreviewCard } from "@/components/StoryPreviewCard";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
-import { Chip } from "@/components/ui";
+import { Chip, PageHeader } from "@/components/ui";
 
 const ALL = "All" as const;
 const CATEGORY_QUERY = "category";
@@ -193,38 +193,36 @@ export default function StoriesPage() {
 
         {!loading && !error && (
           <Fragment>
-            <header className="page-header">
-              <div className="page-header-left">
-                <p className="stories-page-eyebrow">Story library</p>
-                <h1 className="page-title">My Stories</h1>
-                <p className="page-subtitle">
-                  {hasAnyStories ? (
-                    <>
-                      {stories.length} saved
-                      {completeCount > 0 && (
-                        <>
-                          {" · "}
-                          {completeCount} STAR-complete
-                        </>
-                      )}
-                      {inProgressStories.length > 0 && (
-                        <>
-                          {" · "}
-                          {inProgressStories.length} in progress
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    "Open any STAR story to view or continue editing."
-                  )}
-                </p>
-              </div>
-              <div className="page-header-actions">
+            <PageHeader
+              eyebrow="Story library"
+              title="My Stories"
+              description={
+                hasAnyStories ? (
+                  <>
+                    {stories.length} saved
+                    {completeCount > 0 && (
+                      <>
+                        {" · "}
+                        {completeCount} STAR-complete
+                      </>
+                    )}
+                    {inProgressStories.length > 0 && (
+                      <>
+                        {" · "}
+                        {inProgressStories.length} in progress
+                      </>
+                    )}
+                  </>
+                ) : (
+                  "Open any STAR story to view or continue editing."
+                )
+              }
+              action={
                 <Link href="/stories/new" className="btn-primary">
                   + New story
                 </Link>
-              </div>
-            </header>
+              }
+            />
 
             {inProgressStories.length > 0 && (
               <section

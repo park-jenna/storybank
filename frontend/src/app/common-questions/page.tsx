@@ -19,7 +19,7 @@ import { CATEGORIES } from "@/constants/categories";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 import { StoryPreviewCard } from "@/components/StoryPreviewCard";
 import { getSessionToken, redirectToLogin, useSessionToken } from "@/lib/session";
-import { Badge, Chip, Tag } from "@/components/ui";
+import { Badge, Chip, PageHeader, Tag } from "@/components/ui";
 
 const ALL = "All" as const;
 
@@ -427,16 +427,16 @@ function CommonQuestionsContent() {
           </button>
         </div>
       )}
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 className="page-title">Common interview questions</h1>
-          <p className="page-subtitle">
+      <PageHeader
+        title="Common interview questions"
+        description={
+          <>
             A built-in list of typical behavioral interview prompts. Pick one to see which
             story categories fit and which of your saved stories might answer it—then bookmark
             the question or link specific stories for practice.
-          </p>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {questions.length > 0 && (
         <div className="chips-row chips-row--section" role="group" aria-label="Filter by category">
