@@ -347,51 +347,6 @@ export default function StoriesPage() {
               </section>
             )}
 
-            {hasAnyStories && (
-              <div className="stories-page-filters-wrap">
-                <div className="stories-filters-bar">
-                  <div
-                    className="chips-row chips-row--section stories-filters-bar__chips"
-                    role="group"
-                    aria-label="Filter stories by category"
-                  >
-                    {[ALL, ...CATEGORIES].map((cat) => {
-                      const selected = selectedCategory === cat;
-                      return (
-                        <Chip
-                          key={cat}
-                          selected={selected}
-                          onClick={() => handleSelectCategory(cat)}
-                        >
-                          {cat}
-                        </Chip>
-                      );
-                    })}
-                  </div>
-                  <div className="stories-filter-toggle">
-                    <span
-                      className="stories-filter-toggle__label"
-                      id="stories-star-complete-label"
-                    >
-                      STAR complete only
-                    </span>
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-checked={completeOnly}
-                      aria-labelledby="stories-star-complete-label"
-                      className={`stories-filter-toggle__switch${completeOnly ? " stories-filter-toggle__switch--on" : ""}`}
-                      onClick={toggleCompleteOnly}
-                    >
-                      <span className="visually-hidden">
-                        {completeOnly ? "On" : "Off"}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {!hasAnyStories && (
               <EmptyState
                 variant="solid"
@@ -428,6 +383,49 @@ export default function StoriesPage() {
                       </span>
                     )}
                   </p>
+                </div>
+
+                <div className="stories-page-filters-wrap">
+                  <div className="stories-filters-bar">
+                    <div
+                      className="chips-row chips-row--section stories-filters-bar__chips"
+                      role="group"
+                      aria-label="Filter stories by category"
+                    >
+                      {[ALL, ...CATEGORIES].map((cat) => {
+                        const selected = selectedCategory === cat;
+                        return (
+                          <Chip
+                            key={cat}
+                            selected={selected}
+                            onClick={() => handleSelectCategory(cat)}
+                          >
+                            {cat}
+                          </Chip>
+                        );
+                      })}
+                    </div>
+                    <div className="stories-filter-toggle">
+                      <span
+                        className="stories-filter-toggle__label"
+                        id="stories-star-complete-label"
+                      >
+                        STAR complete only
+                      </span>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={completeOnly}
+                        aria-labelledby="stories-star-complete-label"
+                        className={`stories-filter-toggle__switch${completeOnly ? " stories-filter-toggle__switch--on" : ""}`}
+                        onClick={toggleCompleteOnly}
+                      >
+                        <span className="visually-hidden">
+                          {completeOnly ? "On" : "Off"}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 {!hasFilteredResults ? (

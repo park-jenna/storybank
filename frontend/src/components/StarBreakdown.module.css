@@ -1,0 +1,142 @@
+.frame {
+  --card-padding: 2rem 2.25rem;
+}
+
+.root {
+  min-width: 0;
+}
+
+.unframed {
+  margin-top: 1.5rem;
+  padding-top: 1.35rem;
+  border-top: var(--stroke-1) solid var(--border-card);
+}
+
+.title {
+  margin: 0;
+  padding-bottom: 14px;
+  color: var(--text-primary);
+  font-size: var(--text-15);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  border-bottom: var(--stroke-1) solid var(--border-card);
+}
+
+.unframed .title {
+  margin-bottom: 1rem;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 14px;
+  padding: 1.35rem 0;
+  border-bottom: var(--stroke-1) solid var(--border-card);
+}
+
+.item:first-child {
+  padding-top: 1.25rem;
+}
+
+.unframed .item:first-child {
+  padding-top: 0;
+}
+
+.item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-top: -1px;
+  color: var(--green-primary);
+  background: var(--bg-card);
+  border: 1.5px solid var(--green-dot);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 0 2px var(--bg-card);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.body {
+  min-width: 0;
+  padding-right: 1rem;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.label {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: var(--leading-tight);
+}
+
+.sublabel {
+  color: var(--text-hint);
+  font-size: 12px;
+  line-height: var(--leading-tight);
+}
+
+.tip {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  color: var(--text-secondary);
+  background: var(--star-tip-bg);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.text {
+  margin: 0;
+  color: var(--text-dark);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-hint);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+@media (max-width: 640px) {
+  .frame {
+    --card-padding: 1.5rem;
+  }
+
+  .unframed {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+  }
+
+  .item {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .body {
+    padding-right: 0;
+  }
+}

@@ -633,6 +633,7 @@ function CommonQuestionsContent() {
                                 key={s.id}
                                 story={s}
                                 href={storyDetailHref(s.id)}
+                                size="compact"
                                 matchedCategories={
                                   selectedQuestion?.recommendedCategories ?? []
                                 }
@@ -785,6 +786,7 @@ function CommonQuestionsContent() {
                                     key={s.id}
                                     story={s}
                                     href={storyDetailHref(s.id)}
+                                    size="compact"
                                     matchedCategories={
                                       selectedQuestion?.recommendedCategories ?? []
                                     }

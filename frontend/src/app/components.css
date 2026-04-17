@@ -681,61 +681,6 @@ a.story-row-title--link:hover {
   border-bottom: var(--stroke-1) solid var(--border-card);
 }
 
-/* STAR block (detail page) */
-.star-block {
-  margin-bottom: 18px;
-  padding-bottom: 18px;
-  border-bottom: 0.5px solid var(--border-card);
-}
-
-.star-block:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
-}
-
-.star-block-header {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.star-block-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.star-block-sublabel {
-  font-size: 12px;
-  color: var(--text-hint);
-}
-
-/* Tip box */
-.star-tip {
-  font-size: 13px;
-  color: var(--text-secondary);
-  background: var(--star-tip-bg);
-  border-radius: var(--radius-sm);
-  padding: 8px 11px;
-  margin-bottom: 8px;
-  line-height: 1.55;
-  border-left: 2px solid var(--green-dot);
-}
-
-.star-block-text {
-  font-size: 15px;
-  color: var(--text-dark);
-  line-height: 1.75;
-}
-
-.star-block-empty {
-  font-size: 15px;
-  color: var(--text-hint);
-  font-style: normal;
-}
-
 /* STAR form field */
 .star-field {
   margin-bottom: 1rem;
@@ -2529,7 +2474,7 @@ a.story-row-title--link:hover {
 .landing-preview-scale {
   /* Scale the static dashboard so it fits within
      the frame body (accounting for the top chrome). */
-  --preview-scale: 0.68;
+  --preview-scale: 0.74;
   transform: scale(var(--preview-scale));
   transform-origin: top left;
   width: calc(100% / var(--preview-scale));
@@ -2610,7 +2555,7 @@ a.story-row-title--link:hover {
 
 @media (min-width: 1100px) {
   .landing-preview-scale {
-    --preview-scale: 0.72;
+    --preview-scale: 0.74;
   }
 }
 
@@ -2636,7 +2581,7 @@ a.story-row-title--link:hover {
 }
 
 .about-header {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 .about-tag {
@@ -2661,7 +2606,7 @@ a.story-row-title--link:hover {
 }
 
 .about-section {
-  margin-bottom: 2.75rem;
+  margin-bottom: 3.5rem;
 }
 
 .about-section-label {
@@ -2703,11 +2648,11 @@ a.story-row-title--link:hover {
 }
 
 .about-feature-card {
-  padding: 0.875rem 1.5rem 1.125rem;
+  padding: 1.25rem 1.75rem 1.5rem;
 }
 
 .about-feature-block {
-  padding: 10px 0;
+  padding: 14px 0;
 }
 
 .about-feature-block:first-child {

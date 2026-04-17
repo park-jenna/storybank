@@ -73,10 +73,10 @@ export function redirectToLogin(
   router.replace(getLoginHref(returnTo));
 }
 
-export function useSessionToken(): string | null {
+export function useSessionToken(): string | null | undefined {
   return useSyncExternalStore(
     subscribeToSessionToken,
     getSessionToken,
-    () => null
+    () => undefined
   );
 }

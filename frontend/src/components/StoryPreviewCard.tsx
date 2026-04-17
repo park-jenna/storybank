@@ -21,6 +21,7 @@ type StoryPreviewCardProps = {
   matchedCategories?: string[];
   maxCategories?: number;
   previewFallback?: string;
+  size?: "default" | "compact";
 };
 
 function storyPreviewText(story: StoryPreviewCardStory, fallback: string): string {
@@ -45,6 +46,7 @@ export function StoryPreviewCard({
   matchedCategories = [],
   maxCategories = 3,
   previewFallback = "No preview written yet.",
+  size = "default",
 }: StoryPreviewCardProps) {
   const matched = new Set(matchedCategories);
   const categories = orderedCategories(story.categories ?? [], matchedCategories);
@@ -58,7 +60,12 @@ export function StoryPreviewCard({
 
   return (
     <Link href={href} className={styles.link}>
-      <article className={styles.card}>
+      <article
+        className={[
+          styles.card,
+          size === "compact" && styles.compact,
+        ].filter(Boolean).join(" ")}
+      >
         <header className={styles.header}>
           <h3 className={styles.title}>{story.title}</h3>
           {visibleCategories.length > 0 && (

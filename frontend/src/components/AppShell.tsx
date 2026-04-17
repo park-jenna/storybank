@@ -16,14 +16,16 @@ export default function AppShell({
   const authOptional = pathname ? isAuthOptionalPathname(pathname) : false;
   const bareLayout = pathname ? isBareLayoutPathname(pathname) : false;
   const token = useSessionToken();
-  const authReady = authOptional || !!token;
+  const sessionPending = token === undefined;
+  const authReady = authOptional || (!sessionPending && !!token);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!pathname) return;
+    if (sessionPending) return;
     if (authOptional || token) return;
     redirectToLogin(router);
-  }, [authOptional, pathname, router, token]);
+  }, [authOptional, pathname, router, sessionPending, token]);
 
   if (bareLayout) {
     return <>{children}</>;

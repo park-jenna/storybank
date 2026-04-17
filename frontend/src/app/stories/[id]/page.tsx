@@ -20,6 +20,7 @@ import { safeInternalReturnPath } from "@/lib/navigation";
 import { getQuestionsForCategories } from "@/constants/interviewQuestions";
 import Link from "next/link";
 import { StarCompletionVisual } from "@/components/StarCompletionVisual";
+import { StarBreakdown } from "@/components/StarBreakdown";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
 import { Tag } from "@/components/ui";
 
@@ -30,30 +31,6 @@ function starStatus(story: Story) {
     result: !!story.result?.trim(),
   };
 }
-
-const STAR_BLOCKS = [
-  {
-    label: "Situation & Task",
-    sublabel: "Context & goal",
-    tip: "Keep it to 2–3 sentences about the context and your specific role or goal.",
-    contentKey: "situation" as const,
-    empty: "No situation or task provided.",
-  },
-  {
-    label: "Action",
-    sublabel: "What you did",
-    tip: "Describe 3–5 concrete steps you personally took to move things forward.",
-    contentKey: "action" as const,
-    empty: "No action provided.",
-  },
-  {
-    label: "Result",
-    sublabel: "Impact & learning",
-    tip: "Highlight measurable outcomes, impact on others, and what you learned.",
-    contentKey: "result" as const,
-    empty: "No result provided.",
-  },
-];
 
 function StoryDetailQuestionsList({
   categories,
@@ -305,140 +282,96 @@ export default function StoryDetailPage({ params }: StoryDetailPageProps) {
   const status = starStatus(story);
   return (
     <main className="main-content">
-      <div className="topbar">
-        <button
-          type="button"
-          className="back-btn"
-          onClick={navigateBackFromStoryDetail}
-        >
-          <svg
-            viewBox="0 0 14 14"
-            style={{
-              width: 14,
-              height: 14,
-              fill: "none",
-              stroke: "currentColor",
-              strokeWidth: 2,
-              strokeLinecap: "round",
-            }}
-            aria-hidden
-          >
-            <path d="M9 2L4 7l5 5" />
-          </svg>
-          {backFromStoryLabel}
-        </button>
-        <div className="btn-group">
+      <div className="page-shell page-shell--wide story-detail-shell">
+        <div className="topbar">
           <button
             type="button"
-            className="btn-secondary"
-            onClick={() => router.push(`/stories/${story.id}/edit`)}
+            className="back-btn"
+            onClick={navigateBackFromStoryDetail}
           >
-            Edit
+            <svg
+              viewBox="0 0 14 14"
+              style={{
+                width: 14,
+                height: 14,
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: 2,
+                strokeLinecap: "round",
+              }}
+              aria-hidden
+            >
+              <path d="M9 2L4 7l5 5" />
+            </svg>
+            {backFromStoryLabel}
           </button>
-          <button
-            type="button"
-            className="btn-warn"
-            onClick={() => setShowDeleteConfirm(true)}
-          >
-            Delete
-          </button>
+          <div className="btn-group">
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => router.push(`/stories/${story.id}/edit`)}
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              className="btn-warn"
+              onClick={() => setShowDeleteConfirm(true)}
+            >
+              Delete
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className="card" style={{ marginBottom: 12 }}>
-        <h1
-          style={{
-            fontSize: 21,
-            fontWeight: 600,
-            color: "var(--text-primary)",
-            marginBottom: 8,
-            lineHeight: 1.35,
-            letterSpacing: "var(--tracking-tight)",
-          }}
-        >
-          {story.title}
-        </h1>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            flexWrap: "wrap",
-            marginBottom: 12,
-          }}
-        >
-          <span style={{ fontSize: 14, color: "var(--text-hint)" }}>
-            Created: {new Date(story.createdAt).toLocaleDateString()}
-          </span>
-          <StarCompletionVisual
-            variant="inline"
-            situation={status.situation}
-            action={status.action}
-            result={status.result}
-          />
-        </div>
-        <div className="chips-row">
-          {story.categories.map((c) => (
-            <Tag key={c}>
-              {c}
-            </Tag>
-          ))}
-        </div>
-      </div>
-
-      <div className="detail-grid">
-        {/* Left: STAR breakdown */}
-        <div className="card">
-          <h3
-            className="card-title"
-            style={{
-              marginBottom: 14,
-              paddingBottom: 10,
-              borderBottom: "0.5px solid var(--border-card)",
-            }}
-          >
-            STAR breakdown
-          </h3>
-          {STAR_BLOCKS.map((block) => {
-            const filled = status[block.contentKey];
-            const content = story[block.contentKey];
-            return (
-              <div
-                key={block.label}
-                className="star-block"
-                aria-invalid={!filled}
-              >
-                <div className="star-block-header">
-                  <span className="star-block-label">{block.label}</span>
-                  <span className="star-block-sublabel">{block.sublabel}</span>
-                </div>
-                <div className="star-tip">{block.tip}</div>
-                {filled ? (
-                  <div className="star-block-text">{content}</div>
-                ) : (
-                  <div className="star-block-empty">{block.empty}</div>
-                )}
+        <div className="detail-grid">
+          <article className="card story-detail-article">
+            <header className="story-detail-article-head">
+              <h1 className="story-detail-title">{story.title}</h1>
+              <div className="story-detail-meta">
+                <span>
+                  Created: {new Date(story.createdAt).toLocaleDateString()}
+                </span>
+                <StarCompletionVisual
+                  variant="inline"
+                  situation={status.situation}
+                  action={status.action}
+                  result={status.result}
+                />
               </div>
-            );
-          })}
-        </div>
+              <div className="chips-row story-detail-tags">
+                {story.categories.map((c) => (
+                  <Tag key={c}>
+                    {c}
+                  </Tag>
+                ))}
+              </div>
+            </header>
 
-        {/* Right: Questions */}
-        <div className="card" aria-label="Questions this story can answer">
-          <h3
-            className="card-title"
-            style={{
-              marginBottom: 14,
-              paddingBottom: 10,
-              borderBottom: "0.5px solid var(--border-card)",
-            }}
-          >
-            Questions this story can answer
-          </h3>
-          <StoryDetailQuestionsList
-            categories={story.categories}
-            storyId={storyId}
-          />
+            <StarBreakdown
+              framed={false}
+              situation={story.situation}
+              action={story.action}
+              result={story.result}
+            />
+          </article>
+
+          {/* Right: Questions */}
+          <div className="card" aria-label="Questions this story can answer">
+            <h3
+              className="card-title"
+              style={{
+                marginBottom: 14,
+                paddingBottom: 10,
+                borderBottom: "0.5px solid var(--border-card)",
+              }}
+            >
+              Questions this story can answer
+            </h3>
+            <StoryDetailQuestionsList
+              categories={story.categories}
+              storyId={storyId}
+            />
+          </div>
         </div>
       </div>
 
