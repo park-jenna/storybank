@@ -16,13 +16,11 @@ export default function HomePage() {
       <div className="landing-hero">
         <div className="landing-hero-copy">
           <h1 className="landing-hero-title">
-            Prepare your interview stories,
-            <br />
-            all in one place
+            One place for your interview{"\u00a0"}stories
           </h1>
           <p className="landing-hero-subtitle">
-            Write your STAR stories, tag them by category, and link them to
-            common interview questions — so you&apos;re never caught off guard.
+            One well-structured story can flex to leadership, problem-solving,
+            and communication, depending on how you frame it.
           </p>
           <div className="landing-cta-row">
             {hasToken ? (
