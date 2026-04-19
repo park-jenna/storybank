@@ -1426,7 +1426,6 @@
   background: color-mix(in srgb, var(--green-primary) 10%, var(--bg-sidebar));
   color: var(--green-primary);
   font-weight: 600;
-  box-shadow: inset 3px 0 0 var(--green-primary);
 }
 .sidebar-link-active:hover { color: var(--green-primary); }
 .sidebar-link-icon { font-size: 1rem; display: flex; align-items: center; justify-content: center; }

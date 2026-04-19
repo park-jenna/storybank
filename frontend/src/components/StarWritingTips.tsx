@@ -213,13 +213,11 @@ export function StarWritingTips() {
               {!isChecklist && (
                 <p className="star-guide__intro">{tip.intro}</p>
               )}
-              <ul
-                className={`star-guide__list${isChecklist ? " star-guide__list--interactive" : ""}`}
-              >
-                {tip.checklist.map((item, idx) => {
-                  const id = itemId(tip.segmentKey, idx);
-                  const inputId = `${checkIdPrefix}-${id}`;
-                  if (isChecklist) {
+              {isChecklist && (
+                <ul className="star-guide__list star-guide__list--interactive">
+                  {tip.checklist.map((item, idx) => {
+                    const id = itemId(tip.segmentKey, idx);
+                    const inputId = `${checkIdPrefix}-${id}`;
                     return (
                       <li key={item}>
                         <label
@@ -247,15 +245,9 @@ export function StarWritingTips() {
                         </label>
                       </li>
                     );
-                  }
-                  return (
-                    <li key={item}>
-                      <CheckGlyph />
-                      <span>{item}</span>
-                    </li>
-                  );
-                })}
-              </ul>
+                  })}
+                </ul>
+              )}
               {!isChecklist && (
                 <details className="star-guide__details">
                   <summary className="star-guide__summary">
