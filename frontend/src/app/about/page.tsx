@@ -10,8 +10,15 @@ const STACK = [
   { layer: "Frontend", tech: "Next.js 16, React 19\nTypeScript, Tailwind CSS" },
   { layer: "Backend", tech: "Express.js, Node.js\nZod (validation)" },
   { layer: "Database", tech: "PostgreSQL\nPrisma ORM" },
+  {
+    layer: "Testing & CI",
+    tech: "Vitest, Supertest (API)\nGitHub Actions · Postgres service",
+  },
   { layer: "Auth & Deploy", tech: "JWT, bcrypt\nVercel" },
 ];
+
+const NO_UI_SCREENSHOT_DEFAULT_NOTE =
+  "This layer is server-side only—no UI to capture. See the Express app in the repo for routes and Zod validation.";
 
 const FEATURES = [
   {
@@ -46,6 +53,13 @@ const FEATURES = [
     id: "api",
     title: "REST API with input validation",
     sub: "Express routes · Zod schemas · Prisma for type-safe DB queries",
+  },
+  {
+    id: "testing",
+    title: "API integration tests & CI",
+    sub: "Vitest · Supertest · database-backed tests on every PR",
+    noScreenshotNote:
+      "Integration tests cover auth, stories, and saved-questions flows against PostgreSQL. GitHub Actions runs on push and PR to main: Node 20, Prisma migrate deploy, then npm test with a Postgres 16 service container.",
   },
 ];
 
@@ -154,7 +168,7 @@ export default function AboutPage() {
         <div className="about-section">
           <div className="about-section-label">What I built</div>
           <div className="card about-feature-card">
-            {FEATURES.map(({ id, title, sub, screenshot, frameUrl }, i) => {
+            {FEATURES.map(({ id, title, sub, screenshot, frameUrl, noScreenshotNote }, i) => {
               const isOpen = openId === id;
               const panelId = `${baseId}-panel-${id}`;
               const hint = screenshot
@@ -218,9 +232,7 @@ export default function AboutPage() {
                       ) : (
                         <div className="about-feature-api-note">
                           <p className="about-feature-api-note-text">
-                            This layer is server-side only—no UI to capture. See
-                            the Express app in the repo for routes and Zod
-                            validation.
+                            {noScreenshotNote ?? NO_UI_SCREENSHOT_DEFAULT_NOTE}
                           </p>
                           <a
                             href="https://github.com/park-jenna/storybank"
