@@ -145,6 +145,51 @@ describe("user-questions routes", () => {
     expect(res.body.userQuestions[0].stories[0].title).toBe("Owner story");
   });
 
+  it("returns a single saved question with linked stories", async () => {
+    const { token } = await signupAndGetToken("uq-get@test.com");
+    const story = await createStory(token, {
+      title: "Detail story",
+      categories: ["Adaptability"],
+    });
+
+    const saved = await request(app)
+      .post("/user-questions")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        commonQuestionId: "q11",
+        storyIds: [story.id],
+      });
+
+    const res = await request(app)
+      .get(`/user-questions/${saved.body.userQuestion.id}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.userQuestion.id).toBe(saved.body.userQuestion.id);
+    expect(res.body.userQuestion.question.content).toContain("plans changed at the last minute");
+    expect(res.body.userQuestion.stories).toHaveLength(1);
+    expect(res.body.userQuestion.stories[0].title).toBe("Detail story");
+  });
+
+  it("returns 404 when fetching another user's saved question", async () => {
+    const owner = await signupAndGetToken("uq-get-owner@test.com");
+    const other = await signupAndGetToken("uq-get-other@test.com");
+
+    const saved = await request(app)
+      .post("/user-questions")
+      .set("Authorization", `Bearer ${owner.token}`)
+      .send({
+        commonQuestionId: "q5",
+      });
+
+    const res = await request(app)
+      .get(`/user-questions/${saved.body.userQuestion.id}`)
+      .set("Authorization", `Bearer ${other.token}`);
+
+    expect(res.status).toBe(404);
+    expect(res.body.code).toBe("QUESTION_NOT_FOUND");
+  });
+
   it("updates content and only links stories owned by the current user", async () => {
     const owner = await signupAndGetToken("uq-patch-owner@test.com");
     const other = await signupAndGetToken("uq-patch-other@test.com");
