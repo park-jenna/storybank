@@ -1,3 +1,6 @@
+const request = require("supertest");
+
+const { app } = require("../../src/app");
 const prisma = require("../../src/prisma");
 
 function assertSafeTestDatabase() {
@@ -18,4 +21,32 @@ async function resetDb() {
   await prisma.user.deleteMany();
 }
 
-module.exports = { prisma, resetDb };
+async function signupAndGetToken(email) {
+  const res = await request(app).post("/auth/signup").send({
+    email,
+    password: "test1234",
+  });
+
+  return {
+    token: res.body.token,
+    user: res.body.user,
+  };
+}
+
+async function createStory(token, overrides = {}) {
+  const res = await request(app)
+    .post("/stories")
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      title: "Story title",
+      categories: ["Problem Solving"],
+      situation: "Situation",
+      action: "Action",
+      result: "Result",
+      ...overrides,
+    });
+
+  return res.body.story;
+}
+
+module.exports = { prisma, resetDb, signupAndGetToken, createStory };
