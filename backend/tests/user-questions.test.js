@@ -239,6 +239,13 @@ describe("user-questions routes", () => {
         storyIds: [story.id],
       });
 
+    expect(saved.status).toBe(201);
+
+    const linksBefore = await prisma.questionStory.findMany({
+      where: { questionId: saved.body.userQuestion.id },
+    });
+    expect(linksBefore).toHaveLength(1);
+
     const res = await request(app)
       .delete(`/user-questions/${saved.body.userQuestion.id}`)
       .set("Authorization", `Bearer ${token}`);

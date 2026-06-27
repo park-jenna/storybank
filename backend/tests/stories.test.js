@@ -233,6 +233,13 @@ describe("stories routes", () => {
         storyIds: [story.id],
       });
 
+    expect(saved.status).toBe(201);
+
+    const linksBefore = await prisma.questionStory.findMany({
+      where: { storyId: story.id },
+    });
+    expect(linksBefore).toHaveLength(1);
+
     const res = await request(app)
       .delete(`/stories/${story.id}`)
       .set("Authorization", `Bearer ${token}`);
