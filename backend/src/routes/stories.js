@@ -108,14 +108,9 @@ router.delete("/:id", requireAuth, async (req, res) => {
             });
         }
 
-        // 2–3) 링크 삭제 후 스토리 삭제 (FK 제약 때문에 순서 중요, 트랜잭션으로 원자 처리)
-        await prisma.$transaction(async (tx) => {
-            await tx.questionStory.deleteMany({
-                where: { storyId: id },
-            });
-            await tx.story.delete({
-                where: { id },
-            });
+        // 2) 스토리 삭제 (QuestionStory는 onDelete: Cascade로 자동 정리)
+        await prisma.story.delete({
+            where: { id },
         });
 
         // 4) 응답

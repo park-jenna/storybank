@@ -278,11 +278,9 @@ router.delete("/:id", requireAuth, async (req, res) => {
             });
         }
 
-        await prisma.$transaction(async (tx) => {
-            await tx.questionStory.deleteMany({ where: { questionId: id } });
-            await tx.question.delete({
-                where: { id },
-            });
+        // QuestionStory는 onDelete: Cascade로 자동 정리
+        await prisma.question.delete({
+            where: { id },
         });
 
         return res.json({ ok: true });
