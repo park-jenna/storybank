@@ -1,0 +1,331 @@
+/* ── Overlay ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg-page);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Header bar ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  flex-shrink: 0;
+}
+
+.headerLeft {
+  width: 40px;
+}
+
+.progress {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+.closeBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* ── Stage (centers the card) ── */
+.stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem 2rem;
+  overflow: hidden;
+}
+
+/* ── Setup screen ── */
+.setupBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface-raised);
+  border: var(--stroke-1) solid var(--border-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 2.5rem 2rem 2rem;
+  text-align: center;
+}
+
+.setupHeading {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.setupChips {
+  justify-content: center;
+}
+
+.setupStatus {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+  min-height: 1.5em;
+}
+
+/* ── 3D card container ── */
+.cardContainer {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 520px;
+  height: min(75vh, 560px);
+}
+
+.cardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+.cardInner.flipped {
+  transform: rotateY(180deg);
+}
+
+/* ── Shared face ── */
+.cardFace {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--surface-raised);
+  border: var(--stroke-1) solid var(--border-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Front ── */
+.cardFront {
+  padding: 2rem 1.75rem 1.5rem;
+}
+
+.frontContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1rem;
+}
+
+.linkedQuestion {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 90%;
+  margin: 0;
+}
+
+.storyTitle {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.frontFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding-top: 1rem;
+}
+
+.flipIcon {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-muted);
+  opacity: 0.45;
+  transition: opacity var(--transition-base);
+}
+.cardFront:hover .flipIcon {
+  opacity: 0.85;
+}
+
+/* ── Timer ring ── */
+.timerWrap {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timerRing {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+
+.timerTrack {
+  fill: none;
+  stroke: var(--border-card);
+  stroke-width: 3;
+}
+
+.timerFill {
+  fill: none;
+  stroke: var(--green-primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+}
+
+.timerText {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.timerWarn {
+  color: var(--warn-text);
+}
+.timerWarn .timerFill,
+.timerWarn + .timerText {
+  stroke: var(--warn-text);
+}
+
+/* ── Back ── */
+.cardBack {
+  transform: rotateY(180deg);
+  padding: 1.5rem 1.75rem 1.25rem;
+}
+
+.backHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: var(--stroke-1) solid var(--border-card);
+  flex-shrink: 0;
+}
+
+.backTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.timerFrozen {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.backContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.starSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.starLabel {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.starText {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.backFooter {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: var(--stroke-1) solid var(--border-card);
+  flex-shrink: 0;
+}
+.backFooter > button {
+  flex: 1;
+}
+
+/* ── Completion screen ── */
+.completeScreen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.completeEmoji {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.completeTitle {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.completeSubtext {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 0 0 0.5rem;
+}

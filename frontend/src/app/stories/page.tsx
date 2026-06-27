@@ -12,10 +12,12 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { fetchStories, Story } from "@/lib/stories";
+import { fetchUserQuestions } from "@/lib/user-questions";
 import { CATEGORIES } from "@/constants/categories";
 import { StarCompletionVisual } from "@/components/StarCompletionVisual";
 import { EmptyStateGlyph } from "@/components/EmptyStateGlyph";
 import { StoryPreviewCard } from "@/components/StoryPreviewCard";
+import { FlashcardSession } from "@/components/FlashcardSession";
 import { getSessionToken, redirectToLogin } from "@/lib/session";
 import { Chip, EmptyState, PageHeader } from "@/components/ui";
 
@@ -47,6 +49,10 @@ export default function StoriesPage() {
   const [error, setError] = useState<string | null>(null);
   const [inProgressOpen, setInProgressOpen] = useState(false);
   const inProgressSectionRef = useRef<HTMLElement>(null);
+  const [practiceMode, setPracticeMode] = useState(false);
+  const [storyQuestionMap, setStoryQuestionMap] = useState<Map<string, string>>(
+    new Map(),
+  );
 
   const selectedCategory = useMemo(
     () => categoryFromSearchParams(searchParams),
@@ -125,6 +131,26 @@ export default function StoriesPage() {
     }
     load();
   }, [router]);
+
+  const startPractice = useCallback(async () => {
+    const token = getSessionToken();
+    if (!token) return;
+    try {
+      const data = await fetchUserQuestions(token);
+      const map = new Map<string, string>();
+      for (const uq of data.userQuestions) {
+        for (const s of uq.stories) {
+          if (!map.has(s.id)) {
+            map.set(s.id, uq.question.content);
+          }
+        }
+      }
+      setStoryQuestionMap(map);
+    } catch {
+      // question data is optional — proceed without it
+    }
+    setPracticeMode(true);
+  }, []);
 
   const inProgressStories = useMemo(
     () =>
@@ -218,9 +244,19 @@ export default function StoriesPage() {
                 )
               }
               action={
-                <Link href="/stories/new" className="btn-primary">
-                  + New story
-                </Link>
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    disabled={stories.length === 0}
+                    onClick={startPractice}
+                  >
+                    🎯 Practice
+                  </button>
+                  <Link href="/stories/new" className="btn-primary">
+                    + New story
+                  </Link>
+                </div>
               }
             />
 
@@ -469,6 +505,14 @@ export default function StoriesPage() {
           </Fragment>
         )}
       </div>
+
+      {practiceMode && (
+        <FlashcardSession
+          stories={stories}
+          storyQuestionMap={storyQuestionMap}
+          onClose={() => setPracticeMode(false)}
+        />
+      )}
     </main>
   );
 }
