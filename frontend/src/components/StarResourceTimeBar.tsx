@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { scrollToHashId } from "@/lib/star-doc-scroll";
 
@@ -12,6 +12,7 @@ const SEGMENTS = [
     label: "Situation",
     href: "#star-part-s",
     className: "sb-star-page-timebar__seg sb-star-page-timebar__seg--s",
+    tip: "1–2 sentences of context. Skip org charts and backstory.",
   },
   {
     key: "t",
@@ -20,6 +21,7 @@ const SEGMENTS = [
     label: "Task",
     href: "#star-part-t",
     className: "sb-star-page-timebar__seg sb-star-page-timebar__seg--t",
+    tip: "One clear sentence: the goal you personally owned.",
   },
   {
     key: "a",
@@ -28,6 +30,7 @@ const SEGMENTS = [
     label: "Action",
     href: "#star-part-a",
     className: "sb-star-page-timebar__seg sb-star-page-timebar__seg--a",
+    tip: "The longest part. Walk through what YOU did, step by step.",
   },
   {
     key: "r",
@@ -36,10 +39,13 @@ const SEGMENTS = [
     label: "Result",
     href: "#star-part-r",
     className: "sb-star-page-timebar__seg sb-star-page-timebar__seg--r",
+    tip: "Close with numbers and proof. Mixed outcome? Say what you learned.",
   },
 ] as const;
 
 export function StarResourceTimeBar() {
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
+
   const onActivate = useCallback((href: string) => {
     scrollToHashId(href);
   }, []);
@@ -50,14 +56,19 @@ export function StarResourceTimeBar() {
       role="group"
       aria-label="Rough share of answer time for each STAR step. Select a step to jump to that section."
     >
-      {SEGMENTS.map(({ key, letter, pct, label, href, className }) => (
+      {SEGMENTS.map(({ key, letter, pct, label, href, className, tip }) => (
         <button
           key={key}
           type="button"
           className={className}
           title={`${label} ${pct}`}
           aria-label={`${label}, ${pct}. Jump to ${label} details below.`}
+          aria-describedby={hoveredKey === key ? `timebar-tip-${key}` : undefined}
           onClick={() => onActivate(href)}
+          onMouseEnter={() => setHoveredKey(key)}
+          onMouseLeave={() => setHoveredKey(null)}
+          onFocus={() => setHoveredKey(key)}
+          onBlur={() => setHoveredKey(null)}
         >
           <span className="sb-star-page-timebar__label">
             <span className="sb-star-page-timebar__letter" aria-hidden>
@@ -67,6 +78,14 @@ export function StarResourceTimeBar() {
               {label}
             </span>
             <span className="sb-star-page-timebar__pct">{pct}</span>
+          </span>
+          <span
+            id={`timebar-tip-${key}`}
+            className={`sb-star-page-timebar__tip${hoveredKey === key ? " sb-star-page-timebar__tip--visible" : ""}`}
+            role="tooltip"
+            aria-hidden={hoveredKey !== key}
+          >
+            {tip}
           </span>
         </button>
       ))}

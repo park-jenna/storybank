@@ -5,10 +5,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { getMainScrollContainer, scrollToHashId } from "@/lib/star-doc-scroll";
 
 const TOC_ITEMS = [
-  { id: "star-what", href: "#star-what", label: "What is STAR method?" },
+  { id: "star-what", href: "#star-what", label: "What is STAR?" },
+  { id: "star-example", href: "#star-example", label: "See the difference" },
+  { id: "star-how", href: "#star-how", label: "Time allocation" },
   { id: "star-when", href: "#star-when", label: "When to use" },
-  { id: "star-how", href: "#star-how", label: "How to use" },
-  { id: "star-example", href: "#star-example", label: "STAR example" },
   { id: "star-storybank", href: "#star-storybank", label: "How StoryBank can help" },
 ] as const;
 

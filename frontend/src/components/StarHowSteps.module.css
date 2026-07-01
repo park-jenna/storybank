@@ -1,0 +1,205 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+/* ── Card ── */
+.card {
+  background: var(--surface-raised);
+  border: var(--stroke-1) solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+.card:hover {
+  border-color: color-mix(in srgb, var(--green-primary) 24%, var(--border-card));
+  background: color-mix(in srgb, var(--green-light) 8%, var(--surface-raised));
+}
+
+.numBadge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--green-primary);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.desc {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+  flex: 1;
+}
+
+.cta {
+  width: 100%;
+  text-align: center;
+  margin-top: auto;
+}
+
+/* ── Illustration wrapper ── */
+.illuWrap {
+  width: 100%;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--bg-page) 70%, var(--surface-raised));
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  border: var(--stroke-1) solid var(--border-card);
+}
+
+/* ── Form illustration (S / A / R lines) ── */
+.illuForm {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+.illuFormRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.illuLabel {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--green-primary);
+  width: 12px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.illuLine {
+  height: 6px;
+  background: var(--border-card);
+  border-radius: 3px;
+  flex: 1;
+}
+.illuLineLong {
+  background: var(--green-primary);
+  opacity: 0.3;
+}
+
+/* ── Link illustration (question + chips) ── */
+.illuLink {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.illuQuestion {
+  height: 8px;
+  width: 80%;
+  background: var(--border-card);
+  border-radius: 4px;
+}
+.illuChips {
+  display: flex;
+  gap: 6px;
+}
+.illuChip {
+  height: 14px;
+  width: 48px;
+  background: var(--green-light);
+  border: var(--stroke-1) solid var(--border-card);
+  border-radius: var(--radius-pill);
+}
+
+/* ── Chart illustration (progress bar) ── */
+.illuChart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+.illuBarTrack {
+  width: 100%;
+  height: 10px;
+  background: var(--bg-chip);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.illuBarFill {
+  width: 70%;
+  height: 100%;
+  background: var(--green-primary);
+  border-radius: var(--radius-pill);
+}
+.illuBarLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--green-primary);
+}
+
+/* ── Flashcard illustration ── */
+.illuCards {
+  position: relative;
+  width: 76px;
+  height: 42px;
+}
+.illuCard {
+  position: absolute;
+  inset: 6px 0 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9px;
+  border: var(--stroke-1) solid color-mix(in srgb, var(--green-primary) 24%, var(--border-card));
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow);
+}
+.illuCardBack {
+  inset: 0 10px 6px 0;
+  background: color-mix(in srgb, var(--green-light) 38%, var(--surface-raised));
+}
+.illuCardLine {
+  width: 44px;
+  height: 5px;
+  border-radius: var(--radius-pill);
+  background: var(--green-primary);
+  opacity: 0.42;
+}
+.illuCardLineShort {
+  width: 28px;
+  background: var(--border-chip);
+  opacity: 1;
+}
+
+/* ── Mobile ── */
+@media (max-width: 1180px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

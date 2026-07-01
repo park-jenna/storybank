@@ -1,0 +1,222 @@
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+/* ── Each item row ── */
+.item {
+  display: flex;
+  gap: var(--space-3);
+  min-height: 0;
+}
+
+/* ── Track (left column: line + badge) ── */
+.track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.line {
+  width: 2px;
+  flex: 1;
+  min-height: 8px;
+  border-radius: 1px;
+}
+.lineBottom {
+  flex: 1;
+}
+/* first item: no top line */
+.item:first-child > .track > .line:first-child { opacity: 0; }
+/* last item: no bottom line */
+.item:last-child > .track > .lineBottom { opacity: 0; }
+
+/* Segment colors */
+.line_s { background: color-mix(in srgb, var(--bg-card) 40%, var(--green-light)); }
+.line_t { background: color-mix(in srgb, var(--green-light) 75%, var(--bg-page)); }
+.line_a { background: var(--green-primary); }
+.line_r { background: color-mix(in srgb, var(--green-light) 55%, var(--green-dot)); }
+
+.badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.badge_s {
+  background: color-mix(in srgb, var(--bg-card) 40%, var(--green-light));
+  color: var(--text-primary);
+}
+.badge_t {
+  background: color-mix(in srgb, var(--green-light) 75%, var(--bg-page));
+  color: var(--text-primary);
+}
+.badge_a {
+  background: var(--green-primary);
+  color: #fff;
+}
+.badge_r {
+  background: color-mix(in srgb, var(--green-light) 55%, var(--green-dot));
+  color: var(--text-primary);
+}
+
+/* ── Card (right column) ── */
+.card {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface-raised);
+  border: var(--stroke-1) solid var(--border-card);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-2);
+  overflow: hidden;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-2);
+  border-bottom: var(--stroke-1) solid var(--border-card);
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.tipBtn {
+  appearance: none;
+  border: var(--stroke-1) solid var(--border-chip);
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+  line-height: 1;
+}
+.tipBtn:hover,
+.tipBtn:focus-visible {
+  border-color: color-mix(in srgb, var(--green-primary) 28%, var(--border-chip));
+  color: var(--text-primary);
+}
+.tipBtn:focus-visible {
+  outline: 2px solid var(--green-primary);
+  outline-offset: 2px;
+}
+.tipBtnActive {
+  background: var(--green-primary);
+  border-color: var(--green-primary);
+  color: #fff;
+}
+
+.cardBody {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-base);
+  line-height: 1.72;
+  color: var(--text-primary);
+}
+.cardBody > p {
+  margin: 0;
+}
+.cardBody > p + p {
+  margin-top: var(--space-3);
+}
+
+.actionSteps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.actionStep {
+  display: grid;
+  grid-template-columns: minmax(6.75rem, 0.32fr) minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--green-light) 12%, var(--bg-page));
+  border: var(--stroke-1) solid var(--border-card);
+}
+
+.actionStepTitle {
+  color: var(--green-primary);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.actionStepBody {
+  color: var(--text-primary);
+  font-size: var(--text-15);
+  line-height: 1.65;
+}
+
+/* ── Tip panel (slide down) ── */
+.tipPanel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 var(--space-4);
+  background: color-mix(in srgb, var(--green-light) 28%, var(--surface-raised));
+  border-top: var(--stroke-1) solid var(--border-card);
+}
+.tipPanelOpen {
+  max-height: 200px;
+  padding: var(--space-3) var(--space-4);
+}
+
+.tipText {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .timeline {
+    padding: var(--space-3);
+  }
+  .item {
+    gap: var(--space-3);
+  }
+  .track {
+    width: 24px;
+  }
+  .badge {
+    width: 24px;
+    height: 24px;
+    font-size: var(--text-xs);
+  }
+  .cardBody {
+    font-size: var(--text-sm);
+  }
+  .actionStep {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .actionStepBody {
+    font-size: var(--text-sm);
+  }
+}
